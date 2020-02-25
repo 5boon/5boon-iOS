@@ -9,7 +9,7 @@
 import UIKit
 
 import SwiftyBeaver
-let log = SwiftyBeaver.self
+let logger = SwiftyBeaver.self
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func configureSDKs() {
         let console = ConsoleDestination()
         console.minLevel = .verbose
-        log.addDestination(console)
+        logger.addDestination(console)
     }
 }
 
