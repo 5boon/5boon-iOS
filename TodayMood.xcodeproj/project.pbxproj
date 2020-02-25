@@ -13,6 +13,8 @@
 		B28D3243240560AA00423DAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B28D3242240560AA00423DAB /* Assets.xcassets */; };
 		B28D3246240560AA00423DAB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B28D3244240560AA00423DAB /* LaunchScreen.storyboard */; };
 		B28D324F240567F600423DAB /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = B28D324E240567F600423DAB /* .swiftlint.yml */; };
+		B28D325E24056E4000423DAB /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28D325D24056E4000423DAB /* BaseViewController.swift */; };
+		B28D326224056EF700423DAB /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28D326124056EF700423DAB /* BaseNavigationController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		B28D3245240560AA00423DAB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B28D3247240560AA00423DAB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B28D324E240567F600423DAB /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		B28D325D24056E4000423DAB /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		B28D326124056EF700423DAB /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +111,8 @@
 			isa = PBXGroup;
 			children = (
 				B28D3239240560A900423DAB /* AppDelegate.swift */,
+				B28D325F24056EAB00423DAB /* Base */,
+				B28D326024056EE000423DAB /* Common */,
 				B28D325624056B6A00423DAB /* Networking */,
 				B28D325924056B7F00423DAB /* Services */,
 				B28D325524056B6100423DAB /* Models */,
@@ -114,8 +120,8 @@
 				B28D325324056A7E00423DAB /* ViewControllers */,
 				B28D325424056A8500423DAB /* Views */,
 				B28D325B24056B8F00423DAB /* Utils */,
+				B28D325C24056BF400423DAB /* Extensions */,
 				B28D325A24056B8600423DAB /* Types */,
-				B28D325724056B7200423DAB /* Rx */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -180,7 +186,6 @@
 		B28D325B24056B8F00423DAB /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				B28D325C24056BF400423DAB /* Extensions */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -188,8 +193,25 @@
 		B28D325C24056BF400423DAB /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				B28D325724056B7200423DAB /* Rx */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		B28D325F24056EAB00423DAB /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				B28D325D24056E4000423DAB /* BaseViewController.swift */,
+				B28D326124056EF700423DAB /* BaseNavigationController.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		B28D326024056EE000423DAB /* Common */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -326,8 +348,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B28D326224056EF700423DAB /* BaseNavigationController.swift in Sources */,
 				B28D323E240560A900423DAB /* ViewController.swift in Sources */,
 				B28D323A240560A900423DAB /* AppDelegate.swift in Sources */,
+				B28D325E24056E4000423DAB /* BaseViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
