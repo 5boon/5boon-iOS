@@ -8,6 +8,9 @@
 
 import UIKit
 
+import SwiftyBeaver
+let log = SwiftyBeaver.self
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -15,12 +18,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        configureSDKs()
+        
         let vc = ViewController()
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
         
         return true
+    }
+    
+    // MARK: Configure SDKs
+    private func configureSDKs() {
+        let console = ConsoleDestination()
+        console.minLevel = .verbose
+        log.addDestination(console)
     }
 }
 
