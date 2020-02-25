@@ -79,13 +79,117 @@
 		B28D3238240560A900423DAB /* TodayMood */ = {
 			isa = PBXGroup;
 			children = (
-				B28D3239240560A900423DAB /* AppDelegate.swift */,
-				B28D323D240560A900423DAB /* ViewController.swift */,
-				B28D3242240560AA00423DAB /* Assets.xcassets */,
-				B28D3244240560AA00423DAB /* LaunchScreen.storyboard */,
-				B28D3247240560AA00423DAB /* Info.plist */,
+				B28D3252240569D800423DAB /* Sources */,
+				B28D3251240569D500423DAB /* Resources */,
+				B28D3250240569CF00423DAB /* Supporting Files */,
 			);
 			path = TodayMood;
+			sourceTree = "<group>";
+		};
+		B28D3250240569CF00423DAB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B28D3247240560AA00423DAB /* Info.plist */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B28D3251240569D500423DAB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B28D3242240560AA00423DAB /* Assets.xcassets */,
+				B28D3244240560AA00423DAB /* LaunchScreen.storyboard */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B28D3252240569D800423DAB /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				B28D3239240560A900423DAB /* AppDelegate.swift */,
+				B28D325624056B6A00423DAB /* Networking */,
+				B28D325924056B7F00423DAB /* Services */,
+				B28D325524056B6100423DAB /* Models */,
+				B28D325824056B7800423DAB /* Sections */,
+				B28D325324056A7E00423DAB /* ViewControllers */,
+				B28D325424056A8500423DAB /* Views */,
+				B28D325B24056B8F00423DAB /* Utils */,
+				B28D325A24056B8600423DAB /* Types */,
+				B28D325724056B7200423DAB /* Rx */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		B28D325324056A7E00423DAB /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				B28D323D240560A900423DAB /* ViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		B28D325424056A8500423DAB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B28D325524056B6100423DAB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B28D325624056B6A00423DAB /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		B28D325724056B7200423DAB /* Rx */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Rx;
+			sourceTree = "<group>";
+		};
+		B28D325824056B7800423DAB /* Sections */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Sections;
+			sourceTree = "<group>";
+		};
+		B28D325924056B7F00423DAB /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		B28D325A24056B8600423DAB /* Types */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Types;
+			sourceTree = "<group>";
+		};
+		B28D325B24056B8F00423DAB /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				B28D325C24056BF400423DAB /* Extensions */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		B28D325C24056BF400423DAB /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -361,7 +465,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = TodayMood/Info.plist;
+				INFOPLIST_FILE = "TodayMood/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -380,7 +484,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = TodayMood/Info.plist;
+				INFOPLIST_FILE = "TodayMood/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
