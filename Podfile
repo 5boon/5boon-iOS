@@ -8,6 +8,7 @@ def app_pods
     # Networking
     pod 'Alamofire'
     pod 'Moya'
+    pod 'Moya/RxSwift', '~> 14.0'
     
     # Image Cache
     pod 'Kingfisher'

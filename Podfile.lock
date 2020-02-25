@@ -9,6 +9,9 @@ PODS:
     - Moya/Core (= 14.0.0)
   - Moya/Core (14.0.0):
     - Alamofire (~> 5.0)
+  - Moya/RxSwift (14.0.0):
+    - Moya/Core
+    - RxSwift (~> 5.0)
   - ReactorKit (2.0.1):
     - RxSwift (~> 5.0)
   - ReusableKit (3.0.0):
@@ -43,6 +46,7 @@ DEPENDENCIES:
   - Alamofire
   - Kingfisher
   - Moya
+  - Moya/RxSwift (~> 14.0)
   - ReactorKit
   - ReusableKit
   - RxCocoa
@@ -97,6 +101,6 @@ SPEC CHECKSUMS:
   SwiftyBeaver: f9a9aba96a6a6166e21682377804d728b0d20b95
   Then: 90cd104fd951cec1980a03f57704ad8f784d4d79
 
-PODFILE CHECKSUM: 4a657828b3d3ef10dc704fceb103aff395d8f116
+PODFILE CHECKSUM: 2875fa5de62534b235e3249e22cc47943b2598c4
 
 COCOAPODS: 1.8.4

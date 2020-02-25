@@ -15,6 +15,7 @@
 		B28D324F240567F600423DAB /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = B28D324E240567F600423DAB /* .swiftlint.yml */; };
 		B28D325E24056E4000423DAB /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28D325D24056E4000423DAB /* BaseViewController.swift */; };
 		B28D326224056EF700423DAB /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28D326124056EF700423DAB /* BaseNavigationController.swift */; };
+		B2CE264A24057622005E552D /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2CE264924057622005E552D /* Networking.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		B28D324E240567F600423DAB /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		B28D325D24056E4000423DAB /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		B28D326124056EF700423DAB /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
+		B2CE264924057622005E552D /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +153,7 @@
 		B28D325624056B6A00423DAB /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				B2CE264924057622005E552D /* Networking.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -349,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B28D326224056EF700423DAB /* BaseNavigationController.swift in Sources */,
+				B2CE264A24057622005E552D /* Networking.swift in Sources */,
 				B28D323E240560A900423DAB /* ViewController.swift in Sources */,
 				B28D323A240560A900423DAB /* AppDelegate.swift in Sources */,
 				B28D325E24056E4000423DAB /* BaseViewController.swift in Sources */,
