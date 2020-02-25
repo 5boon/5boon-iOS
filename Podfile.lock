@@ -1,0 +1,102 @@
+PODS:
+  - AcknowList (1.9.3)
+  - Alamofire (5.0.0)
+  - Differentiator (4.0.1)
+  - Kingfisher (5.13.1):
+    - Kingfisher/Core (= 5.13.1)
+  - Kingfisher/Core (5.13.1)
+  - Moya (14.0.0):
+    - Moya/Core (= 14.0.0)
+  - Moya/Core (14.0.0):
+    - Alamofire (~> 5.0)
+  - ReactorKit (2.0.1):
+    - RxSwift (~> 5.0)
+  - ReusableKit (3.0.0):
+    - ReusableKit/Core (= 3.0.0)
+  - ReusableKit/Core (3.0.0)
+  - RxCocoa (5.0.1):
+    - RxRelay (~> 5)
+    - RxSwift (~> 5)
+  - RxDataSources (4.0.1):
+    - Differentiator (~> 4.0)
+    - RxCocoa (~> 5.0)
+    - RxSwift (~> 5.0)
+  - RxKeyboard (1.0.0):
+    - RxCocoa (~> 5.0)
+    - RxSwift (~> 5.0)
+  - RxOptional (4.1.0):
+    - RxCocoa (~> 5)
+    - RxSwift (~> 5)
+  - RxRelay (5.0.1):
+    - RxSwift (~> 5)
+  - RxSwift (5.0.1)
+  - RxViewController (1.0.0):
+    - RxCocoa (~> 5.0)
+    - RxSwift (~> 5.0)
+  - SnapKit (5.0.1)
+  - SwiftLint (0.39.1)
+  - SwiftyBeaver (1.8.4)
+  - Then (2.6.0)
+
+DEPENDENCIES:
+  - AcknowList
+  - Alamofire
+  - Kingfisher
+  - Moya
+  - ReactorKit
+  - ReusableKit
+  - RxCocoa
+  - RxDataSources
+  - RxKeyboard
+  - RxOptional
+  - RxSwift
+  - RxViewController
+  - SnapKit
+  - SwiftLint
+  - SwiftyBeaver
+  - Then
+
+SPEC REPOS:
+  trunk:
+    - AcknowList
+    - Alamofire
+    - Differentiator
+    - Kingfisher
+    - Moya
+    - ReactorKit
+    - ReusableKit
+    - RxCocoa
+    - RxDataSources
+    - RxKeyboard
+    - RxOptional
+    - RxRelay
+    - RxSwift
+    - RxViewController
+    - SnapKit
+    - SwiftLint
+    - SwiftyBeaver
+    - Then
+
+SPEC CHECKSUMS:
+  AcknowList: a3ee7cfba2c45cf9d07d1b18fe729a5bcc518366
+  Alamofire: 58ff2bfb8daaacaa233d5c36e37b10a5248f59b1
+  Differentiator: 886080237d9f87f322641dedbc5be257061b0602
+  Kingfisher: f33a848445e33c543620812158dc5d47f6bf90df
+  Moya: 5b45dacb75adb009f97fde91c204c1e565d31916
+  ReactorKit: a63c5e11e0fd32d59d672e54178b0ed2876b764b
+  ReusableKit: e5f853ad4652e411f96b6119b2488afa12929be6
+  RxCocoa: e741b9749968e8a143e2b787f1dfbff2b63d0a5c
+  RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
+  RxKeyboard: 6683c4344304a00f943c158bd8a43ce5469c82a7
+  RxOptional: b1fcd60856807a564c0215c2184b8d33e7826dc2
+  RxRelay: 89d54507f4fd4d969e6ec1d4bd7f3673640b4640
+  RxSwift: e2dc62b366a3adf6a0be44ba9f405efd4c94e0c4
+  RxViewController: 7330a46e5c31cd680db169da4c9fc8676e975a81
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  SwiftLint: 55e96a4a4d537d4a3156859fc1c54bd24851a046
+  SwiftyBeaver: f9a9aba96a6a6166e21682377804d728b0d20b95
+  Then: 90cd104fd951cec1980a03f57704ad8f784d4d79
+
+PODFILE CHECKSUM: 4a657828b3d3ef10dc704fceb103aff395d8f116
+
+COCOAPODS: 1.8.4

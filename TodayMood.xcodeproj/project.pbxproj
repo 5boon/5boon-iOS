@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C38D44A94A0FD7A916EA744 /* Pods_TodayMood.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15AE591FD0266C32CF9DC1EC /* Pods_TodayMood.framework */; };
 		B28D323A240560A900423DAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28D3239240560A900423DAB /* AppDelegate.swift */; };
 		B28D323E240560A900423DAB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28D323D240560A900423DAB /* ViewController.swift */; };
 		B28D3243240560AA00423DAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B28D3242240560AA00423DAB /* Assets.xcassets */; };
@@ -14,6 +15,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0388C569EBB649E15B2E8040 /* Pods-TodayMood.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayMood.debug.xcconfig"; path = "Target Support Files/Pods-TodayMood/Pods-TodayMood.debug.xcconfig"; sourceTree = "<group>"; };
+		15AE591FD0266C32CF9DC1EC /* Pods_TodayMood.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodayMood.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABCFBBA2C5ED7F5D72865AEE /* Pods-TodayMood.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayMood.release.xcconfig"; path = "Target Support Files/Pods-TodayMood/Pods-TodayMood.release.xcconfig"; sourceTree = "<group>"; };
 		B28D3236240560A900423DAB /* TodayMood.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodayMood.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B28D3239240560A900423DAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B28D323D240560A900423DAB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -27,17 +31,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C38D44A94A0FD7A916EA744 /* Pods_TodayMood.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		06819F592663CB405E065075 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0388C569EBB649E15B2E8040 /* Pods-TodayMood.debug.xcconfig */,
+				ABCFBBA2C5ED7F5D72865AEE /* Pods-TodayMood.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		ABA6DCC7DEAEBB1C6870C46B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				15AE591FD0266C32CF9DC1EC /* Pods_TodayMood.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B28D322D240560A900423DAB = {
 			isa = PBXGroup;
 			children = (
 				B28D3238240560A900423DAB /* TodayMood */,
 				B28D3237240560A900423DAB /* Products */,
+				06819F592663CB405E065075 /* Pods */,
+				ABA6DCC7DEAEBB1C6870C46B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -68,9 +93,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B28D324A240560AA00423DAB /* Build configuration list for PBXNativeTarget "TodayMood" */;
 			buildPhases = (
+				FBFBB65B94DE52DDA66A6E45 /* [CP] Check Pods Manifest.lock */,
 				B28D3232240560A900423DAB /* Sources */,
 				B28D3233240560A900423DAB /* Frameworks */,
 				B28D3234240560A900423DAB /* Resources */,
+				55A785BDB452C9A140D38690 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -125,6 +152,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		55A785BDB452C9A140D38690 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TodayMood/Pods-TodayMood-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TodayMood/Pods-TodayMood-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TodayMood/Pods-TodayMood-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FBFBB65B94DE52DDA66A6E45 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TodayMood-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B28D3232240560A900423DAB /* Sources */ = {
@@ -266,6 +335,7 @@
 		};
 		B28D324B240560AA00423DAB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0388C569EBB649E15B2E8040 /* Pods-TodayMood.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -284,6 +354,7 @@
 		};
 		B28D324C240560AA00423DAB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = ABCFBBA2C5ED7F5D72865AEE /* Pods-TodayMood.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
