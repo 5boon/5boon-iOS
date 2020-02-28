@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3C38D44A94A0FD7A916EA744 /* Pods_TodayMood.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15AE591FD0266C32CF9DC1EC /* Pods_TodayMood.framework */; };
+		87F4D9B7E79EAD8382CA88E5 /* Pods_TodayMoodTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FFAE66318056FEF4341F0378 /* Pods_TodayMoodTests.framework */; };
+		B26C59D92409103B00E82098 /* TodayMoodTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26C59D82409103B00E82098 /* TodayMoodTests.swift */; };
 		B28D323A240560A900423DAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28D3239240560A900423DAB /* AppDelegate.swift */; };
 		B28D323E240560A900423DAB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28D323D240560A900423DAB /* ViewController.swift */; };
 		B28D3243240560AA00423DAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B28D3242240560AA00423DAB /* Assets.xcassets */; };
@@ -18,10 +20,25 @@
 		B2CE264A24057622005E552D /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2CE264924057622005E552D /* Networking.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B26C59DB2409103B00E82098 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B28D322E240560A900423DAB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B28D3235240560A900423DAB;
+			remoteInfo = TodayMood;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		0388C569EBB649E15B2E8040 /* Pods-TodayMood.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayMood.debug.xcconfig"; path = "Target Support Files/Pods-TodayMood/Pods-TodayMood.debug.xcconfig"; sourceTree = "<group>"; };
+		0CEC9B94B0FE82D28DFEE8F4 /* Pods-TodayMoodTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayMoodTests.release.xcconfig"; path = "Target Support Files/Pods-TodayMoodTests/Pods-TodayMoodTests.release.xcconfig"; sourceTree = "<group>"; };
 		15AE591FD0266C32CF9DC1EC /* Pods_TodayMood.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodayMood.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		38D147C6E6F638F9C4F8ED41 /* Pods-TodayMoodTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayMoodTests.debug.xcconfig"; path = "Target Support Files/Pods-TodayMoodTests/Pods-TodayMoodTests.debug.xcconfig"; sourceTree = "<group>"; };
 		ABCFBBA2C5ED7F5D72865AEE /* Pods-TodayMood.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TodayMood.release.xcconfig"; path = "Target Support Files/Pods-TodayMood/Pods-TodayMood.release.xcconfig"; sourceTree = "<group>"; };
+		B26C59D62409103B00E82098 /* TodayMoodTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TodayMoodTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B26C59D82409103B00E82098 /* TodayMoodTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayMoodTests.swift; sourceTree = "<group>"; };
+		B26C59DA2409103B00E82098 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B28D3236240560A900423DAB /* TodayMood.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TodayMood.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B28D3239240560A900423DAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B28D323D240560A900423DAB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -32,9 +49,18 @@
 		B28D325D24056E4000423DAB /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		B28D326124056EF700423DAB /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
 		B2CE264924057622005E552D /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		FFAE66318056FEF4341F0378 /* Pods_TodayMoodTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodayMoodTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B26C59D32409103B00E82098 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				87F4D9B7E79EAD8382CA88E5 /* Pods_TodayMoodTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B28D3233240560A900423DAB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -51,6 +77,8 @@
 			children = (
 				0388C569EBB649E15B2E8040 /* Pods-TodayMood.debug.xcconfig */,
 				ABCFBBA2C5ED7F5D72865AEE /* Pods-TodayMood.release.xcconfig */,
+				38D147C6E6F638F9C4F8ED41 /* Pods-TodayMoodTests.debug.xcconfig */,
+				0CEC9B94B0FE82D28DFEE8F4 /* Pods-TodayMoodTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -59,8 +87,18 @@
 			isa = PBXGroup;
 			children = (
 				15AE591FD0266C32CF9DC1EC /* Pods_TodayMood.framework */,
+				FFAE66318056FEF4341F0378 /* Pods_TodayMoodTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B26C59D72409103B00E82098 /* TodayMoodTests */ = {
+			isa = PBXGroup;
+			children = (
+				B26C59D82409103B00E82098 /* TodayMoodTests.swift */,
+				B26C59DA2409103B00E82098 /* Info.plist */,
+			);
+			path = TodayMoodTests;
 			sourceTree = "<group>";
 		};
 		B28D322D240560A900423DAB = {
@@ -68,6 +106,7 @@
 			children = (
 				B28D324E240567F600423DAB /* .swiftlint.yml */,
 				B28D3238240560A900423DAB /* TodayMood */,
+				B26C59D72409103B00E82098 /* TodayMoodTests */,
 				B28D3237240560A900423DAB /* Products */,
 				06819F592663CB405E065075 /* Pods */,
 				ABA6DCC7DEAEBB1C6870C46B /* Frameworks */,
@@ -78,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				B28D3236240560A900423DAB /* TodayMood.app */,
+				B26C59D62409103B00E82098 /* TodayMoodTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -220,6 +260,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B26C59D52409103B00E82098 /* TodayMoodTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B26C59DF2409103B00E82098 /* Build configuration list for PBXNativeTarget "TodayMoodTests" */;
+			buildPhases = (
+				8E3C285D1F85AD524D1B4E9B /* [CP] Check Pods Manifest.lock */,
+				B26C59D22409103B00E82098 /* Sources */,
+				B26C59D32409103B00E82098 /* Frameworks */,
+				B26C59D42409103B00E82098 /* Resources */,
+				D40AB66F0EE9D2CAB6BCF8C4 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B26C59DC2409103B00E82098 /* PBXTargetDependency */,
+			);
+			name = TodayMoodTests;
+			productName = TodayMoodTests;
+			productReference = B26C59D62409103B00E82098 /* TodayMoodTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		B28D3235240560A900423DAB /* TodayMood */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B28D324A240560AA00423DAB /* Build configuration list for PBXNativeTarget "TodayMood" */;
@@ -250,6 +310,10 @@
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = 5boon;
 				TargetAttributes = {
+					B26C59D52409103B00E82098 = {
+						CreatedOnToolsVersion = 11.3.1;
+						TestTargetID = B28D3235240560A900423DAB;
+					};
 					B28D3235240560A900423DAB = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
@@ -269,11 +333,19 @@
 			projectRoot = "";
 			targets = (
 				B28D3235240560A900423DAB /* TodayMood */,
+				B26C59D52409103B00E82098 /* TodayMoodTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B26C59D42409103B00E82098 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B28D3234240560A900423DAB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -304,6 +376,28 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TodayMood/Pods-TodayMood-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		8E3C285D1F85AD524D1B4E9B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TodayMoodTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		B28D324D240567D000423DAB /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -321,6 +415,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "${PODS_ROOT}/SwiftLint/swiftlint\n";
+		};
+		D40AB66F0EE9D2CAB6BCF8C4 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TodayMoodTests/Pods-TodayMoodTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TodayMoodTests/Pods-TodayMoodTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TodayMoodTests/Pods-TodayMoodTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		FBFBB65B94DE52DDA66A6E45 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -347,6 +458,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B26C59D22409103B00E82098 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B26C59D92409103B00E82098 /* TodayMoodTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B28D3232240560A900423DAB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -361,6 +480,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		B26C59DC2409103B00E82098 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B28D3235240560A900423DAB /* TodayMood */;
+			targetProxy = B26C59DB2409103B00E82098 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		B28D3244240560AA00423DAB /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -373,6 +500,46 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		B26C59DD2409103B00E82098 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 38D147C6E6F638F9C4F8ED41 /* Pods-TodayMoodTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = TodayMoodTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.5boon.TodayMoodTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TodayMood.app/TodayMood";
+			};
+			name = Debug;
+		};
+		B26C59DE2409103B00E82098 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0CEC9B94B0FE82D28DFEE8F4 /* Pods-TodayMoodTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = TodayMoodTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.5boon.TodayMoodTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TodayMood.app/TodayMood";
+			};
+			name = Release;
+		};
 		B28D3248240560AA00423DAB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -528,6 +695,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B26C59DF2409103B00E82098 /* Build configuration list for PBXNativeTarget "TodayMoodTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B26C59DD2409103B00E82098 /* Debug */,
+				B26C59DE2409103B00E82098 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B28D3231240560A900423DAB /* Build configuration list for PBXProject "TodayMood" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
