@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 import SwiftyBeaver
 let logger = SwiftyBeaver.self
@@ -33,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let console = ConsoleDestination()
         console.minLevel = .verbose
         logger.addDestination(console)
+        FirebaseApp.configure() 
     }
 }
 
