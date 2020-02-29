@@ -18,6 +18,7 @@
 		B28D325E24056E4000423DAB /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28D325D24056E4000423DAB /* BaseViewController.swift */; };
 		B28D326224056EF700423DAB /* BaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28D326124056EF700423DAB /* BaseNavigationController.swift */; };
 		B2CE264A24057622005E552D /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2CE264924057622005E552D /* Networking.swift */; };
+		ED70DA27240AA157009ED5FB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ED70DA26240AA157009ED5FB /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		B28D325D24056E4000423DAB /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		B28D326124056EF700423DAB /* BaseNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationController.swift; sourceTree = "<group>"; };
 		B2CE264924057622005E552D /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		ED70DA26240AA157009ED5FB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FFAE66318056FEF4341F0378 /* Pods_TodayMoodTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TodayMoodTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -135,6 +137,7 @@
 		B28D3250240569CF00423DAB /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				ED70DA26240AA157009ED5FB /* GoogleService-Info.plist */,
 				B28D3247240560AA00423DAB /* Info.plist */,
 			);
 			path = "Supporting Files";
@@ -351,6 +354,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B28D324F240567F600423DAB /* .swiftlint.yml in Resources */,
+				ED70DA27240AA157009ED5FB /* GoogleService-Info.plist in Resources */,
 				B28D3246240560AA00423DAB /* LaunchScreen.storyboard in Resources */,
 				B28D3243240560AA00423DAB /* Assets.xcassets in Resources */,
 			);

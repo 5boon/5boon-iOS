@@ -1,6 +1,12 @@
 platform :ios, '12.0'
 inhibit_all_warnings!
 
+def firebase
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Crashlytics' 
+  pod 'Firebase/Performance'
+end
+
 def app_pods
   # Architecture
   pod 'ReactorKit'
@@ -49,6 +55,7 @@ target 'TodayMood' do
   use_frameworks!
   
   app_pods
+  firebase
   
   # Testing
   target "TodayMoodTests" do
