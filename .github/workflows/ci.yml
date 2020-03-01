@@ -31,14 +31,14 @@ jobs:
     - name: Build and Test
       run: |
         set -o pipefail && xcodebuild clean build test \
-          -project "$PROJECT" \
+          -workspace "$WORKSPACE" \
           -scheme "$SCHEME" \
           -destination "$DESTINATION" \
           -configuration Debug \
           -enableCodeCoverage YES \
           CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty -c;
       env: 
-        PROJECT: TodayMood.xcodeproj
+        WORKSPACE: TodayMood.xcworkspace
         SCHEME: TodayMood
         SDK: ${{ matrix.env.sdk }}
         DESTINATION: ${{ matrix.env.destination }}
