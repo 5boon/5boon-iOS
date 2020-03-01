@@ -23,7 +23,9 @@ jobs:
         swift --version
         swift package --version
     - name: Install Dependences
-      run: bundle exec pod install
+      run: |
+        gem install cocoapods 
+        pod install
     - name: Slack Notification
       uses: homoluctus/slatify@master
       if: always()
