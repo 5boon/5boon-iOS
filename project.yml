@@ -29,6 +29,11 @@ targets:
     postCompileScripts:
     - script: "${PODS_ROOT}/SwiftLint/swiftlint"
       name: Swiftlint
+    - script: |
+        #Update build number with number of git commits if in release mode
+        buildNumber=$(git rev-list HEAD | wc -l | tr -d ' ')
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "${PROJECT_DIR}/${INFOPLIST_FILE}"
+      name: Automate Build number (Git)
   TodayMoodTests:
     platform: iOS
     type: bundle.unit-test
