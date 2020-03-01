@@ -27,4 +27,4 @@ jobs:
        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
       uses: Ilshidur/action-slack@1.6.2 
       with:
-      args: 'Github Actions 가 동작하였습니다.' 
+       args: 'Github Actions 가 동작하였습니다.' 
