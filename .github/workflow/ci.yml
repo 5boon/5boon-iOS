@@ -1,0 +1,30 @@
+name: CI
+on:
+  push: 
+    branches:
+    - master
+  pull_request: {}
+jobs:
+  run:
+    runs-on: macOS-latest
+    name: Xcode ${{ matrix.xcode }}
+    strategy:
+      matrix:
+        xcode: ["11"]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set Xcode
+      run: |
+        echo "Available Xcode versions:"
+        ls /Applications | grep Xcode
+        echo "Choosing Xcode_${{ matrix.xcode }}.app"
+        sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
+        xcodebuild -version
+        swift --version
+        swift package --version
+    - uses: Ilshidur/action-slack@1.6.2
+    - name: GitHub Action for Slack
+      env:
+       SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      with:
+      args: 'Github Actions 가 동작하였습니다.' 
