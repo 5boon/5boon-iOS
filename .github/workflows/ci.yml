@@ -22,9 +22,9 @@ jobs:
         xcodebuild -version
         swift --version
         swift package --version
-    - uses: Ilshidur/action-slack@1.6.2
     - name: GitHub Action for Slack
       env:
        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      uses: Ilshidur/action-slack@1.6.2 
       with:
       args: 'Github Actions 가 동작하였습니다.' 
