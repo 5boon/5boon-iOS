@@ -22,9 +22,13 @@ jobs:
         xcodebuild -version
         swift --version
         swift package --version
-    - name: GitHub Action for Slack
-      env:
-       SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      uses: Ilshidur/action-slack@1.6.2 
+    - name: Slack Notification
+      uses: homoluctus/slatify@master
+      if: always()
       with:
-       args: 'Github Actions 가 동작하였습니다.' 
+        type: ${{ job.status }}
+        job_name: '*Github Actions*'
+        mention: 'here'
+        mention_if: 'failure'
+        channel: '#random'
+        url: ${{ secrets.SLACK_WEBHOOK }}
