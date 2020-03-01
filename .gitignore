@@ -122,7 +122,7 @@ iOSInjectionProject/
 ## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
 
 ## Xcode Patch
-*.xcodeproj/*
+*.xcodeproj
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/
 !*.xcworkspace/contents.xcworkspacedata
@@ -131,4 +131,5 @@ iOSInjectionProject/
 ### Xcode Patch ###
 **/xcshareddata/WorkspaceSettings.xcsettings
 
+.DS_Store
 # End of https://www.gitignore.io/api/xcode,swift,fastlane,carthage,cocoapods
