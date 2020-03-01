@@ -23,11 +23,7 @@ jobs:
         swift --version
         swift package --version
     - name: Install Dependences
-      uses: ty0x2333/cocoapods-action@master
-      run: |
-        pod repo update
-        pod install
-      shell: bash    
+      run: bundle exec pod install
     - name: Slack Notification
       uses: homoluctus/slatify@master
       if: always()
