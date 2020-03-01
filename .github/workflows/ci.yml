@@ -39,7 +39,7 @@ jobs:
           -enableCodeCoverage YES \
           CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty -c;
       env: 
-        PROJECT: TodayMood.xcodeproj
+        PROJECT: TodayMood.xcworkspace
         SCHEME: TodayMood
         SDK: ${{ matrix.env.sdk }}
         DESTINATION: ${{ matrix.env.destination }}
