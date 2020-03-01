@@ -27,7 +27,6 @@ jobs:
         swift package --version
     - name: Install Dependences
       run: |
-        gem install cocoapods 
         pod install
     - name: Build and Test
       run: |
@@ -39,7 +38,7 @@ jobs:
           -enableCodeCoverage YES \
           CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty -c;
       env: 
-        PROJECT: TodayMood.xcworkspace
+        PROJECT: TodayMood.xcodeproj
         SCHEME: TodayMood
         SDK: ${{ matrix.env.sdk }}
         DESTINATION: ${{ matrix.env.destination }}
