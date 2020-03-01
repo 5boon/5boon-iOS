@@ -3,15 +3,13 @@ on: [push]
 jobs:
   run:
     runs-on: macOS-latest
-    strategy:
-      matrix:
-        env:
-          - sdk: iphonesimulator12.2
-            destination: platform=iOS Simulator,name=iPhone XS,OS=12.2
     name: Xcode ${{ matrix.xcode }}
     strategy:
       matrix:
         xcode: ["11"]
+        env:
+          - sdk: iphonesimulator12.2
+            destination: platform=iOS Simulator,name=iPhone XS,OS=12.2
     steps:
     - uses: actions/checkout@v1
     - name: Install and run xcodegen
