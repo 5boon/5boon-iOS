@@ -1,8 +1,5 @@
 name: CI
-on:
-  push: 
-    branches:
-    - master
+on: [push]
   pull_request: {}
 jobs:
   run:
@@ -13,6 +10,10 @@ jobs:
         xcode: ["11"]
     steps:
     - uses: actions/checkout@v1
+    - name: Install and run xcodegen
+    run: |
+      brew install xcodegen
+      xcodegen generate
     - name: Set Xcode
       run: |
         echo "Available Xcode versions:"
