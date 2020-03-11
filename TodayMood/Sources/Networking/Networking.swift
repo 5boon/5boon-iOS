@@ -9,6 +9,9 @@
 import Moya
 import RxSwift
 
+// MARK: typealias API Networking
+typealias UserNetworking = Networking<UserAPI>
+
 final class Networking<Target: TargetType>: MoyaProvider<Target> {
     init(plugins: [PluginType] = []) {
         let session = MoyaProvider<Target>.defaultAlamofireSession()
