@@ -12,7 +12,7 @@ private func appDelegateClassName() -> String {
     return isTesting ? "TodayMoodTests.StubAppDelegate" : NSStringFromClass(AppDelegate.self)
 }
 
-_ = UIApplicationMain(
+UIApplicationMain(
     CommandLine.argc,
     CommandLine.unsafeArgv,
     NSStringFromClass(UIApplication.self),
