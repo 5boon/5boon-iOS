@@ -1,0 +1,13 @@
+//
+//  Development.xcconfig
+//  TodayMood
+//
+//  Created by Kanz on 2020/03/08.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+CLIENT_ID = kw1ysSVCel2fY2LNMzN3NePgb60CxtCdceHESiqj
+CLIENT_SECRET = rWiveiP0C2VSk1RTGkDpECaJ16cCjYK318JaILiYZWw61NC8Jib8rwJzGjWne3kXXOq7LNStoMhr7rKBp9BUeZEZZlaFg2MkaJM6H7a0x5q37E1zB2yRwOGPs5qCwIVN
+BASE_URL = http:\/\/34.68.246.74

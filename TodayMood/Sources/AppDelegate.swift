@@ -7,34 +7,18 @@
 //
 
 import UIKit
-import Firebase
 
-import SwiftyBeaver
-let logger = SwiftyBeaver.self
-
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
+final class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    var dependency: AppDependency!
     var window: UIWindow?
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        configureSDKs()
-        
-        let vc = ViewController()
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = vc
-        window?.makeKeyAndVisible()
-        
+    
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        self.dependency = self.dependency ?? CompositionRoot.resolve()
+        self.dependency.configureSDKs()
+        self.dependency.configureAppearance()
+        self.window = self.dependency.window
         return true
     }
-    
-    // MARK: Configure SDKs
-    private func configureSDKs() {
-        let console = ConsoleDestination()
-        console.minLevel = .verbose
-        logger.addDestination(console)
-        FirebaseApp.configure() 
-    }
 }
-

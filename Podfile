@@ -40,6 +40,14 @@ def app_pods
   pod 'Then'
   pod 'ReusableKit'
   pod 'AcknowList'
+  pod 'URLNavigator'
+  
+  # DI
+  pod 'Pure'
+  
+  # Keychain
+  pod 'KeychainAccess'
+  
 end
 
 
