@@ -35,11 +35,11 @@ targets:
     sources:
         - TodayMood/Sources
         - path: 'TodayMood/Supporting Files'
-        type: group
+          type: group
         - path: 'TodayMood/Supporting Files/GoogleService-Info.plist'
         buildPhase: resources
         - path: TodayMood/Resources
-        type: group
+          type: group
     scheme:
         getherCoverageData: true
         testTargets:
