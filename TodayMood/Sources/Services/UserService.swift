@@ -11,6 +11,8 @@ protocol UserServiceType {
     func signup(userName: String, nickName: String, password: String) -> Observable<SignUpUser>
     
     func me() -> Observable<User>
+    
+    var currentUser: Observable<User?> { get }
 }
 
 final class UserService: UserServiceType {
@@ -20,6 +22,11 @@ final class UserService: UserServiceType {
     init(networking: UserNetworking) {
         self.networking = networking
     }
+    
+    private let userSubject = ReplaySubject<User?>.create(bufferSize: 1)
+    lazy var currentUser: Observable<User?> = self.userSubject.asObservable()
+        .startWith(nil)
+        .share(replay: 1)
     
     /// 회원가입
     func signup(userName: String, nickName: String, password: String) -> Observable<SignUpUser> {
@@ -37,5 +44,8 @@ final class UserService: UserServiceType {
             .debug()
             .asObservable()
             .map(User.self)
+            .do(onNext: { [weak self] user in
+                self?.userSubject.onNext(user)
+            })
     }
 }

@@ -1,4 +1,4 @@
-platform :ios, '12.0'
+platform :ios, '13.0'
 inhibit_all_warnings!
 
 def firebase
@@ -29,6 +29,7 @@ def app_pods
   
   # UI
   pod 'SnapKit'
+  pod 'EMTNeumorphicView'
   
   # Logger
   pod 'SwiftyBeaver'
@@ -41,12 +42,17 @@ def app_pods
   pod 'ReusableKit'
   pod 'AcknowList'
   pod 'URLNavigator'
+  pod 'Immutable'
+  pod 'Bagel', '~>  1.3.2'
   
   # DI
   pod 'Pure'
   
   # Keychain
   pod 'KeychainAccess'
+  
+  # SNS
+  # pod 'FBSDKLoginKit'
   
 end
 
@@ -56,6 +62,8 @@ def testing_pods
     pod 'Nimble'
     pod 'RxTest'
     pod 'RxBlocking'
+    pod 'Stubber'
+    pod 'Immutable'
 end
 
 
