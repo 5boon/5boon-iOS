@@ -10,7 +10,7 @@ targets:
   TodayMood:
     type: application
     platform: iOS
-    deploymentTarget: '12.0'
+    deploymentTarget: '13.0'
     info:
       path: TodayMood/Supporting Files/Info.plist
       properties:
