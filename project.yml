@@ -16,6 +16,9 @@ targets:
       properties:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UILaunchStoryboardName: LaunchScreen
+        BaseURL: $(BASE_URL)
+        ClientID: $(CLIENT_ID)
+        ClientSecret: $(CLIENT_SECRET)
     settings:
       INFOPLIST_FILE: TodayMood/Supporting Files/Info.plist
     sources:
