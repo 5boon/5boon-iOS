@@ -1,7 +1,11 @@
 PODS:
   - AcknowList (1.9.3)
   - Alamofire (5.0.0)
+  - Bagel (1.3.2):
+    - CocoaAsyncSocket
+  - CocoaAsyncSocket (7.6.4)
   - Differentiator (4.0.1)
+  - EMTNeumorphicView (1.0.4)
   - Firebase/Analytics (6.18.0):
     - Firebase/Core
   - Firebase/Core (6.18.0):
@@ -109,6 +113,7 @@ PODS:
   - GoogleUtilities/UserDefaults (6.5.1):
     - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (1.3.1)
+  - Immutable (0.6.0)
   - KeychainAccess (4.1.0)
   - Kingfisher (5.13.1):
     - Kingfisher/Core (= 5.13.1)
@@ -161,6 +166,7 @@ PODS:
     - RxCocoa (~> 5.0)
     - RxSwift (~> 5.0)
   - SnapKit (5.0.1)
+  - Stubber (1.5.0)
   - SwiftLint (0.39.1)
   - SwiftyBeaver (1.8.4)
   - Then (2.6.0)
@@ -169,9 +175,12 @@ PODS:
 DEPENDENCIES:
   - AcknowList
   - Alamofire
+  - Bagel (~> 1.3.2)
+  - EMTNeumorphicView
   - Firebase/Analytics
   - Firebase/Crashlytics
   - Firebase/Performance
+  - Immutable
   - KeychainAccess
   - Kingfisher
   - Moya
@@ -190,6 +199,7 @@ DEPENDENCIES:
   - RxTest
   - RxViewController
   - SnapKit
+  - Stubber
   - SwiftLint
   - SwiftyBeaver
   - Then
@@ -199,7 +209,10 @@ SPEC REPOS:
   trunk:
     - AcknowList
     - Alamofire
+    - Bagel
+    - CocoaAsyncSocket
     - Differentiator
+    - EMTNeumorphicView
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
@@ -218,6 +231,7 @@ SPEC REPOS:
     - GoogleToolboxForMac
     - GoogleUtilities
     - GTMSessionFetcher
+    - Immutable
     - KeychainAccess
     - Kingfisher
     - Moya
@@ -239,6 +253,7 @@ SPEC REPOS:
     - RxTest
     - RxViewController
     - SnapKit
+    - Stubber
     - SwiftLint
     - SwiftyBeaver
     - Then
@@ -247,7 +262,10 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   AcknowList: a3ee7cfba2c45cf9d07d1b18fe729a5bcc518366
   Alamofire: 58ff2bfb8daaacaa233d5c36e37b10a5248f59b1
+  Bagel: 199e0105ac694d6eee9db54dd006c940da6ce81b
+  CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
   Differentiator: 886080237d9f87f322641dedbc5be257061b0602
+  EMTNeumorphicView: cb5e92953e43b1872ab47fefd451a9ce0c16fc77
   Firebase: 0490eca762a72e4f1582319539153897f1508dee
   FirebaseABTesting: 0d10f3cdc3fa00f3f175b5b56c1003c8e888299f
   FirebaseAnalytics: 058d71e714a1a6804d9e0f25e3bb18e377a51579
@@ -266,6 +284,7 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 800648f8b3127618c1b59c7f97684427630c5ea3
   GoogleUtilities: 06eb53bb579efe7099152735900dd04bf09e7275
   GTMSessionFetcher: cea130bbfe5a7edc8d06d3f0d17288c32ffe9925
+  Immutable: 793dcfd5979883638401c468dfeb08651436f44f
   KeychainAccess: 445e28864fe6d3458b41fa211bcdc39890e8bd5a
   Kingfisher: f33a848445e33c543620812158dc5d47f6bf90df
   Moya: 5b45dacb75adb009f97fde91c204c1e565d31916
@@ -287,11 +306,12 @@ SPEC CHECKSUMS:
   RxTest: 0132f952a61da82d5233abedaa559df91e5330e5
   RxViewController: 7330a46e5c31cd680db169da4c9fc8676e975a81
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  Stubber: 6cf1160d37f0d1da7afbe1892f65bb7d5984bba4
   SwiftLint: 55e96a4a4d537d4a3156859fc1c54bd24851a046
   SwiftyBeaver: f9a9aba96a6a6166e21682377804d728b0d20b95
   Then: 90cd104fd951cec1980a03f57704ad8f784d4d79
   URLNavigator: 2593c0e2d293732ec5c44503cf54dceba1a68085
 
-PODFILE CHECKSUM: 4931cb0ac41e43fa85f4620a5e54c331e2ac2217
+PODFILE CHECKSUM: 945fea3e67154941128988fc93c50bea32865c3c
 
 COCOAPODS: 1.8.4

@@ -1,5 +1,7 @@
 # 5boon-iOS
 
+![CI](https://github.com/5boon/5boon-iOS/workflows/CI/badge.svg?branch=develop)
+
 5boon 1st Project
 
 ## 3rd Party

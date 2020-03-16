@@ -7,6 +7,7 @@
 
 import UIKit
 
+import Bagel
 import Firebase
 import Kingfisher
 import KeychainAccess
@@ -39,7 +40,8 @@ final class CompositionRoot {
         // Navigator
         let navigator = Navigator()
         
-        let authService = AuthService(navigator: navigator)
+        let authNetworking = AuthNetworking()
+        let authService = AuthService(navigator: navigator, networking: authNetworking)
         let userNetworking = UserNetworking(plugins: [AuthPlugin(authService: authService)])
         
         // Services
@@ -54,6 +56,8 @@ final class CompositionRoot {
         presentMainScreen = self.configurePresentMainScreen(window: window)
         
         presentLoginScreen = self.configurePresentLoginScreen(window: window,
+                                                              authService: authService,
+                                                              userService: userService,
                                                               presentMainScreen: presentMainScreen)
         
         let reactor = SplashViewReactor(userService: userService,
@@ -75,17 +79,22 @@ final class CompositionRoot {
     // MARK: Configure SDKs
     static func configureSDKs() {
         // Firebase
-        FirebaseApp.configure()
+        // FirebaseApp.configure()
         
         // SwiftyBeaver
         let console = ConsoleDestination()
         console.minLevel = .verbose
         logger.addDestination(console)
+        
+        #if DEBUG
+        Bagel.start()
+        #endif
     }
     
     // MARK: Configure Appearance
     static func configureAppearance() {
         // NavigationBar Appearance, Toast Appearance..
+        UINavigationBar.appearance().shadowImage = UIImage()
     }
     
     // MARK: URL Factory
@@ -106,11 +115,23 @@ final class CompositionRoot {
 // MARK: - Login
 extension CompositionRoot {
     static func configurePresentLoginScreen(window: UIWindow,
+                                            authService: AuthServiceType,
+                                            userService: UserServiceType,
                                             presentMainScreen: @escaping () -> Void) -> () -> Void {
         return {
-            let reactor = LoginViewReactor()
-            window.rootViewController = LoginViewController(reactor: reactor,
-                                                            presentMainScreen: presentMainScreen)
+            let reactor = LoginViewReactor(authService: authService,
+                                           userService: userService)
+            
+            let signUpViewControllerFactory = { () -> SignUpViewController in
+                let reactor = SignUpViewReactor()
+                return SignUpViewController(reactor: reactor)
+            }
+            
+            let loginViewController = LoginViewController(reactor: reactor,
+                                                          presentMainScreen: presentMainScreen,
+                                                          signUpViewControllerFactory: signUpViewControllerFactory)
+            
+            window.rootViewController = loginViewController.navigationWrap()
         }
     }
 }
