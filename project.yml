@@ -3,7 +3,7 @@ options:
   usesTabs: false
   indentWidth: 4
   tabWidth: 4
-  bundleIdPrefix: com.5boon
+  bundleIdPrefix: com.oboon
   deploymentTarget:
     iOS: '13.0'
 targets:
