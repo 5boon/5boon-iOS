@@ -37,7 +37,7 @@ final class SplashViewController: BaseViewController, View {
     
     // MARK: Views
     private let label = UILabel().then {
-        $0.text = "Splash"
+        $0.text = "5boon"
     }
     
     // MARK: - Initializing
@@ -57,6 +57,7 @@ final class SplashViewController: BaseViewController, View {
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
     }
     
     // MARK: - UI Setup
@@ -76,8 +77,8 @@ final class SplashViewController: BaseViewController, View {
     func bind(reactor: Reactor) {
         
         // Action
-        self.rx.viewDidLoad
-            .map { Reactor.Action.checkIfAuthenticated }
+        self.rx.viewDidAppear
+            .map { _ in Reactor.Action.checkIfAuthenticated }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
@@ -86,7 +87,7 @@ final class SplashViewController: BaseViewController, View {
             .debug()
             .filterNil()
             .distinctUntilChanged()
-            .delay(.seconds(2), scheduler: MainScheduler.instance) // 확인용. 추후 제거
+            // .delay(.seconds(2), scheduler: MainScheduler.instance) // 확인용. 추후 제거
             .subscribe(onNext: { [weak self] isAuthenticated in
                 guard let self = self else { return }
                 if isAuthenticated {

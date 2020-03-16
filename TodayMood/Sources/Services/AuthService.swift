@@ -13,21 +13,11 @@ import URLNavigator
 protocol AuthServiceType {
     var currentAccessToken: AccessToken? { get }
     
-    func authorize() -> Observable<Void>
-    
-    func callback(code: String)
+    func requestToken(userName: String, password: String) -> Observable<Void>
     
     func logout()
 }
-/**
- {
-   "access_token": "87hSndIu7be5JhNPE2JlWQjgOkmLzY",
-   "expires_in": 36000,
-   "token_type": "Bearer",
-   "scope": "read write",
-   "refresh_token": "GeSBuiGfN8SQITON6PMHdFYyoSlsKm"
- }
- */
+
 final class AuthService: AuthServiceType {
     
     // MARK: Properties
@@ -38,9 +28,11 @@ final class AuthService: AuthServiceType {
     
     private let navigator: NavigatorType
     private let keychain = Keychain(service: Constants.KeychainKeys.serviceName)
+    private let networking: AuthNetworking
     
-    init(navigator: NavigatorType) {
+    init(navigator: NavigatorType, networking: AuthNetworking) {
         self.navigator = navigator
+        self.networking = networking
         self.currentAccessToken = self.loadAccessToken()
         logger.debug("currentAccessToken: \(self.currentAccessToken)")
     }
@@ -69,15 +61,19 @@ final class AuthService: AuthServiceType {
     }
     
     // MARK: Handle authorize
-    func authorize() -> Observable<Void> {
-        return .empty()
-    }
-    
-    func callback(code: String) {
-        
+    func requestToken(userName: String, password: String) -> Observable<Void> {
+        return self.networking.request(.requestToken(userName: userName, password: password))
+            .asObservable()
+            .map(AccessToken.self)
+            .do(onNext: { [weak self] token in
+                try self?.saveAccessToken(token)
+                self?.currentAccessToken = token
+            })
+            .map { _ in }
     }
     
     func logout() {
-        
+        self.currentAccessToken = nil
+        self.deleteAccessToken()
     }
 }

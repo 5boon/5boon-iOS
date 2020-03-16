@@ -30,6 +30,10 @@ struct Constants {
     /// URL 
     struct URLs {
         @BundleInfoWrapper(key: "BaseURL")
-        static var baseURL: String
+        static var base: String
+        
+        static var baseURL: String {
+            return URLs.base.replacingOccurrences(of: "\\", with: "")
+        }
     }
 }

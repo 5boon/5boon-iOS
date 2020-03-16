@@ -1,16 +1,16 @@
-name: TodayMood 
-options: 
+name: TodayMood
+options:
   usesTabs: false
   indentWidth: 4
   tabWidth: 4
   bundleIdPrefix: com.5boon
   deploymentTarget:
-     iOS: "12.0"
+    iOS: '13.0'
 targets:
   TodayMood:
     type: application
-    platform: iOS 
-    deploymentTarget: "12.0"
+    platform: iOS
+    deploymentTarget: '13.0'
     info:
       path: TodayMood/Supporting Files/Info.plist
       properties:
@@ -18,22 +18,22 @@ targets:
         UILaunchStoryboardName: LaunchScreen
     settings:
       INFOPLIST_FILE: TodayMood/Supporting Files/Info.plist
-    sources: 
+    sources:
       - TodayMood/Sources
-      - path: "TodayMood/Supporting Files"
+      - path: 'TodayMood/Supporting Files'
         type: group
-      - path: "TodayMood/Supporting Files/GoogleService-Info.plist"
+      - path: 'TodayMood/Supporting Files/GoogleService-Info.plist'
         buildPhase: resources
       - path: TodayMood/Resources
         type: group
     postCompileScripts:
-    - script: "${PODS_ROOT}/SwiftLint/swiftlint"
-      name: Swiftlint
-    - script: |
-        #Update build number with number of git commits if in release mode
-        buildNumber=$(git rev-list HEAD | wc -l | tr -d ' ')
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "${PROJECT_DIR}/${INFOPLIST_FILE}"
-      name: Automate Build number (Git)
+      - script: '${PODS_ROOT}/SwiftLint/swiftlint'
+        name: Swiftlint
+      - script: |
+          #Update build number with number of git commits if in release mode
+          buildNumber=$(git rev-list HEAD | wc -l | tr -d ' ')
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "${PROJECT_DIR}/${INFOPLIST_FILE}"
+        name: Automate Build number (Git)
   TodayMoodTests:
     platform: iOS
     type: bundle.unit-test
