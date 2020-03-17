@@ -29,9 +29,9 @@ targets:
         ClientSecret: $(CLIENT_SECRET)
     settings:
       INFOPLIST_FILE: TodayMood/Supporting Files/Info.plist
-    configFiles:
-      Debug: 'Pods/Target Support Files/Pods-TodayMood/Pods-TodayMood.debug.xcconfig'
-      Release: 'Pods/Target Support Files/Pods-TodayMood/Pods-TodayMood.release.xcconfig'
+#    configFiles:
+#      Debug: 'Pods/Target Support Files/Pods-TodayMood/Pods-TodayMood.debug.xcconfig'
+#      Release: 'Pods/Target Support Files/Pods-TodayMood/Pods-TodayMood.release.xcconfig'
     sources:
     - TodayMood/Sources
     - path: 'TodayMood/Supporting Files'
