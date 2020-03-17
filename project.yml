@@ -1,63 +1,63 @@
 name: TodayMood
 options:
-    usesTabs: false
-    indentWidth: 4
-    tabWidth: 4
-    bundleIdPrefix: com.oboon
-    deploymentTarget:
+  usesTabs: false
+  indentWidth: 4
+  tabWidth: 4
+  bundleIdPrefix: com.oboon
+  deploymentTarget:
     iOS: '13.0'
 fileGroups:
-    - Config
+  - Config
 configs:
-    Debug: debug
-    Release: release
+  Debug: debug
+  Release: release
 configFiles:
-    Debug: Config/Development.xcconfig
-    Release: Config/Production.xcconfig
+  Debug: Config/Development.xcconfig
+  Release: Config/Production.xcconfig
 targets:
-    TodayMood:
+  TodayMood:
     type: application
     platform: iOS
     deploymentTarget: '13.0'
     info:
-        path: TodayMood/Supporting Files/Info.plist
-        properties:
+      path: TodayMood/Supporting Files/Info.plist
+      properties:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UILaunchStoryboardName: LaunchScreen
         BaseURL: $(BASE_URL)
         ClientID: $(CLIENT_ID)
         ClientSecret: $(CLIENT_SECRET)
     settings:
-        INFOPLIST_FILE: TodayMood/Supporting Files/Info.plist
+      INFOPLIST_FILE: TodayMood/Supporting Files/Info.plist
     configFiles:
-        Debug: 'Pods/Target Support Files/Pods-TodayMood/Pods-TodayMood.debug.xcconfig'
-        Release: 'Pods/Target Support Files/Pods-TodayMood/Pods-TodayMood.release.xcconfig'
+      Debug: 'Pods/Target Support Files/Pods-TodayMood/Pods-TodayMood.debug.xcconfig'
+      Release: 'Pods/Target Support Files/Pods-TodayMood/Pods-TodayMood.release.xcconfig'
     sources:
-        - TodayMood/Sources
-        - path: 'TodayMood/Supporting Files'
-          type: group
-        - path: 'TodayMood/Supporting Files/GoogleService-Info.plist'
-        buildPhase: resources
-        - path: TodayMood/Resources
-          type: group
+    - TodayMood/Sources
+    - path: 'TodayMood/Supporting Files'
+      type: group
+    - path: 'TodayMood/Supporting Files/GoogleService-Info.plist'
+      buildPhase: resources
+    - path: TodayMood/Resources
+      type: group
     scheme:
-        getherCoverageData: true
-        testTargets:
+      getherCoverageData: true
+      testTargets:
         - name: TodayMoodTests
-            parallelizable: true
-            randomExecutionOrder: true
+          parallelizable: true
+          randomExecutionOrder: true
     postCompileScripts:
-        - script: '${PODS_ROOT}/SwiftLint/swiftlint'
+      - script: '${PODS_ROOT}/SwiftLint/swiftlint'
         name: Swiftlint
-        - script: |
-            #Update build number with number of git commits if in release mode
-            buildNumber=$(git rev-list HEAD | wc -l | tr -d ' ')
-            /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "${PROJECT_DIR}/${INFOPLIST_FILE}"
+      - script: |
+          #Update build number with number of git commits if in release mode
+          buildNumber=$(git rev-list HEAD | wc -l | tr -d ' ')
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" "${PROJECT_DIR}/${INFOPLIST_FILE}"
         name: Automate Build number (Git)
-        TodayMoodTests:
-        platform: iOS
-        type: bundle.unit-test
-        sources:
-        - TodayMoodTests
-        dependencies:
-        - target: TodayMood
+  TodayMoodTests:
+    platform: iOS
+    type: bundle.unit-test
+    sources:
+      - TodayMoodTests
+    dependencies:
+      - target: TodayMood
