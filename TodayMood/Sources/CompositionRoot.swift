@@ -44,8 +44,12 @@ final class CompositionRoot {
         let authService = AuthService(navigator: navigator, networking: authNetworking)
         let userNetworking = UserNetworking(plugins: [AuthPlugin(authService: authService)])
         
-        // Services
         let userService = UserService(networking: userNetworking)
+        
+        if UserDefaultsConfig.firstLaunch == true {
+            authService.logout()
+            UserDefaultsConfig.firstLaunch = false
+        }
         
         // URLNavigator
         URLNavigationMap.initialize(navigator: navigator, authService: authService)
