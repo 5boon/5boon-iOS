@@ -8,6 +8,7 @@
 import UIKit
 
 import EMTNeumorphicView
+import Pure
 import ReactorKit
 import ReusableKit
 import RxCocoa
@@ -16,55 +17,130 @@ import RxViewController
 import SnapKit
 import Then
 
-final class LoginViewController: BaseViewController, View {
+final class LoginViewController: BaseViewController, ReactorKit.View, Pure.FactoryModule {
     
     typealias Reactor = LoginViewReactor
     
+    struct Dependency {
+        
+    }
+    
     private struct Metric {
-        // static let topPadding: CGFloat = 16.0
+        static let gradientHeight: CGFloat = 375.0 / UIScreen.main.bounds.width * 241.0
+        static let leftRightPadding: CGFloat = 36.0
+        static let titleTop: CGFloat = 28.0
+        
+        static let copyrightLeftRight: CGFloat = 16.0
+        static let copyrightBottom: CGFloat = 5.0
+        
+        static let emailTop: CGFloat = 50.0
+        static let passwordTop: CGFloat = 12.0
+        
+        static let fieldHeight: CGFloat = 44.0
+        static let buttonHeight: CGFloat = 44.0
+        
+        static let loginTop: CGFloat = 36.0
+        static let snsLoginTop: CGFloat = 14.0
+        
+        static let findButtonHeight: CGFloat = 20.0
+        static let findLineHeight: CGFloat = 10.0
+        static let findLineWidth: CGFloat = 1.0
+        static let findLineLeftRight: CGFloat = 4.0
     }
     
     private struct Color {
-        // static let backgroundColor = UIColor.color(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        static let title: UIColor = UIColor.title
+        static let copyright: UIColor = UIColor.description
+        static let loginTitle: UIColor = UIColor.white
+        static let disableButton: UIColor = UIColor.white.alpha(0.6)
+        static let loginButtonBackground: UIColor = UIColor.keyColor
+        static let snsLoginTitle: UIColor = UIColor.keyColor
+        static let snsLoginButtonBackground: UIColor = UIColor.buttonBG
+        static let findButton: UIColor = UIColor.subTitle
+        static let signUpButton: UIColor = UIColor.subTitle
     }
     
     private struct Font {
-        // static let title = UIFont.systemFont(ofSize: 15.0)
+        static let title: UIFont = UIFont.systemFont(ofSize: 20.0)
+        static let copyright: UIFont = UIFont.systemFont(ofSize: 10.0)
+        static let loginButton: UIFont = UIFont.systemFont(ofSize: 16.0)
+        static let findButton: UIFont = UIFont.systemFont(ofSize: 13.0)
+        static let signUpButton: UIFont = UIFont.systemFont(ofSize: 13.0)
     }
     
     // MARK: Properties
     private let presentMainScreen: () -> Void
     private let signUpViewControllerFactory: () -> SignUpViewController
     
+    var dependency: Dependency?
+    
     // MARK: Views
-    private let emailTextField = UITextField().then {
-        $0.placeholder = "Email"
-        $0.clearButtonMode = .whileEditing
+    private let gradientView = UIView().then {
+        $0.backgroundColor = UIColor.keyColor
     }
     
-    private let passwordTextField = UITextField().then {
-        $0.placeholder = "Password"
-        $0.isSecureTextEntry = true
-        $0.clearButtonMode = .whileEditing
+    private let titleLabel = UILabel().then {
+        $0.font = Font.title
+        $0.textColor = Color.title
+        $0.numberOfLines = 2
+        $0.text = "새로운 계정을 만들거나\n로그인 하세요."
     }
     
-    let loginButton = UIButton(type: .system).then {
+    private let copyrightLabel = UILabel().then {
+        $0.font = Font.copyright
+        $0.textColor = Color.copyright
+        $0.numberOfLines = 2
+        $0.textAlignment = .center
+        $0.text = "Copyright 2020. 5boon\nAll pictures cannot be copied without permission."
+    }
+    
+    private let emailTextField = CommonTextField().then {
+        $0.reactor = CommonTextFieldReactor(placeholder: "Email", keyboardType: .emailAddress)
+    }
+    
+    private let passwordTextField = CommonTextField().then {
+        $0.reactor = CommonTextFieldReactor(isSecureTextEntry: true, placeholder: "Password")
+    }
+
+    let loginButton = EMTNeumorphicButton(type: .custom).then {
         $0.setTitle("로그인", for: .normal)
+        $0.setTitleColor(Color.loginTitle, for: .normal)
+        $0.setTitleColor(Color.disableButton, for: .disabled)
+        $0.titleLabel?.font = Font.loginButton
+        $0.neumorphicLayer?.elementBackgroundColor = Color.loginButtonBackground.cgColor
+        $0.neumorphicLayer?.depthType = .convex
+        $0.neumorphicLayer?.cornerRadius = 12.0
     }
     
-    private let socialButton = UIButton(type: .system).then {
-        $0.setTitle("SNS 로그인", for: .normal)
-        
+    let socialButton = EMTNeumorphicButton(type: .custom).then {
+        $0.setTitle("SNS로 간편 로그인", for: .normal)
+        $0.setTitleColor(Color.snsLoginTitle, for: .normal)
+        $0.titleLabel?.font = Font.loginButton
+        $0.neumorphicLayer?.elementBackgroundColor = Color.snsLoginButtonBackground.cgColor
+        $0.neumorphicLayer?.depthType = .convex
+        $0.neumorphicLayer?.cornerRadius = 12.0
     }
     
-    private let signUpButton = UIButton(type: .system).then {
+    private let findIDButton = UIButton(type: .system).then {
+        $0.setTitle("아이디 찾기", for: .normal)
+        $0.setTitleColor(Color.findButton, for: .normal)
+        $0.titleLabel?.font = Font.findButton
+    }
+    
+    private let findLine = UIView().then {
+        $0.backgroundColor = Color.findButton
+    }
+    
+    private let findPWButton = UIButton(type: .system).then {
+        $0.setTitle("비밀번호 찾기", for: .normal)
+        $0.setTitleColor(Color.findButton, for: .normal)
+        $0.titleLabel?.font = Font.findButton
+    }
+    
+    let signUpButton = UIButton(type: .system).then {
         $0.setTitle("회원가입", for: .normal)
-    }
-    
-    private let stackView = UIStackView().then {
-        $0.axis = .vertical
-        $0.spacing = 10.0
-        $0.distribution = .fillEqually
+        $0.setTitleColor(Color.findButton, for: .normal)
+        $0.titleLabel?.font = Font.findButton
     }
     
     // MARK: - Initializing
@@ -90,32 +166,100 @@ final class LoginViewController: BaseViewController, View {
     override func addViews() {
         super.addViews()
         
-        self.view.addSubview(stackView)
-        
-        stackView.addArrangedSubview(emailTextField)
-        stackView.addArrangedSubview(passwordTextField)
-        stackView.addArrangedSubview(loginButton)
-        stackView.addArrangedSubview(socialButton)
-        stackView.addArrangedSubview(signUpButton)
+        self.view.addSubview(gradientView)
+        self.view.addSubview(titleLabel)
+        self.view.addSubview(copyrightLabel)
+        self.view.addSubview(emailTextField)
+        self.view.addSubview(passwordTextField)
+        self.view.addSubview(loginButton)
+        self.view.addSubview(socialButton)
+        self.view.addSubview(findIDButton)
+        self.view.addSubview(findLine)
+        self.view.addSubview(findPWButton)
+        self.view.addSubview(signUpButton)
     }
     
     override func setupConstraints() {
         super.setupConstraints()
         
-        stackView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.equalTo(250.0)
-            make.height.equalTo(400)
+        gradientView.snp.makeConstraints { make in
+            make.top.left.right.width.equalToSuperview()
+            make.height.equalTo(Metric.gradientHeight)
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalTo(gradientView.snp.bottom).offset(Metric.titleTop)
+            make.left.equalTo(Metric.leftRightPadding)
+            make.right.equalTo(-Metric.leftRightPadding)
+        }
+        
+        copyrightLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(-Metric.copyrightBottom - safeAreaInsets.bottom)
+            make.left.equalTo(Metric.copyrightLeftRight)
+            make.right.equalTo(-Metric.copyrightLeftRight)
+        }
+        
+        emailTextField.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(Metric.emailTop)
+            make.left.equalTo(Metric.leftRightPadding)
+            make.right.equalTo(-Metric.leftRightPadding)
+            make.height.equalTo(Metric.fieldHeight)
+        }
+        
+        passwordTextField.snp.makeConstraints { make in
+            make.top.equalTo(emailTextField.snp.bottom).offset(Metric.passwordTop)
+            make.left.equalTo(Metric.leftRightPadding)
+            make.right.equalTo(-Metric.leftRightPadding)
+            make.height.equalTo(Metric.fieldHeight)
+        }
+        
+        loginButton.snp.makeConstraints { make in
+            make.top.equalTo(passwordTextField.snp.bottom).offset(Metric.loginTop)
+            make.left.equalTo(Metric.leftRightPadding)
+            make.right.equalTo(-Metric.leftRightPadding)
+            make.height.equalTo(Metric.buttonHeight)
+        }
+        
+        socialButton.snp.makeConstraints { make in
+            make.top.equalTo(loginButton.snp.bottom).offset(Metric.snsLoginTop)
+            make.left.equalTo(Metric.leftRightPadding)
+            make.right.equalTo(-Metric.leftRightPadding)
+            make.height.equalTo(Metric.buttonHeight)
+        }
+        
+        signUpButton.snp.makeConstraints { make in
+            make.top.equalTo(passwordTextField.snp.bottom)
+            make.right.equalTo(-Metric.leftRightPadding)
+            make.height.equalTo(Metric.findButtonHeight)
+        }
+        
+        findIDButton.snp.makeConstraints { make in
+            make.top.equalTo(passwordTextField.snp.bottom)
+            make.left.equalTo(Metric.leftRightPadding)
+            make.height.equalTo(Metric.findButtonHeight)
+        }
+        
+        findLine.snp.makeConstraints { make in
+            make.left.equalTo(findIDButton.snp.right).offset(Metric.findLineLeftRight)
+            make.centerY.equalTo(findIDButton.snp.centerY)
+            make.height.equalTo(Metric.findLineHeight)
+            make.width.equalTo(Metric.findLineWidth)
+        }
+        
+        findPWButton.snp.makeConstraints { make in
+            make.top.equalTo(passwordTextField.snp.bottom)
+            make.left.equalTo(findLine.snp.right).offset(Metric.findLineLeftRight)
+            make.right.lessThanOrEqualTo(signUpButton.snp.left).offset(8.0)
+            make.height.equalTo(Metric.findButtonHeight)
         }
     }
     
     // MARK: - Binding
     func bind(reactor: Reactor) {
-        
+
         // Action
         loginButton.rx.tap
-            .map { [weak self] _ -> (String?, String?) in
-                guard let self = self else { return (nil, nil) }
+            .map { _ -> (String?, String?) in
                 return (self.emailTextField.text, self.passwordTextField.text)
         }
         .map { Reactor.Action.login(userName: $0, password: $1) }
@@ -128,6 +272,38 @@ final class LoginViewController: BaseViewController, View {
                 self.pushToSignUp()
             }).disposed(by: self.disposeBag)
         
+        findIDButton.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.pushToSFSafariWeb(urlString: "https://www.daum.net")
+            }).disposed(by: self.disposeBag)
+        
+        findPWButton.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.pushToSFSafariWeb(urlString: "https://www.google.com")
+            }).disposed(by: self.disposeBag)
+        
+        emailTextField.rx.text
+            .map { Reactor.Action.setEmail($0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        emailTextField.rx.clearText
+            .map { Reactor.Action.setEmail(nil) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        passwordTextField.rx.text
+            .map { Reactor.Action.setPassword($0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        passwordTextField.rx.clearText
+            .map { Reactor.Action.setPassword(nil) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
         // State
         reactor.state.map { $0.isLoggedIn }
             .distinctUntilChanged()
@@ -135,6 +311,10 @@ final class LoginViewController: BaseViewController, View {
             .subscribe(onNext: { [weak self] _ in
                 self?.presentMainScreen()
             }).disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isLoginValidate }
+            .bind(to: loginButton.rx.isEnabled)
+            .disposed(by: self.disposeBag)
         
         // View
     }
@@ -148,5 +328,4 @@ final class LoginViewController: BaseViewController, View {
     private func presentSocialLogin() {
         
     }
-    
 }

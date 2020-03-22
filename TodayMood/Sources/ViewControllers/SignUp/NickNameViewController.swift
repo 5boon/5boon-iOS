@@ -1,8 +1,8 @@
 //
-//  SignUpViewController.swift
+//  NickNameViewController.swift
 //  TodayMood
 //
-//  Created by Kanz on 2020/03/14.
+//  Created by Kanz on 2020/03/19.
 //
 
 import UIKit
@@ -17,13 +17,9 @@ import RxViewController
 import SnapKit
 import Then
 
-final class SignUpViewController: BaseViewController, ReactorKit.View, Pure.FactoryModule {
+final class NickNameViewController: BaseViewController, ReactorKit.View, Pure.FactoryModule {
     
-    typealias Reactor = SignUpViewReactor
-    
-    struct Dependency {
-        
-    }
+    typealias Reactor = NickNameViewReactor
     
     private struct Metric {
         static let backButtonTop: CGFloat = 52.0
@@ -33,31 +29,31 @@ final class SignUpViewController: BaseViewController, ReactorKit.View, Pure.Fact
         
         static let subTitleTop: CGFloat = 45.0
         
-        static let emailTop: CGFloat = 12.0
-        static let passwordTop: CGFloat = 12.0
+        static let nickNameTop: CGFloat = 12.0
         
         static let fieldHeight: CGFloat = 44.0
         static let buttonHeight: CGFloat = 44.0
         
-        static let nextButtonTop: CGFloat = 24.0
+        static let doneButtonTop: CGFloat = 24.0
     }
     
     private struct Color {
         static let title: UIColor = UIColor.keyColor
         static let subTitle: UIColor = UIColor.title
-        static let nextButton: UIColor = UIColor.keyColor
+        static let doneButton: UIColor = UIColor.keyColor
         static let disableButton: UIColor = UIColor.keyColor.alpha(0.6)
-        static let nextButtonBackground: UIColor = UIColor.buttonBG
+        static let doneButtonBackground: UIColor = UIColor.buttonBG
+        static let loadingIndicator: UIColor = UIColor.keyColor
     }
     
     private struct Font {
         static let title: UIFont = UIFont.boldSystemFont(ofSize: 20.0)
         static let subTitle: UIFont = UIFont.systemFont(ofSize: 16.0)
-        static let nextButton: UIFont = UIFont.systemFont(ofSize: 16.0)
+        static let doneButton: UIFont = UIFont.systemFont(ofSize: 16.0)
     }
     
     // MARK: Properties
-    private let nickNameViewControllerFactory: (String, String) -> NickNameViewController
+    private let presentMainScreen: () -> Void
     
     // MARK: Views
     private let backButton = UIButton(type: .system).then {
@@ -75,32 +71,34 @@ final class SignUpViewController: BaseViewController, ReactorKit.View, Pure.Fact
     private let subTitleLabel = UILabel().then {
         $0.font = Font.subTitle
         $0.textColor = Color.subTitle
-        $0.text = "ID와 Password를 입력해주세요."
+        $0.text = "닉네임을 입력해 주세요."
     }
     
-    private let emailTextField = CommonTextField().then {
-        $0.reactor = CommonTextFieldReactor(placeholder: "Email", keyboardType: .emailAddress)
+    private let nickNameTextField = CommonTextField().then {
+        $0.reactor = CommonTextFieldReactor(placeholder: "NickName")
     }
     
-    private let passwordTextField = CommonTextField().then {
-        $0.reactor = CommonTextFieldReactor(isSecureTextEntry: true, placeholder: "Password")
-    }
-    
-    let nextButton = EMTNeumorphicButton(type: .custom).then {
-        $0.setTitle("다음", for: .normal)
-        $0.setTitleColor(Color.nextButton, for: .normal)
+    let doneButton = EMTNeumorphicButton(type: .custom).then {
+        $0.setTitle("완료", for: .normal)
+        $0.setTitleColor(Color.doneButton, for: .normal)
         $0.setTitleColor(Color.disableButton, for: .disabled)
-        $0.titleLabel?.font = Font.nextButton
-        $0.neumorphicLayer?.elementBackgroundColor = Color.nextButtonBackground.cgColor
+        $0.titleLabel?.font = Font.doneButton
+        $0.neumorphicLayer?.elementBackgroundColor = Color.doneButtonBackground.cgColor
         $0.neumorphicLayer?.depthType = .convex
         $0.neumorphicLayer?.cornerRadius = 12.0
     }
     
+    private let loadingIndicator = UIActivityIndicatorView().then {
+        $0.style = .large
+        $0.color = Color.loadingIndicator
+        $0.hidesWhenStopped = true
+    }
+    
     // MARK: - Initializing
     init(reactor: Reactor,
-         nickNameViewControllerFactory: @escaping (String, String) -> NickNameViewController) {
+         presentMainScreen: @escaping () -> Void) {
         defer { self.reactor = reactor }
-        self.nickNameViewControllerFactory = nickNameViewControllerFactory
+        self.presentMainScreen = presentMainScreen
         super.init()
     }
     
@@ -120,9 +118,9 @@ final class SignUpViewController: BaseViewController, ReactorKit.View, Pure.Fact
         self.view.addSubview(backButton)
         self.view.addSubview(titleLabel)
         self.view.addSubview(subTitleLabel)
-        self.view.addSubview(emailTextField)
-        self.view.addSubview(passwordTextField)
-        self.view.addSubview(nextButton)
+        self.view.addSubview(nickNameTextField)
+        self.view.addSubview(doneButton)
+        self.view.addSubview(loadingIndicator)
     }
     
     override func setupConstraints() {
@@ -145,25 +143,22 @@ final class SignUpViewController: BaseViewController, ReactorKit.View, Pure.Fact
             make.right.equalTo(-Metric.leftRightPadding)
         }
         
-        emailTextField.snp.makeConstraints { make in
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(Metric.emailTop)
+        nickNameTextField.snp.makeConstraints { make in
+            make.top.equalTo(subTitleLabel.snp.bottom).offset(Metric.nickNameTop)
             make.left.equalTo(Metric.leftRightPadding)
             make.right.equalTo(-Metric.leftRightPadding)
             make.height.equalTo(Metric.fieldHeight)
         }
         
-        passwordTextField.snp.makeConstraints { make in
-            make.top.equalTo(emailTextField.snp.bottom).offset(Metric.passwordTop)
-            make.left.equalTo(Metric.leftRightPadding)
-            make.right.equalTo(-Metric.leftRightPadding)
-            make.height.equalTo(Metric.fieldHeight)
-        }
-        
-        nextButton.snp.makeConstraints { make in
-            make.top.equalTo(passwordTextField.snp.bottom).offset(Metric.nextButtonTop)
+        doneButton.snp.makeConstraints { make in
+            make.top.equalTo(nickNameTextField.snp.bottom).offset(Metric.doneButtonTop)
             make.left.equalTo(Metric.leftRightPadding)
             make.right.equalTo(-Metric.leftRightPadding)
             make.height.equalTo(Metric.buttonHeight)
+        }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
     
@@ -177,47 +172,39 @@ final class SignUpViewController: BaseViewController, ReactorKit.View, Pure.Fact
                 self.navigationController?.popViewController(animated: true)
             }).disposed(by: self.disposeBag)
         
-        nextButton.rx.tap
-            .subscribe(onNext: { [weak self] _ in
-                guard let self = self else { return }
-                self.pushToNickName()
-            }).disposed(by: self.disposeBag)
-        
-        emailTextField.rx.text
-            .map { Reactor.Action.setEmail($0) }
+        nickNameTextField.rx.text
+            .map { Reactor.Action.setNickName($0) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
-        emailTextField.rx.clearText
-            .map { Reactor.Action.setEmail(nil) }
+        nickNameTextField.rx.clearText
+            .map { Reactor.Action.setNickName(nil) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
-        passwordTextField.rx.text
-            .map { Reactor.Action.setPassword($0) }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-        
-        passwordTextField.rx.clearText
-            .map { Reactor.Action.setPassword(nil) }
+        doneButton.rx.tap
+            .map { Reactor.Action.signup }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
         // State
         reactor.state.map { $0.isValidate }
-            .bind(to: nextButton.rx.isEnabled)
+            .bind(to: doneButton.rx.isEnabled)
             .disposed(by: self.disposeBag)
         
-        // View
+        reactor.state.map { $0.isLoading }
+            .bind(to: loadingIndicator.rx.isAnimating)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isSignUpFinished }
+            .observeOn(MainScheduler.asyncInstance)
+            .distinctUntilChanged()
+            .filter { $0 == true }
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.presentMainScreen()
+            }).disposed(by: self.disposeBag)
     }
     
     // MARK: - Route
-    private func pushToNickName() {
-//        let reactor = NickNameViewReactor()
-//        let viewController = NickNameViewController(reactor: reactor)
-        guard let reactor = self.reactor else { return }
-        guard let email = reactor.currentState.email, let password = reactor.currentState.password else { return }
-        let viewController = self.nickNameViewControllerFactory(email, password)
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
 }

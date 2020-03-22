@@ -36,4 +36,9 @@ struct Constants {
             return URLs.base.replacingOccurrences(of: "\\", with: "")
         }
     }
+    
+    /// UserDefaultKey
+    struct UserDefaultKeys {
+        static let firstLaunch = "firstLaunch"
+    }
 }

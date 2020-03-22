@@ -34,7 +34,9 @@ final class AuthService: AuthServiceType {
         self.navigator = navigator
         self.networking = networking
         self.currentAccessToken = self.loadAccessToken()
-        logger.debug("currentAccessToken: \(self.currentAccessToken)")
+        if let currentAccessToken = self.currentAccessToken {
+            logger.debug("currentAccessToken: \(currentAccessToken)")
+        }
     }
     
     // MARK: Handle Access Token
