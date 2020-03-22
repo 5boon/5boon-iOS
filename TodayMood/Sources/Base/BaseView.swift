@@ -53,7 +53,7 @@ class BaseView: UIView {
     func setupConstraints() {
         // Override point
     }
-    
+    /*
     func parentViewController() -> UIViewController {
         var responder: UIResponder? = self
         while !(responder is UIViewController) {
@@ -64,5 +64,5 @@ class BaseView: UIView {
         }
         return (responder as? UIViewController)!
     }
+    */
 }
-

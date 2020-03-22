@@ -8,6 +8,7 @@
 import UIKit
 
 import EMTNeumorphicView
+import Pure
 import ReactorKit
 import ReusableKit
 import RxCocoa
@@ -16,9 +17,13 @@ import RxViewController
 import SnapKit
 import Then
 
-final class LoginViewController: BaseViewController, ReactorKit.View {
+final class LoginViewController: BaseViewController, ReactorKit.View, Pure.FactoryModule {
     
     typealias Reactor = LoginViewReactor
+    
+    struct Dependency {
+        
+    }
     
     private struct Metric {
         static let gradientHeight: CGFloat = 375.0 / UIScreen.main.bounds.width * 241.0
@@ -47,6 +52,7 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
         static let title: UIColor = UIColor.title
         static let copyright: UIColor = UIColor.description
         static let loginTitle: UIColor = UIColor.white
+        static let disableButton: UIColor = UIColor.white.alpha(0.6)
         static let loginButtonBackground: UIColor = UIColor.keyColor
         static let snsLoginTitle: UIColor = UIColor.keyColor
         static let snsLoginButtonBackground: UIColor = UIColor.buttonBG
@@ -65,6 +71,8 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
     // MARK: Properties
     private let presentMainScreen: () -> Void
     private let signUpViewControllerFactory: () -> SignUpViewController
+    
+    var dependency: Dependency?
     
     // MARK: Views
     private let gradientView = UIView().then {
@@ -97,6 +105,7 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
     let loginButton = EMTNeumorphicButton(type: .custom).then {
         $0.setTitle("로그인", for: .normal)
         $0.setTitleColor(Color.loginTitle, for: .normal)
+        $0.setTitleColor(Color.disableButton, for: .disabled)
         $0.titleLabel?.font = Font.loginButton
         $0.neumorphicLayer?.elementBackgroundColor = Color.loginButtonBackground.cgColor
         $0.neumorphicLayer?.depthType = .convex
@@ -128,7 +137,7 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
         $0.titleLabel?.font = Font.findButton
     }
     
-    private let signUpButton = UIButton(type: .system).then {
+    let signUpButton = UIButton(type: .system).then {
         $0.setTitle("회원가입", for: .normal)
         $0.setTitleColor(Color.findButton, for: .normal)
         $0.titleLabel?.font = Font.findButton
@@ -247,7 +256,7 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
     
     // MARK: - Binding
     func bind(reactor: Reactor) {
-        
+
         // Action
         loginButton.rx.tap
             .map { _ -> (String?, String?) in
@@ -275,6 +284,26 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
                 self.pushToSFSafariWeb(urlString: "https://www.google.com")
             }).disposed(by: self.disposeBag)
         
+        emailTextField.rx.text
+            .map { Reactor.Action.setEmail($0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        emailTextField.rx.clearText
+            .map { Reactor.Action.setEmail(nil) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        passwordTextField.rx.text
+            .map { Reactor.Action.setPassword($0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        passwordTextField.rx.clearText
+            .map { Reactor.Action.setPassword(nil) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
         // State
         reactor.state.map { $0.isLoggedIn }
             .distinctUntilChanged()
@@ -282,6 +311,10 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
             .subscribe(onNext: { [weak self] _ in
                 self?.presentMainScreen()
             }).disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isLoginValidate }
+            .bind(to: loginButton.rx.isEnabled)
+            .disposed(by: self.disposeBag)
         
         // View
     }

@@ -73,7 +73,7 @@ final class CommonTextField: BaseView, View {
         $0.neumorphicLayer?.elementBackgroundColor = Color.fieldBackground.cgColor
     }
     
-    private let clearButton = EMTNeumorphicButton(type: .custom).then {
+    let clearButton = EMTNeumorphicButton(type: .custom).then {
         $0.setImage(UIImage(named: "textfield_clear"), for: .normal)
         $0.contentVerticalAlignment = .center
         $0.contentHorizontalAlignment = .center
@@ -120,21 +120,21 @@ final class CommonTextField: BaseView, View {
         }
         
         clearButton.snp.makeConstraints { make in
-            make.right.equalTo(-12)
+            make.right.equalTo(-Metric.padding)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(Metric.clearWidthHeight)
         }
         
         textField.snp.makeConstraints { make in
-            make.top.equalTo(Metric.fieldTopBottom)
+//            make.top.equalTo(Metric.fieldTopBottom)
+//            make.bottom.equalTo(-Metric.fieldTopBottom)
+            make.top.bottom.equalToSuperview()
             make.left.equalTo(Metric.padding)
-            make.bottom.equalTo(-Metric.fieldTopBottom)
-            fieldRightToClearButtonConstraint = make.right.equalTo(clearButton.snp.left).offset(-Metric.padding).constraint
-            filedRightToSuperViewConstraint = make.right.equalTo(-Metric.padding).constraint
+            make.right.equalTo(-Metric.padding)
         }
         
-        fieldRightToClearButtonConstraint?.deactivate()
-        filedRightToSuperViewConstraint?.activate()
+//        fieldRightToClearButtonConstraint?.deactivate()
+//        filedRightToSuperViewConstraint?.activate()
     }
     
     // MARK: - Binding
@@ -217,11 +217,17 @@ final class CommonTextField: BaseView, View {
         UIView.animate(withDuration: 0.3, animations: {
             self.clearButton.alpha = isShow ? 1.0 : 0.0
             if isShow {
-                self.fieldRightToClearButtonConstraint?.activate()
-                self.filedRightToSuperViewConstraint?.deactivate()
+                self.textField.snp.remakeConstraints { make in
+                    make.right.equalTo(self.clearButton.snp.left).offset(-Metric.padding)
+                    make.top.bottom.equalToSuperview()
+                    make.left.equalTo(Metric.padding)
+                }
             } else {
-                self.fieldRightToClearButtonConstraint?.deactivate()
-                self.filedRightToSuperViewConstraint?.activate()
+                self.textField.snp.remakeConstraints { make in
+                    make.right.equalTo(-Metric.padding)
+                    make.top.bottom.equalToSuperview()
+                    make.left.equalTo(Metric.padding)
+                }
             }
             self.layoutIfNeeded()
         })
@@ -234,5 +240,14 @@ extension Reactive where Base: CommonTextField {
         return Binder(self.base) { view, isSecureTextEntry in
             view.textField.isSecureTextEntry = isSecureTextEntry
         }
+    }
+    
+    var text: Observable<String?> {
+        return base.textField.rx.text
+            .asObservable()
+    }
+    
+    var clearText: ControlEvent<Void> {
+        return base.clearButton.rx.tap
     }
 }

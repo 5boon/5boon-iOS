@@ -8,6 +8,7 @@
 import UIKit
 
 import EMTNeumorphicView
+import Pure
 import ReactorKit
 import ReusableKit
 import RxCocoa
@@ -16,7 +17,7 @@ import RxViewController
 import SnapKit
 import Then
 
-final class NickNameViewController: BaseViewController, View {
+final class NickNameViewController: BaseViewController, ReactorKit.View, Pure.FactoryModule {
     
     typealias Reactor = NickNameViewReactor
     
@@ -40,7 +41,9 @@ final class NickNameViewController: BaseViewController, View {
         static let title: UIColor = UIColor.keyColor
         static let subTitle: UIColor = UIColor.title
         static let doneButton: UIColor = UIColor.keyColor
+        static let disableButton: UIColor = UIColor.keyColor.alpha(0.6)
         static let doneButtonBackground: UIColor = UIColor.buttonBG
+        static let loadingIndicator: UIColor = UIColor.keyColor
     }
     
     private struct Font {
@@ -50,6 +53,7 @@ final class NickNameViewController: BaseViewController, View {
     }
     
     // MARK: Properties
+    private let presentMainScreen: () -> Void
     
     // MARK: Views
     private let backButton = UIButton(type: .system).then {
@@ -77,15 +81,24 @@ final class NickNameViewController: BaseViewController, View {
     let doneButton = EMTNeumorphicButton(type: .custom).then {
         $0.setTitle("완료", for: .normal)
         $0.setTitleColor(Color.doneButton, for: .normal)
+        $0.setTitleColor(Color.disableButton, for: .disabled)
         $0.titleLabel?.font = Font.doneButton
         $0.neumorphicLayer?.elementBackgroundColor = Color.doneButtonBackground.cgColor
         $0.neumorphicLayer?.depthType = .convex
         $0.neumorphicLayer?.cornerRadius = 12.0
     }
     
+    private let loadingIndicator = UIActivityIndicatorView().then {
+        $0.style = .large
+        $0.color = Color.loadingIndicator
+        $0.hidesWhenStopped = true
+    }
+    
     // MARK: - Initializing
-    init(reactor: Reactor) {
+    init(reactor: Reactor,
+         presentMainScreen: @escaping () -> Void) {
         defer { self.reactor = reactor }
+        self.presentMainScreen = presentMainScreen
         super.init()
     }
     
@@ -107,6 +120,7 @@ final class NickNameViewController: BaseViewController, View {
         self.view.addSubview(subTitleLabel)
         self.view.addSubview(nickNameTextField)
         self.view.addSubview(doneButton)
+        self.view.addSubview(loadingIndicator)
     }
     
     override func setupConstraints() {
@@ -142,6 +156,10 @@ final class NickNameViewController: BaseViewController, View {
             make.right.equalTo(-Metric.leftRightPadding)
             make.height.equalTo(Metric.buttonHeight)
         }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
     }
     
     // MARK: - Binding
@@ -154,9 +172,38 @@ final class NickNameViewController: BaseViewController, View {
                 self.navigationController?.popViewController(animated: true)
             }).disposed(by: self.disposeBag)
         
-        // State
+        nickNameTextField.rx.text
+            .map { Reactor.Action.setNickName($0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
         
-        // View
+        nickNameTextField.rx.clearText
+            .map { Reactor.Action.setNickName(nil) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        doneButton.rx.tap
+            .map { Reactor.Action.signup }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        // State
+        reactor.state.map { $0.isValidate }
+            .bind(to: doneButton.rx.isEnabled)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isLoading }
+            .bind(to: loadingIndicator.rx.isAnimating)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isSignUpFinished }
+            .observeOn(MainScheduler.asyncInstance)
+            .distinctUntilChanged()
+            .filter { $0 == true }
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.presentMainScreen()
+            }).disposed(by: self.disposeBag)
     }
     
     // MARK: - Route

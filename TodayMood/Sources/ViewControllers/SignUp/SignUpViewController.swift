@@ -8,6 +8,7 @@
 import UIKit
 
 import EMTNeumorphicView
+import Pure
 import ReactorKit
 import ReusableKit
 import RxCocoa
@@ -16,9 +17,13 @@ import RxViewController
 import SnapKit
 import Then
 
-final class SignUpViewController: BaseViewController, View {
+final class SignUpViewController: BaseViewController, ReactorKit.View, Pure.FactoryModule {
     
     typealias Reactor = SignUpViewReactor
+    
+    struct Dependency {
+        
+    }
     
     private struct Metric {
         static let backButtonTop: CGFloat = 52.0
@@ -41,6 +46,7 @@ final class SignUpViewController: BaseViewController, View {
         static let title: UIColor = UIColor.keyColor
         static let subTitle: UIColor = UIColor.title
         static let nextButton: UIColor = UIColor.keyColor
+        static let disableButton: UIColor = UIColor.keyColor.alpha(0.6)
         static let nextButtonBackground: UIColor = UIColor.buttonBG
     }
     
@@ -51,6 +57,7 @@ final class SignUpViewController: BaseViewController, View {
     }
     
     // MARK: Properties
+    private let nickNameViewControllerFactory: (String, String) -> NickNameViewController
     
     // MARK: Views
     private let backButton = UIButton(type: .system).then {
@@ -82,6 +89,7 @@ final class SignUpViewController: BaseViewController, View {
     let nextButton = EMTNeumorphicButton(type: .custom).then {
         $0.setTitle("다음", for: .normal)
         $0.setTitleColor(Color.nextButton, for: .normal)
+        $0.setTitleColor(Color.disableButton, for: .disabled)
         $0.titleLabel?.font = Font.nextButton
         $0.neumorphicLayer?.elementBackgroundColor = Color.nextButtonBackground.cgColor
         $0.neumorphicLayer?.depthType = .convex
@@ -89,8 +97,10 @@ final class SignUpViewController: BaseViewController, View {
     }
     
     // MARK: - Initializing
-    init(reactor: Reactor) {
+    init(reactor: Reactor,
+         nickNameViewControllerFactory: @escaping (String, String) -> NickNameViewController) {
         defer { self.reactor = reactor }
+        self.nickNameViewControllerFactory = nickNameViewControllerFactory
         super.init()
     }
     
@@ -173,15 +183,41 @@ final class SignUpViewController: BaseViewController, View {
                 self.pushToNickName()
             }).disposed(by: self.disposeBag)
         
+        emailTextField.rx.text
+            .map { Reactor.Action.setEmail($0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        emailTextField.rx.clearText
+            .map { Reactor.Action.setEmail(nil) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        passwordTextField.rx.text
+            .map { Reactor.Action.setPassword($0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        passwordTextField.rx.clearText
+            .map { Reactor.Action.setPassword(nil) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
         // State
+        reactor.state.map { $0.isValidate }
+            .bind(to: nextButton.rx.isEnabled)
+            .disposed(by: self.disposeBag)
         
         // View
     }
     
     // MARK: - Route
     private func pushToNickName() {
-        let reactor = NickNameViewReactor()
-        let viewController = NickNameViewController(reactor: reactor)
+//        let reactor = NickNameViewReactor()
+//        let viewController = NickNameViewController(reactor: reactor)
+        guard let reactor = self.reactor else { return }
+        guard let email = reactor.currentState.email, let password = reactor.currentState.password else { return }
+        let viewController = self.nickNameViewControllerFactory(email, password)
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
