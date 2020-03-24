@@ -94,6 +94,8 @@ final class SignUpViewController: BaseViewController, ReactorKit.View, Pure.Fact
         $0.neumorphicLayer?.elementBackgroundColor = Color.nextButtonBackground.cgColor
         $0.neumorphicLayer?.depthType = .convex
         $0.neumorphicLayer?.cornerRadius = 12.0
+        $0.neumorphicLayer?.lightShadowOpacity = 0.1
+        $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
     }
     
     // MARK: - Initializing
