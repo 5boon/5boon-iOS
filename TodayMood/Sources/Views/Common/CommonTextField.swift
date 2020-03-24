@@ -81,6 +81,8 @@ final class CommonTextField: BaseView, View {
         $0.layer.cornerRadius = Metric.clearWidthHeight / 2.0
         $0.layer.masksToBounds = true
         $0.alpha = 0.0
+        $0.neumorphicLayer?.lightShadowOpacity = 0.1
+        $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
     }
     
     fileprivate let textField = UITextField().then {

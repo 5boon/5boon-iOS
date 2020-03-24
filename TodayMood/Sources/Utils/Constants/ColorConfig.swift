@@ -40,4 +40,8 @@ extension UIColor {
     static var buttonBG: UIColor {
         return UIColor(named: "ButtonBG")! 
     }
+    /// F2F2F2
+    static var tabBarBG: UIColor {
+        return UIColor(named: "ButtonBG")!
+    }
 }

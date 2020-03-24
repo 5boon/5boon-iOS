@@ -154,8 +154,12 @@ extension CompositionRoot {
 extension CompositionRoot {
     static func configurePresentMainScreen(window: UIWindow) -> () -> Void {
         return {
-            let reactor = MainViewReactor()
-            window.rootViewController = MainViewController(reactor: reactor)
+            let reactor = MainTabBarReactor()
+            window.rootViewController = MainTabBarController(reactor: reactor,
+                                                             homeViewController: HomeViewController(reactor: HomeViewReactor()),
+                                                             groupViewController: GroupViewController(reactor: GroupViewReactor()),
+                                                             statisticsViewController: StatisticsViewController(reactor: StatisticsViewReactor()),
+                                                             settingsViewController: SettingsViewController(reactor: SettingsViewReactor()))
         }
     }
 }

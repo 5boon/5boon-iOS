@@ -110,6 +110,8 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         $0.neumorphicLayer?.elementBackgroundColor = Color.loginButtonBackground.cgColor
         $0.neumorphicLayer?.depthType = .convex
         $0.neumorphicLayer?.cornerRadius = 12.0
+        $0.neumorphicLayer?.lightShadowOpacity = 0.1
+        $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
     }
     
     let socialButton = EMTNeumorphicButton(type: .custom).then {
@@ -119,6 +121,8 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         $0.neumorphicLayer?.elementBackgroundColor = Color.snsLoginButtonBackground.cgColor
         $0.neumorphicLayer?.depthType = .convex
         $0.neumorphicLayer?.cornerRadius = 12.0
+        $0.neumorphicLayer?.lightShadowOpacity = 0.1
+        $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
     }
     
     private let findIDButton = UIButton(type: .system).then {
