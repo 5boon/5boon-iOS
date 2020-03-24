@@ -30,6 +30,7 @@ class BaseNavigationController: UINavigationController {
             NSAttributedString.Key.foregroundColor: Color.title
         ]
          */
+        self.setNavigationBarHidden(true, animated: false)
     }
 
     deinit {

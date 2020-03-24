@@ -44,8 +44,12 @@ final class CompositionRoot {
         let authService = AuthService(navigator: navigator, networking: authNetworking)
         let userNetworking = UserNetworking(plugins: [AuthPlugin(authService: authService)])
         
-        // Services
         let userService = UserService(networking: userNetworking)
+        
+        if UserDefaultsConfig.firstLaunch == true {
+            authService.logout()
+            UserDefaultsConfig.firstLaunch = false
+        }
         
         // URLNavigator
         URLNavigationMap.initialize(navigator: navigator, authService: authService)
@@ -122,9 +126,19 @@ extension CompositionRoot {
             let reactor = LoginViewReactor(authService: authService,
                                            userService: userService)
             
+            let nickNameViewControllerFactory = { (email: String, password: String) -> NickNameViewController in
+                let reactor = NickNameViewReactor(userService: userService,
+                                                  authService: authService,
+                                                  email: email,
+                                                  password: password)
+                return NickNameViewController(reactor: reactor,
+                                              presentMainScreen: presentMainScreen)
+            }
+            
             let signUpViewControllerFactory = { () -> SignUpViewController in
                 let reactor = SignUpViewReactor()
-                return SignUpViewController(reactor: reactor)
+                return SignUpViewController(reactor: reactor,
+                                            nickNameViewControllerFactory: nickNameViewControllerFactory)
             }
             
             let loginViewController = LoginViewController(reactor: reactor,

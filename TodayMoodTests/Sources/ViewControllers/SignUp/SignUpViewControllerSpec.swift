@@ -9,6 +9,8 @@
 import Quick
 import Nimble
 
+@testable import TodayMood
+
 class SignUpViewControllerSpec: QuickSpec {
     override func spec() {
 

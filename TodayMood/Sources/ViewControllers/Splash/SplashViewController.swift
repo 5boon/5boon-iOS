@@ -24,7 +24,7 @@ final class SplashViewController: BaseViewController, View {
     }
     
     private struct Color {
-        // static let backgroundColor = UIColor.color(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        static let background: UIColor = UIColor.keyColor
     }
     
     private struct Font {
@@ -36,8 +36,12 @@ final class SplashViewController: BaseViewController, View {
     private let presentMainScreen: () -> Void
     
     // MARK: Views
-    private let label = UILabel().then {
-        $0.text = "5boon"
+    private let bgImageView = UIImageView().then {
+        $0.image = UIImage(named: "img_splash")
+    }
+    
+    private let logoImageView = UIImageView().then {
+        $0.image = UIImage(named: "img_splash_character")
     }
     
     // MARK: - Initializing
@@ -57,18 +61,23 @@ final class SplashViewController: BaseViewController, View {
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
     }
     
     // MARK: - UI Setup
     override func addViews() {
         super.addViews()
-        self.view.addSubview(label)
+        self.view.addSubview(bgImageView)
+        self.view.addSubview(logoImageView)
     }
     
     override func setupConstraints() {
         super.setupConstraints()
-        self.label.snp.makeConstraints { make in
+        
+        bgImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        logoImageView.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
     }
