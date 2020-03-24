@@ -1,8 +1,8 @@
 //
-//  MainViewController.swift
+//  HomeViewController.swift
 //  TodayMood
 //
-//  Created by Kanz on 2020/03/08.
+//  Created by Kanz on 2020/03/22.
 //
 
 import UIKit
@@ -15,10 +15,11 @@ import RxViewController
 import SnapKit
 import Then
 
-final class MainViewController: BaseViewController, View {
+final class HomeViewController: BaseViewController, View {
     
-    typealias Reactor = MainViewReactor
+    typealias Reactor = HomeViewReactor
     
+    // MARK: Properties
     private struct Metric {
         // static let topPadding: CGFloat = 16.0
     }
@@ -31,11 +32,13 @@ final class MainViewController: BaseViewController, View {
         // static let title = UIFont.systemFont(ofSize: 15.0)
     }
     
-    // MARK: Properties
-    
     // MARK: Views
-    private let label = UILabel().then {
-        $0.text = "Main"
+    let label = UILabel().then {
+        $0.text = "Home"
+    }
+    
+    private let tableView = UITableView().then {
+        $0.backgroundColor = UIColor.red.alpha(0.3)
     }
     
     // MARK: - Initializing
@@ -56,13 +59,14 @@ final class MainViewController: BaseViewController, View {
     // MARK: - UI Setup
     override func addViews() {
         super.addViews()
-        self.view.addSubview(label)
+        self.view.addSubview(tableView)
     }
     
     override func setupConstraints() {
         super.setupConstraints()
-        self.label.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+        
+        tableView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
     
@@ -75,6 +79,7 @@ final class MainViewController: BaseViewController, View {
         
         // View
     }
+    
     
     // MARK: - Route
 }
