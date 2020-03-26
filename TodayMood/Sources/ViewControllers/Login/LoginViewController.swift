@@ -19,6 +19,10 @@ import Then
 
 final class LoginViewController: BaseViewController, ReactorKit.View, Pure.FactoryModule {
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     typealias Reactor = LoginViewReactor
     
     struct Dependency {
@@ -39,13 +43,19 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         static let fieldHeight: CGFloat = 44.0
         static let buttonHeight: CGFloat = 44.0
         
-        static let loginTop: CGFloat = 36.0
+        static let loginTop: CGFloat = 60.0
         static let snsLoginTop: CGFloat = 14.0
         
         static let findButtonHeight: CGFloat = 20.0
         static let findLineHeight: CGFloat = 10.0
         static let findLineWidth: CGFloat = 1.0
         static let findLineLeftRight: CGFloat = 4.0
+        
+        static let moodTop: CGFloat = 108.0
+        static let moodImageRight: CGFloat = 26.0
+        static let moodImageBottom: CGFloat = 24.0
+        
+        static let passwordBottom: CGFloat = 5.0
     }
     
     private struct Color {
@@ -58,6 +68,7 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         static let snsLoginButtonBackground: UIColor = UIColor.buttonBG
         static let findButton: UIColor = UIColor.subTitle
         static let signUpButton: UIColor = UIColor.subTitle
+        static let moodLabel: UIColor = UIColor.white
     }
     
     private struct Font {
@@ -66,6 +77,8 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         static let loginButton: UIFont = UIFont.systemFont(ofSize: 16.0)
         static let findButton: UIFont = UIFont.systemFont(ofSize: 13.0)
         static let signUpButton: UIFont = UIFont.systemFont(ofSize: 13.0)
+        static let moodBold: UIFont = UIFont.boldSystemFont(ofSize: 20.0)
+        static let moodRegular: UIFont = UIFont.systemFont(ofSize: 20.0, weight: .light)
     }
     
     // MARK: Properties
@@ -74,9 +87,37 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
     
     var dependency: Dependency?
     
-    // MARK: Views
-    private let gradientView = UIView().then {
-        $0.backgroundColor = UIColor.keyColor
+    // MARK: Views    
+    private let gradientView = TopGradientView().then {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.colors = [UIColor.gradientTop, UIColor.gradientBottom]
+    }
+    
+    private let moodLabel = UILabel().then {
+        $0.numberOfLines = 2
+        let pragraphStyle = NSMutableParagraphStyle()
+        pragraphStyle.lineSpacing = 8.0
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: Color.moodLabel,
+            .paragraphStyle: pragraphStyle,
+            .font: Font.moodRegular
+        ]
+        
+        let fullText = "오늘의 기분을\n5분 안에 기록하세요"
+        let boldText = "오늘의 기분을"
+        let attrString = NSMutableAttributedString(string: fullText,
+                                                   attributes: attributes)
+        if let range = fullText.range(of: boldText) {
+            let nsRange = NSRange(range, in: fullText)
+            attrString.addAttribute(.font, value: Font.moodBold, range: nsRange)
+        }
+        
+        $0.attributedText = attrString
+    }
+    
+    private let moodImageView = UIImageView().then {
+        $0.image = UIImage(named: "mood_login")
     }
     
     private let titleLabel = UILabel().then {
@@ -171,6 +212,9 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         super.addViews()
         
         self.view.addSubview(gradientView)
+        gradientView.addSubview(moodLabel)
+        gradientView.addSubview(moodImageView)
+        
         self.view.addSubview(titleLabel)
         self.view.addSubview(copyrightLabel)
         self.view.addSubview(emailTextField)
@@ -189,6 +233,16 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         gradientView.snp.makeConstraints { make in
             make.top.left.right.width.equalToSuperview()
             make.height.equalTo(Metric.gradientHeight)
+        }
+        
+        moodLabel.snp.makeConstraints { make in
+            make.left.equalTo(Metric.leftRightPadding)
+            make.top.equalTo(Metric.moodTop)
+        }
+        
+        moodImageView.snp.makeConstraints { make in
+            make.right.equalTo(-Metric.moodImageRight)
+            make.bottom.equalTo(-Metric.moodImageBottom)
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -232,13 +286,13 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         }
         
         signUpButton.snp.makeConstraints { make in
-            make.top.equalTo(passwordTextField.snp.bottom)
+            make.top.equalTo(passwordTextField.snp.bottom).offset(Metric.passwordBottom)
             make.right.equalTo(-Metric.leftRightPadding)
             make.height.equalTo(Metric.findButtonHeight)
         }
         
         findIDButton.snp.makeConstraints { make in
-            make.top.equalTo(passwordTextField.snp.bottom)
+            make.top.equalTo(passwordTextField.snp.bottom).offset(Metric.passwordBottom)
             make.left.equalTo(Metric.leftRightPadding)
             make.height.equalTo(Metric.findButtonHeight)
         }
@@ -251,7 +305,7 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         }
         
         findPWButton.snp.makeConstraints { make in
-            make.top.equalTo(passwordTextField.snp.bottom)
+            make.top.equalTo(passwordTextField.snp.bottom).offset(Metric.passwordBottom)
             make.left.equalTo(findLine.snp.right).offset(Metric.findLineLeftRight)
             make.right.lessThanOrEqualTo(signUpButton.snp.left).offset(8.0)
             make.height.equalTo(Metric.findButtonHeight)
