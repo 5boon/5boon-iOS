@@ -44,4 +44,12 @@ extension UIColor {
     static var tabBarBG: UIColor {
         return UIColor(named: "ButtonBG")!
     }
+    /// EA6D7D
+    static var gradientTop: UIColor {
+        return UIColor(named: "GradientTop")!
+    }
+    /// F08B68
+    static var gradientBottom: UIColor {
+        return UIColor(named: "GradientBottom")!
+    }
 }
