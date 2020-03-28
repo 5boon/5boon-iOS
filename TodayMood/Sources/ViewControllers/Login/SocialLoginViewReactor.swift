@@ -12,15 +12,17 @@ import RxSwift
 class SocialLoginViewReactor: Reactor {
     
     enum Action {
-        
+        case login(SocialLoginTypes)
     }
     
     enum Mutation {
-        
+        case setLoading(Bool)
+        case setUser(User)
     }
     
     struct State {
-        
+        var isLoading: Bool = false
+        var loggedInUser: User?
     }
     
     let initialState = State()

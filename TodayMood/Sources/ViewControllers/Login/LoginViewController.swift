@@ -362,6 +362,12 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
+        socialButton.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.presentSocialLogin()
+            }).disposed(by: self.disposeBag)
+        
         // State
         reactor.state.map { $0.isLoggedIn }
             .distinctUntilChanged()
@@ -384,6 +390,10 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
     }
     
     private func presentSocialLogin() {
-        
+        let reactor = SocialLoginViewReactor()
+        let viewController = SocialLoginViewController(reactor: reactor)
+        viewController.modalPresentationStyle = .overCurrentContext
+        viewController.modalTransitionStyle = .crossDissolve
+        self.present(viewController, animated: true, completion: nil)
     }
 }
