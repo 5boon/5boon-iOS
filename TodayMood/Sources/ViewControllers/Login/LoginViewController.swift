@@ -333,13 +333,13 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         findIDButton.rx.tap
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
-                self.pushToSFSafariWeb(urlString: "https://www.daum.net")
+                self.pushToFindID()
             }).disposed(by: self.disposeBag)
         
         findPWButton.rx.tap
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
-                self.pushToSFSafariWeb(urlString: "https://www.google.com")
+                self.pushToFindPassword()
             }).disposed(by: self.disposeBag)
         
         emailTextField.rx.text
@@ -395,5 +395,17 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         viewController.modalPresentationStyle = .overCurrentContext
         viewController.modalTransitionStyle = .crossDissolve
         self.present(viewController, animated: true, completion: nil)
+    }
+    
+    private func pushToFindID() {
+        let reactor = FindIDViewReactor()
+        let viewController = FindIDViewController(reactor: reactor)
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func pushToFindPassword() {
+        let reactor = FindPasswordViewReactor()
+        let viewController = FindPasswordViewController(reactor: reactor)
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

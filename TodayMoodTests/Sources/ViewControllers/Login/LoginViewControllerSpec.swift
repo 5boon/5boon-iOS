@@ -117,7 +117,7 @@ class LoginViewControllerSpec: QuickSpec {
             }
         }
         
-        
+        /*
         describe("로그인화면에서") {
             var reactor: LoginViewReactor!
             var viewController: LoginViewController!
@@ -156,6 +156,6 @@ class LoginViewControllerSpec: QuickSpec {
                 }
             }
         }
-        
+        */
     }
 }
