@@ -15,8 +15,17 @@ class BaseNavigationController: UINavigationController {
     }()
 
     // MARK: - Properties
+    var navigationHidden: Bool
 
     // MARK: - Initialize
+    init(rootViewController: UIViewController, navigationBarHidden: Bool = false) {
+        self.navigationHidden = navigationBarHidden
+        super.init(rootViewController: rootViewController)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: Rx
     
@@ -30,7 +39,7 @@ class BaseNavigationController: UINavigationController {
             NSAttributedString.Key.foregroundColor: Color.title
         ]
          */
-        self.setNavigationBarHidden(true, animated: false)
+        self.setNavigationBarHidden(self.navigationHidden, animated: false)
     }
 
     deinit {

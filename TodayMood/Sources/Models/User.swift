@@ -17,11 +17,14 @@ import Foundation
  }
  */
 struct User: ModelType, Identifiable {
-    let id: Int
-    let userName: String
-    let nickName: String
+    let id: Int?
+    let userName: String?
+    let nickName: String?
     let email: String?
-    let joinDate: String
+    let joinDate: String?
+    var joinedAt: Date? {
+        return joinDate?.convertServerDate()
+    }
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -29,15 +32,5 @@ struct User: ModelType, Identifiable {
         case nickName = "nickname"
         case email
         case joinDate = "date_joined"
-    }
-}
-
-struct SignUpUser: ModelType {
-    let userName: String
-    let nickName: String
-    
-    enum CodingKeys: String, CodingKey {
-        case userName = "username"
-        case nickName = "nickname"
     }
 }

@@ -8,6 +8,7 @@
 import UIKit
 
 import EMTNeumorphicView
+//import Pure
 import ReactorKit
 import ReusableKit
 import RxCocoa
@@ -16,11 +17,16 @@ import RxViewController
 import SnapKit
 import Then
 
-final class FindIDViewController: BaseViewController, View {
+final class FindIDViewController: BaseViewController, ReactorKit.View {
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .default
     }
+    
+    // MARK: DI
+//    struct Dependency {
+//        let userService: UserServiceType
+//    }
     
     typealias Reactor = FindIDViewReactor
     
@@ -237,9 +243,10 @@ final class FindIDViewController: BaseViewController, View {
                 guard let self = self else { return }
                 self.navigationController?.popViewController(animated: true)
             }).disposed(by: self.disposeBag)
-        
+        //name email
         doneButton.rx.tap
-            .map { Reactor.Action.find("", "") }
+            .map { (self.nameTextField.text, self.emailTextField.text) }
+            .map { Reactor.Action.find($0.0, $0.1) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
@@ -266,7 +273,7 @@ final class FindIDViewController: BaseViewController, View {
     
     // MARK: - Route
     private func pushToFindPassword() {
-        let reactor = FindPasswordViewReactor()
+        let reactor = FindPasswordViewReactor(userService: UserService(networking: UserNetworking()))
         let viewController = FindPasswordViewController(reactor: reactor)
         self.navigationController?.pushViewController(viewController, animated: true)
     }

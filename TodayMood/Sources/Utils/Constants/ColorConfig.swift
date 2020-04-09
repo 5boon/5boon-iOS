@@ -52,4 +52,16 @@ extension UIColor {
     static var gradientBottom: UIColor {
         return UIColor(named: "GradientBottom")!
     }
+    /// F0896A
+    static var progressOn: UIColor {
+        return UIColor(named: "ProgressOn")!
+    }
+    /// DDDDDD
+    static var progressOff: UIColor {
+        return UIColor(named: "ProgressOff")!
+    }
+    /// FF0000
+    static var invalidColor: UIColor {
+        return UIColor(named: "InvalidColor")!
+    }
 }

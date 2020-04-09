@@ -83,7 +83,7 @@ final class CompositionRoot {
     // MARK: Configure SDKs
     static func configureSDKs() {
         // Firebase
-        // FirebaseApp.configure()
+        FirebaseApp.configure()
         
         // SwiftyBeaver
         let console = ConsoleDestination()
@@ -91,6 +91,7 @@ final class CompositionRoot {
         logger.addDestination(console)
         
         #if DEBUG
+        // Bagel
         Bagel.start()
         #endif
     }
@@ -98,7 +99,12 @@ final class CompositionRoot {
     // MARK: Configure Appearance
     static func configureAppearance() {
         // NavigationBar Appearance, Toast Appearance..
+        //        let navigationBarBackgroundImage = UIImage.resizable().color(.db_charcoal).image
+        //        UINavigationBar.appearance().setBackgroundImage(navigationBarBackgroundImage, for: .default)
         UINavigationBar.appearance().shadowImage = UIImage()
+        //        UINavigationBar.appearance().barStyle = .black
+        //        UINavigationBar.appearance().tintColor = .db_slate
+        //        UITabBar.appearance().tintColor = .db_charcoal
     }
     
     // MARK: URL Factory
@@ -126,26 +132,62 @@ extension CompositionRoot {
             let reactor = LoginViewReactor(authService: authService,
                                            userService: userService)
             
-            let nickNameViewControllerFactory = { (email: String, password: String) -> NickNameViewController in
-                let reactor = NickNameViewReactor(userService: userService,
-                                                  authService: authService,
-                                                  email: email,
-                                                  password: password)
-                return NickNameViewController(reactor: reactor,
-                                              presentMainScreen: presentMainScreen)
-            }
-            
-            let signUpViewControllerFactory = { () -> SignUpViewController in
-                let reactor = SignUpViewReactor()
-                return SignUpViewController(reactor: reactor,
-                                            nickNameViewControllerFactory: nickNameViewControllerFactory)
-            }
+            let findIDFactory = self.configureFindIDScreen(userService: userService)
+            let findPasswordFactory = self.configureFindPasswordScreen(userService: userService)
+            let signUpViewControllerFactory = self.configureSignUpScreen(userService: userService,
+                                                              presentMainScreen: presentMainScreen)
             
             let loginViewController = LoginViewController(reactor: reactor,
                                                           presentMainScreen: presentMainScreen,
+                                                          findIDViewControllerFactory: findIDFactory,
+                                                          findPasswordViewControllerFactory: findPasswordFactory,
                                                           signUpViewControllerFactory: signUpViewControllerFactory)
             
-            window.rootViewController = loginViewController.navigationWrap()
+            window.rootViewController = loginViewController.navigationWrap(navigationBarHidden: true)
+        }
+    }
+    
+    static func configureSignUpScreen(userService: UserServiceType,
+                                      presentMainScreen: @escaping () -> Void) -> () -> SignUpFirstViewController {
+        return {
+            var pushSecondStepScreen: (() -> SignUpSecondViewController)!
+            var pushThirdStepScreen: (() -> SignUpThirdViewController)!
+            var pushFinishStepScreen: (() -> SignUpFinishedViewController)!
+            
+            let reactor = SignUpReactor(userService: userService)
+            
+            pushFinishStepScreen = {
+                SignUpFinishedViewController(reactor: reactor,
+                                             presentMainScreen: presentMainScreen)
+            }
+            
+            pushThirdStepScreen = {
+                SignUpThirdViewController(reactor: reactor,
+                                          pushFinishedStepScreen: pushFinishStepScreen)
+            }
+            
+            pushSecondStepScreen = {
+                SignUpSecondViewController(reactor: reactor, pushThirdStepScreen: pushThirdStepScreen)
+            }
+            
+            let signUpFirstVC = SignUpFirstViewController(reactor: reactor,
+                                                          pushSecondStepScreen: pushSecondStepScreen)
+            
+            return signUpFirstVC
+        }
+    }
+    
+    static func configureFindIDScreen(userService: UserServiceType) -> () -> FindIDViewController {
+        return {
+            let reactor = FindIDViewReactor(userService: userService)
+            return FindIDViewController(reactor: reactor)
+        }
+    }
+    
+    static func configureFindPasswordScreen(userService: UserServiceType) -> () -> FindPasswordViewController {
+        return {
+            let reactor = FindPasswordViewReactor(userService: userService)
+            return FindPasswordViewController(reactor: reactor)
         }
     }
 }

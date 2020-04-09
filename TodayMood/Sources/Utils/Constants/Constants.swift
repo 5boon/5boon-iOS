@@ -41,4 +41,9 @@ struct Constants {
     struct UserDefaultKeys {
         static let firstLaunch = "firstLaunch"
     }
+    
+    /// DateFormat
+    struct DateFormats {
+        static let iso8601 = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+    }
 }

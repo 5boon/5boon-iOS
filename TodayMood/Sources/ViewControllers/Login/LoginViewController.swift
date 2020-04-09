@@ -17,17 +17,13 @@ import RxViewController
 import SnapKit
 import Then
 
-final class LoginViewController: BaseViewController, ReactorKit.View, Pure.FactoryModule {
+final class LoginViewController: BaseViewController, ReactorKit.View {
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
     typealias Reactor = LoginViewReactor
-    
-    struct Dependency {
-        
-    }
     
     private struct Metric {
         static let gradientHeight: CGFloat = 375.0 / UIScreen.main.bounds.width * 241.0
@@ -80,12 +76,6 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         static let moodBold: UIFont = UIFont.boldSystemFont(ofSize: 20.0)
         static let moodRegular: UIFont = UIFont.systemFont(ofSize: 20.0, weight: .light)
     }
-    
-    // MARK: Properties
-    private let presentMainScreen: () -> Void
-    private let signUpViewControllerFactory: () -> SignUpViewController
-    
-    var dependency: Dependency?
     
     // MARK: Views    
     private let gradientView = TopGradientView().then {
@@ -166,7 +156,7 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
     }
     
-    private let findIDButton = UIButton(type: .system).then {
+    let findIDButton = UIButton(type: .system).then {
         $0.setTitle("아이디 찾기", for: .normal)
         $0.setTitleColor(Color.findButton, for: .normal)
         $0.titleLabel?.font = Font.findButton
@@ -176,7 +166,7 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         $0.backgroundColor = Color.findButton
     }
     
-    private let findPWButton = UIButton(type: .system).then {
+    let findPWButton = UIButton(type: .system).then {
         $0.setTitle("비밀번호 찾기", for: .normal)
         $0.setTitleColor(Color.findButton, for: .normal)
         $0.titleLabel?.font = Font.findButton
@@ -188,13 +178,23 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         $0.titleLabel?.font = Font.findButton
     }
     
+    // MARK: Properties
+    private let presentMainScreen: () -> Void
+    let findIDViewControllerFactory: () -> FindIDViewController
+    let findPasswordViewControllerFactory: () -> FindPasswordViewController
+    let pushSignUpViewControllerFactory: () -> SignUpFirstViewController
+    
     // MARK: - Initializing
     init(reactor: Reactor,
          presentMainScreen: @escaping () -> Void,
-         signUpViewControllerFactory: @escaping () -> SignUpViewController) {
+         findIDViewControllerFactory: @escaping () -> FindIDViewController,
+         findPasswordViewControllerFactory: @escaping () -> FindPasswordViewController,
+         signUpViewControllerFactory: @escaping () -> SignUpFirstViewController) {
         defer { self.reactor = reactor }
         self.presentMainScreen = presentMainScreen
-        self.signUpViewControllerFactory = signUpViewControllerFactory
+        self.findIDViewControllerFactory = findIDViewControllerFactory
+        self.findPasswordViewControllerFactory = findPasswordViewControllerFactory
+        self.pushSignUpViewControllerFactory = signUpViewControllerFactory
         super.init()
     }
     
@@ -372,7 +372,8 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
         reactor.state.map { $0.isLoggedIn }
             .distinctUntilChanged()
             .filter { $0 == true }
-            .subscribe(onNext: { [weak self] _ in
+            .subscribe(onNext: { [weak self] isLoggedIn in
+                logger.debug(isLoggedIn)
                 self?.presentMainScreen()
             }).disposed(by: self.disposeBag)
         
@@ -385,8 +386,8 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
     
     // MARK: - Route
     private func pushToSignUp() {
-        let viewController = self.signUpViewControllerFactory()
-        self.navigationController?.pushViewController(viewController, animated: true)
+        let controller = self.pushSignUpViewControllerFactory()
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     private func presentSocialLogin() {
@@ -398,14 +399,12 @@ final class LoginViewController: BaseViewController, ReactorKit.View, Pure.Facto
     }
     
     private func pushToFindID() {
-        let reactor = FindIDViewReactor()
-        let viewController = FindIDViewController(reactor: reactor)
+        let viewController = self.findIDViewControllerFactory()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func pushToFindPassword() {
-        let reactor = FindPasswordViewReactor()
-        let viewController = FindPasswordViewController(reactor: reactor)
+        let viewController = self.findPasswordViewControllerFactory()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

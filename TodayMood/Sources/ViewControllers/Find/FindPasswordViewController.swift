@@ -8,6 +8,7 @@
 import UIKit
 
 import EMTNeumorphicView
+//import Pure
 import ReactorKit
 import ReusableKit
 import RxCocoa
@@ -16,11 +17,16 @@ import RxViewController
 import SnapKit
 import Then
 
-final class FindPasswordViewController: BaseViewController, View {
+final class FindPasswordViewController: BaseViewController, ReactorKit.View {
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .default
     }
+    
+    // MARK: DI
+//    struct Dependency {
+//        let userService: UserServiceType
+//    }
     
     typealias Reactor = FindPasswordViewReactor
     

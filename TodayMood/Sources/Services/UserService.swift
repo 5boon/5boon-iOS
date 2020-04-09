@@ -8,15 +8,20 @@
 import RxSwift
 
 protocol UserServiceType {
-    func signup(userName: String, nickName: String, password: String) -> Observable<SignUpUser>
-    
-    func me() -> Observable<User>
     
     var currentUser: Observable<User?> { get }
+    
+    // 회원가입
+    func signup(userName: String, nickName: String, password: String) -> Observable<User>
+    // 내정보
+    func me() -> Observable<User>
+    // 아이디 찾기
+    func findID(username: String, email: String) -> Observable<User>
+    // 비밀번호 찾기
+    func findPassword(username: String, email: String) -> Observable<User>
 }
 
 final class UserService: UserServiceType {
-    
     private let networking: UserNetworking
     
     init(networking: UserNetworking) {
@@ -29,13 +34,13 @@ final class UserService: UserServiceType {
         .share(replay: 1)
     
     /// 회원가입
-    func signup(userName: String, nickName: String, password: String) -> Observable<SignUpUser> {
+    func signup(userName: String, nickName: String, password: String) -> Observable<User> {
         return self.networking.request(.signup(userName: userName,
                                                nickName: nickName,
                                                password: password))
             .debug()
             .asObservable()
-            .map(SignUpUser.self)
+            .map(User.self)
     }
     
     /// 내정보 조회
@@ -47,5 +52,21 @@ final class UserService: UserServiceType {
             .do(onNext: { [weak self] user in
                 self?.userSubject.onNext(user)
             })
+    }
+    
+    /// 아이디 찾기
+    func findID(username: String, email: String) -> Observable<User> {
+        return self.networking.request(.findID(username: username, email: email))
+            .debug()
+            .asObservable()
+            .map(User.self)
+    }
+    
+    /// 비밀번호 찾기
+    func findPassword(username: String, email: String) -> Observable<User> {
+        return self.networking.request(.findPassword(username: username, email: email))
+            .debug()
+            .asObservable()
+            .map(User.self)
     }
 }

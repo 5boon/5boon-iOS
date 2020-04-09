@@ -1,5 +1,5 @@
 //
-//  SignUpViewReactorSpec.swift
+//  SignUpSecondViewControllerSpec.swift
 //  TodayMood
 //
 //  Created by Kanz on 2020/04/10.
@@ -9,7 +9,7 @@
 import Quick
 import Nimble
 
-class SignUpViewReactorSpec: QuickSpec {
+class SignUpSecondViewControllerSpec: QuickSpec {
     override func spec() {
 
     }
