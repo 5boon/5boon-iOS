@@ -55,7 +55,7 @@ final class MainTabBar: UIView {
         $0.backgroundColor = UIColor.keyColor
         $0.layer.cornerRadius = Metric.centerButtonWidthHeight / 2.0
         $0.layer.masksToBounds = true
-        $0.setImage(UIImage(named: "tabbar_center_icon"), for: .normal)
+        $0.setImage(UIImage(named: "ic_draw"), for: .normal)
     }
     
     private let homeButton = EMTNeumorphicButton(type: .custom).then {

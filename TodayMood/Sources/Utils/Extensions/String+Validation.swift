@@ -8,6 +8,11 @@
 import Foundation
 
 extension String {
+    static func validateID(_ id: String?) -> Bool {
+        guard let id = id else { return false }
+        return id.isNotEmpty
+    }
+    
     static func validateEmail(_ email: String?) -> Bool {
         guard let email = email else { return false }
         return email.isNotEmpty

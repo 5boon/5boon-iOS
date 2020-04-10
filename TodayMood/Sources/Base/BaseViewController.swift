@@ -8,6 +8,7 @@
 
 import UIKit
 
+import Pure
 import RxSwift
 
 class BaseViewController: UIViewController {

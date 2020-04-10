@@ -10,8 +10,9 @@ import UIKit
 
 extension UIViewController {
     /// Navigation Wrap
-    func navigationWrap() -> BaseNavigationController {
-        return BaseNavigationController(rootViewController: self)
+    func navigationWrap(navigationBarHidden: Bool = false) -> BaseNavigationController {
+        return BaseNavigationController(rootViewController: self,
+                                        navigationBarHidden: navigationBarHidden)
     }
 }
 

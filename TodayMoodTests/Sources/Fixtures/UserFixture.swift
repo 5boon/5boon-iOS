@@ -14,6 +14,6 @@ struct UserFixture {
         "date_joined": "2020-03-10T10:30:35.031034Z",
         "nickname": "kanz1",
         "username": "kanz1",
-        "email": ""
+        "email": "kanz@5boon.me"
     ])
 }

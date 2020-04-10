@@ -23,6 +23,7 @@ def app_pods
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'RxDataSources'
+  pod 'RxGesture'
   pod 'RxViewController'
   pod 'RxOptional'
   pod 'RxKeyboard'

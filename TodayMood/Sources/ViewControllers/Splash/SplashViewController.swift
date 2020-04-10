@@ -17,6 +17,10 @@ import Then
 
 final class SplashViewController: BaseViewController, View {
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     typealias Reactor = SplashViewReactor
     
     private struct Metric {
@@ -43,6 +47,7 @@ final class SplashViewController: BaseViewController, View {
     private let logoImageView = UIImageView().then {
         $0.image = UIImage(named: "img_splash_character")
     }
+    
     
     // MARK: - Initializing
     init(reactor: Reactor,

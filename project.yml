@@ -27,6 +27,15 @@ targets:
         BaseURL: $(BASE_URL)
         ClientID: $(CLIENT_ID)
         ClientSecret: $(CLIENT_SECRET)
+        UIViewControllerBasedStatusBarAppearance: true
+        UIStatusBarStyle: UIStatusBarStyleLightContent
+        NSAppTransportSecurity: {
+            NSExceptionDomains: {
+                api.5boon.me: {
+                    NSTemporaryExceptionAllowsInsecureHTTPLoads: true
+                }
+            }
+        }
     settings:
       INFOPLIST_FILE: TodayMood/Supporting Files/Info.plist
 #    configFiles:

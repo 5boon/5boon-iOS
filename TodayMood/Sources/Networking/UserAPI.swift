@@ -12,6 +12,13 @@ enum UserAPI {
     case signup(userName: String, nickName: String, password: String)
     // 내 정보
     case me
+    
+    // ID 찾기
+    case findID(username: String, email: String)
+    // Password 찾기
+    case findPassword(username: String, email: String)
+    // 중복 체크
+    case checkDuplicateID(username: String?, email: String?)
 }
 
 extension UserAPI: TargetType {
@@ -25,6 +32,12 @@ extension UserAPI: TargetType {
             return "/users/register/"
         case .me:
             return "/me/"
+        case .findID:
+            return "/users/id/"
+        case .findPassword:
+            return "/users/password/"
+        case .checkDuplicateID:
+            return "/users/check/"
         }
     }
     
@@ -33,6 +46,12 @@ extension UserAPI: TargetType {
         case .signup:
             return .post
         case .me:
+            return .get
+        case .findID:
+            return .post
+        case .findPassword:
+            return .post
+        case .checkDuplicateID:
             return .get
         }
     }
@@ -53,6 +72,30 @@ extension UserAPI: TargetType {
             
         case .me:
             return .requestPlain
+            
+        case .findID(let username, let email):
+            let params: [String: Any] = [
+                "name": username,
+                "email": email
+            ]
+            return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+            
+        case .findPassword(username: let username, email: let email):
+            let params: [String: Any] = [
+                "username": username,
+                "email": email
+            ]
+            return .requestParameters(parameters: params, encoding: JSONEncoding.default)
+            
+        case .checkDuplicateID(let username, let email):
+            var params: [String: Any] = [:]
+            if let userName = username {
+                params["username"] = userName
+            }
+            if let email = email {
+                params["email"] = email
+            }
+            return .requestParameters(parameters: params, encoding: URLEncoding.default)
         }
     }
     

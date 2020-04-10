@@ -1,14 +1,14 @@
 //
-//  NickNameViewController.swift
+//  FindPasswordViewController.swift
 //  TodayMood
 //
-//  Created by Kanz on 2020/03/19.
+//  Created by Kanz on 2020/03/28.
 //
 
 import UIKit
 
 import EMTNeumorphicView
-import Pure
+//import Pure
 import ReactorKit
 import ReusableKit
 import RxCocoa
@@ -17,24 +17,37 @@ import RxViewController
 import SnapKit
 import Then
 
-final class NickNameViewController: BaseViewController, ReactorKit.View, Pure.FactoryModule {
+final class FindPasswordViewController: BaseViewController, ReactorKit.View {
     
-    typealias Reactor = NickNameViewReactor
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .default
+    }
     
+    // MARK: DI
+//    struct Dependency {
+//        let userService: UserServiceType
+//    }
+    
+    typealias Reactor = FindPasswordViewReactor
+    
+    // MARK: Properties
     private struct Metric {
         static let backButtonTop: CGFloat = 52.0
-        
-        static let titleTop: CGFloat = 135.0
         static let leftRightPadding: CGFloat = 36.0
-        
-        static let subTitleTop: CGFloat = 45.0
-        
-        static let nickNameTop: CGFloat = 12.0
         
         static let fieldHeight: CGFloat = 44.0
         static let buttonHeight: CGFloat = 44.0
         
+        static let titleTop: CGFloat = 135.0
+        
+        static let subTitleTop: CGFloat = 35.0
+        
+        static let idTop: CGFloat = 20.0
+        static let nameTop: CGFloat = 12.0
         static let doneButtonTop: CGFloat = 24.0
+        
+        static let resultButtonTop: CGFloat = 35.0
+        static let resultButtonBottom: CGFloat = 30.0
     }
     
     private struct Color {
@@ -43,7 +56,7 @@ final class NickNameViewController: BaseViewController, ReactorKit.View, Pure.Fa
         static let doneButton: UIColor = UIColor.keyColor
         static let disableButton: UIColor = UIColor.keyColor.alpha(0.6)
         static let doneButtonBackground: UIColor = UIColor.buttonBG
-        static let loadingIndicator: UIColor = UIColor.keyColor
+        static let resultBackground: UIColor = UIColor.baseBG
     }
     
     private struct Font {
@@ -51,9 +64,6 @@ final class NickNameViewController: BaseViewController, ReactorKit.View, Pure.Fa
         static let subTitle: UIFont = UIFont.systemFont(ofSize: 16.0)
         static let doneButton: UIFont = UIFont.systemFont(ofSize: 16.0)
     }
-    
-    // MARK: Properties
-    private let presentMainScreen: () -> Void
     
     // MARK: Views
     private let backButton = UIButton(type: .system).then {
@@ -65,21 +75,26 @@ final class NickNameViewController: BaseViewController, ReactorKit.View, Pure.Fa
     private let titleLabel = UILabel().then {
         $0.font = Font.title
         $0.textColor = Color.title
-        $0.text = "계정 생성"
+        $0.text = "비밀번호 찾기"
     }
     
     private let subTitleLabel = UILabel().then {
         $0.font = Font.subTitle
         $0.textColor = Color.subTitle
-        $0.text = "닉네임을 입력해 주세요."
+        $0.numberOfLines = 2
+        $0.text = "회원가입 당시 입력한\n아이디와 이름을 입력해주세요"
     }
     
-    private let nickNameTextField = CommonTextField().then {
-        $0.reactor = CommonTextFieldReactor(placeholder: "NickName")
+    private let idTextField = CommonTextField().then {
+        $0.reactor = CommonTextFieldReactor(placeholder: "ID")
+    }
+    
+    private let nameTextField = CommonTextField().then {
+        $0.reactor = CommonTextFieldReactor(placeholder: "Name")
     }
     
     let doneButton = EMTNeumorphicButton(type: .custom).then {
-        $0.setTitle("완료", for: .normal)
+        $0.setTitle("확인", for: .normal)
         $0.setTitleColor(Color.doneButton, for: .normal)
         $0.setTitleColor(Color.disableButton, for: .disabled)
         $0.titleLabel?.font = Font.doneButton
@@ -90,17 +105,30 @@ final class NickNameViewController: BaseViewController, ReactorKit.View, Pure.Fa
         $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
     }
     
-    private let loadingIndicator = UIActivityIndicatorView().then {
-        $0.style = .large
-        $0.color = Color.loadingIndicator
-        $0.hidesWhenStopped = true
+    private let resultBackView = UIView().then {
+        $0.backgroundColor = Color.resultBackground
+    }
+    private let resultLabel = UILabel().then {
+        $0.font = Font.subTitle
+        $0.textColor = Color.subTitle
+        $0.numberOfLines = 3
+        $0.text = "회원가입 시 입력한 이메일\ndorosi@kakao.com 으로\n임시 비밀번호가 발송되었습니다."
+    }
+    let resultDoneButton = EMTNeumorphicButton(type: .custom).then {
+        $0.setTitle("로그인 하기", for: .normal)
+        $0.setTitleColor(Color.doneButton, for: .normal)
+        $0.setTitleColor(Color.disableButton, for: .disabled)
+        $0.titleLabel?.font = Font.doneButton
+        $0.neumorphicLayer?.elementBackgroundColor = Color.doneButtonBackground.cgColor
+        $0.neumorphicLayer?.depthType = .convex
+        $0.neumorphicLayer?.cornerRadius = 12.0
+        $0.neumorphicLayer?.lightShadowOpacity = 0.1
+        $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
     }
     
     // MARK: - Initializing
-    init(reactor: Reactor,
-         presentMainScreen: @escaping () -> Void) {
+    init(reactor: Reactor) {
         defer { self.reactor = reactor }
-        self.presentMainScreen = presentMainScreen
         super.init()
     }
     
@@ -120,9 +148,13 @@ final class NickNameViewController: BaseViewController, ReactorKit.View, Pure.Fa
         self.view.addSubview(backButton)
         self.view.addSubview(titleLabel)
         self.view.addSubview(subTitleLabel)
-        self.view.addSubview(nickNameTextField)
+        self.view.addSubview(idTextField)
+        self.view.addSubview(nameTextField)
         self.view.addSubview(doneButton)
-        self.view.addSubview(loadingIndicator)
+        
+        self.view.addSubview(resultBackView)
+        resultBackView.addSubview(resultLabel)
+        resultBackView.addSubview(resultDoneButton)
     }
     
     override func setupConstraints() {
@@ -145,22 +177,43 @@ final class NickNameViewController: BaseViewController, ReactorKit.View, Pure.Fa
             make.right.equalTo(-Metric.leftRightPadding)
         }
         
-        nickNameTextField.snp.makeConstraints { make in
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(Metric.nickNameTop)
+        idTextField.snp.makeConstraints { make in
+            make.top.equalTo(subTitleLabel.snp.bottom).offset(Metric.idTop)
+            make.left.equalTo(Metric.leftRightPadding)
+            make.right.equalTo(-Metric.leftRightPadding)
+            make.height.equalTo(Metric.fieldHeight)
+        }
+        
+        nameTextField.snp.makeConstraints { make in
+            make.top.equalTo(idTextField.snp.bottom).offset(Metric.nameTop)
             make.left.equalTo(Metric.leftRightPadding)
             make.right.equalTo(-Metric.leftRightPadding)
             make.height.equalTo(Metric.fieldHeight)
         }
         
         doneButton.snp.makeConstraints { make in
-            make.top.equalTo(nickNameTextField.snp.bottom).offset(Metric.doneButtonTop)
+            make.top.equalTo(nameTextField.snp.bottom).offset(Metric.doneButtonTop)
             make.left.equalTo(Metric.leftRightPadding)
             make.right.equalTo(-Metric.leftRightPadding)
             make.height.equalTo(Metric.buttonHeight)
         }
         
-        loadingIndicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+        resultBackView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(Metric.subTitleTop)
+            make.left.right.bottom.equalToSuperview()
+        }
+        
+        resultLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.left.equalTo(Metric.leftRightPadding)
+            make.right.equalTo(-Metric.leftRightPadding)
+        }
+        
+        resultDoneButton.snp.makeConstraints { make in
+            make.left.equalTo(Metric.leftRightPadding)
+            make.right.equalTo(-Metric.leftRightPadding)
+            make.height.equalTo(Metric.buttonHeight)
+            make.top.equalTo(resultLabel.snp.bottom).offset(Metric.resultButtonTop)
         }
     }
     
@@ -174,38 +227,24 @@ final class NickNameViewController: BaseViewController, ReactorKit.View, Pure.Fa
                 self.navigationController?.popViewController(animated: true)
             }).disposed(by: self.disposeBag)
         
-        nickNameTextField.rx.text
-            .map { Reactor.Action.setNickName($0) }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-        
-        nickNameTextField.rx.clearText
-            .map { Reactor.Action.setNickName(nil) }
-            .bind(to: reactor.action)
-            .disposed(by: self.disposeBag)
-        
         doneButton.rx.tap
-            .map { Reactor.Action.signup }
+            .map { Reactor.Action.find("", "") }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
-        // State
-        reactor.state.map { $0.isValidate }
-            .bind(to: doneButton.rx.isEnabled)
-            .disposed(by: self.disposeBag)
-        
-        reactor.state.map { $0.isLoading }
-            .bind(to: loadingIndicator.rx.isAnimating)
-            .disposed(by: self.disposeBag)
-        
-        reactor.state.map { $0.isSignUpFinished }
-            .observeOn(MainScheduler.asyncInstance)
-            .distinctUntilChanged()
-            .filter { $0 == true }
+        resultDoneButton.rx.tap
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
-                self.presentMainScreen()
+                self.navigationController?.popToRootViewController(animated: true)
             }).disposed(by: self.disposeBag)
+        
+        // State
+        reactor.state.map { $0.findResult }
+            .map { $0 == nil }
+            .bind(to: resultBackView.rx.isHidden)
+            .disposed(by: self.disposeBag)
+        
+        // View
     }
     
     // MARK: - Route
