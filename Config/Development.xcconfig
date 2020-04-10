@@ -10,5 +10,5 @@
 
 CLIENT_ID = U8CWNrnu6HRXoYsKoT0EKc0Zw4rgv7kwghCgDcYn
 CLIENT_SECRET = sKirtEHb2XQ9Z5YNQIr7lIPp6IQRGwvK5XFvovbOD1TOlKOgmmrcABJTxZVL2Ks130nGatG4pEZg13NRoe7oWEdjwOoe3k76fyFgQ3DOMlsK404ISkUvhYHKMQxy6tA5
-BASE_URL = http:\/\/api.5boon.me
+BASE_URL = https:\/\/api.5boon.me
 
