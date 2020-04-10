@@ -6,6 +6,7 @@
 //  Copyright © 2020 5boon. All rights reserved.
 //
 
+import Alamofire
 import Moya
 import RxSwift
 
@@ -15,9 +16,15 @@ typealias AuthNetworking = Networking<AuthAPI>
 
 final class Networking<Target: TargetType>: MoyaProvider<Target> {
     init(plugins: [PluginType] = []) {
+        let endpointClosure = { (target: Target) -> Endpoint in
+            let defaultEndpoint = MoyaProvider.defaultEndpointMapping(for: target)
+            return defaultEndpoint.adding(newHTTPHeaderFields: ["User-Agent": "5boon ios"])
+        }
+        
         let session = MoyaProvider<Target>.defaultAlamofireSession()
         session.sessionConfiguration.timeoutIntervalForRequest = 10
-        super.init(session: session, plugins: plugins)
+        
+        super.init(endpointClosure: endpointClosure, session: session, plugins: plugins)
     }
 
     func request(_ target: Target) -> Single<Response> {
