@@ -23,11 +23,6 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
         return .default
     }
     
-    // MARK: DI
-//    struct Dependency {
-//        let userService: UserServiceType
-//    }
-    
     typealias Reactor = FindPasswordViewReactor
     
     // MARK: Properties
@@ -44,10 +39,12 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
         
         static let idTop: CGFloat = 20.0
         static let nameTop: CGFloat = 12.0
-        static let doneButtonTop: CGFloat = 24.0
+        static let doneButtonTop: CGFloat = 30.0
         
         static let resultButtonTop: CGFloat = 35.0
         static let resultButtonBottom: CGFloat = 30.0
+        
+        static let notFoundTop: CGFloat = 5.0
     }
     
     private struct Color {
@@ -57,12 +54,19 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
         static let disableButton: UIColor = UIColor.keyColor.alpha(0.6)
         static let doneButtonBackground: UIColor = UIColor.buttonBG
         static let resultBackground: UIColor = UIColor.baseBG
+        static let loadingIndicator: UIColor = UIColor.keyColor
+        static let notFoundLabel: UIColor = UIColor.invalidColor
     }
     
     private struct Font {
         static let title: UIFont = UIFont.boldSystemFont(ofSize: 20.0)
         static let subTitle: UIFont = UIFont.systemFont(ofSize: 16.0)
         static let doneButton: UIFont = UIFont.systemFont(ofSize: 16.0)
+        
+        static let notFoundLabel: UIFont = UIFont.systemFont(ofSize: 12.0)
+        
+        static let result: UIFont = UIFont.systemFont(ofSize: 16.0)
+        static let resultBold: UIFont = UIFont.boldSystemFont(ofSize: 16.0)
     }
     
     // MARK: Views
@@ -105,7 +109,7 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
         $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
     }
     
-    private let resultBackView = UIView().then {
+    let resultBackView = UIView().then {
         $0.backgroundColor = Color.resultBackground
     }
     private let resultLabel = UILabel().then {
@@ -124,6 +128,20 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
         $0.neumorphicLayer?.cornerRadius = 12.0
         $0.neumorphicLayer?.lightShadowOpacity = 0.1
         $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
+    }
+    
+    private let loadingIndicator = UIActivityIndicatorView().then {
+        $0.hidesWhenStopped = true
+        $0.style = .large
+        $0.color = Color.loadingIndicator
+    }
+    
+    let notFoundLabel = UILabel().then {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.font = Font.notFoundLabel
+        $0.textColor = Color.notFoundLabel
+        $0.textAlignment = .right
+        $0.isHidden = true
     }
     
     // MARK: - Initializing
@@ -150,11 +168,14 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
         self.view.addSubview(subTitleLabel)
         self.view.addSubview(idTextField)
         self.view.addSubview(nameTextField)
+        self.view.addSubview(notFoundLabel)
         self.view.addSubview(doneButton)
         
         self.view.addSubview(resultBackView)
         resultBackView.addSubview(resultLabel)
         resultBackView.addSubview(resultDoneButton)
+        
+        self.view.addSubview(loadingIndicator)
     }
     
     override func setupConstraints() {
@@ -191,6 +212,11 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
             make.height.equalTo(Metric.fieldHeight)
         }
         
+        notFoundLabel.snp.makeConstraints { make in
+            make.top.equalTo(nameTextField.snp.bottom).offset(Metric.notFoundTop)
+            make.right.equalTo(-Metric.leftRightPadding)
+        }
+        
         doneButton.snp.makeConstraints { make in
             make.top.equalTo(nameTextField.snp.bottom).offset(Metric.doneButtonTop)
             make.left.equalTo(Metric.leftRightPadding)
@@ -215,6 +241,10 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
             make.height.equalTo(Metric.buttonHeight)
             make.top.equalTo(resultLabel.snp.bottom).offset(Metric.resultButtonTop)
         }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
     }
     
     // MARK: - Binding
@@ -228,7 +258,8 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
             }).disposed(by: self.disposeBag)
         
         doneButton.rx.tap
-            .map { Reactor.Action.find("", "") }
+            .map { (self.idTextField.text, self.nameTextField.text) }
+            .map { Reactor.Action.find($0.0, $0.1) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
@@ -244,7 +275,46 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
             .bind(to: resultBackView.rx.isHidden)
             .disposed(by: self.disposeBag)
         
+        reactor.state.map { $0.findResult }
+            .filterNil()
+            .subscribe(onNext: { [weak self] user in
+                guard let self = self else { return }
+                self.setFindResult(user)
+            }).disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.failedText }
+            .filterNil()
+            .bind(to: notFoundLabel.rx.text)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.failedText }
+            .map { $0 == nil }
+            .bind(to: notFoundLabel.rx.isHidden)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isLoading }
+            .distinctUntilChanged()
+            .bind(to: loadingIndicator.rx.isAnimating)
+            .disposed(by: self.disposeBag)
+        
         // View
+    }
+    
+    private func setFindResult(_ user: User) {
+        // $0.text = "회원님의 아이디는 dorosi 입니다.\n(가입일: 2020. 05. 05)"
+        guard let email = user.email else { return }
+        
+        let fullText = "회원가입 시 입력한 이메일\n\(email) 으로\n임시 비밀번호가 발송되었습니다."
+        let range = (fullText as NSString).range(of: email)
+        let attrString = NSMutableAttributedString(string: fullText, attributes: [
+                NSAttributedString.Key.font: Font.result,
+                NSAttributedString.Key.foregroundColor: Color.subTitle
+        ])
+        
+        attrString.addAttributes([NSAttributedString.Key.font: Font.resultBold],
+                                   range: range)
+        
+        resultLabel.attributedText = attrString
     }
     
     // MARK: - Route
