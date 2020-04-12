@@ -16,13 +16,15 @@ class FindIDViewReactor: Reactor {
     }
     
     enum Mutation {
-        case setFindResult(User?)
         case setLoading(Bool)
+        case setFindResult(User?)
+        case setFailedText(String?)
     }
     
     struct State {
-        var findResult: User?
         var isLoading: Bool = false
+        var findResult: User?
+        var failedText: String?
     }
     
     let initialState: State
@@ -39,7 +41,6 @@ class FindIDViewReactor: Reactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .find(let name, let email):
-            
             guard let name = name, name.isNotEmpty,
                 let email = email, email.isNotEmpty else { return .empty() }
             
@@ -59,14 +60,21 @@ class FindIDViewReactor: Reactor {
             state.findResult = user
         case .setLoading(let isLoading):
             state.isLoading = isLoading
+        case .setFailedText(let failedText):
+            state.failedText = failedText
         }
         return state
     }
     
     private func requestFindID(userName: String, email: String) -> Observable<Mutation> {
         return self.userService.findID(username: userName, email: email)
+            .debug()
             .map { user -> Mutation in
                 return .setFindResult(user)
+        }.catchError { error -> Observable<Mutation> in
+            logger.error(error)
+            let failedText: Observable<Mutation> = Observable.just(.setFailedText("일치되는 사용자가 없습니다."))
+            return failedText
         }
     }
 }

@@ -44,10 +44,12 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         
         static let nameTop: CGFloat = 20.0
         static let emailTop: CGFloat = 12.0
-        static let doneButtonTop: CGFloat = 24.0
+        static let doneButtonTop: CGFloat = 30.0
         
         static let resultButtonTop: CGFloat = 35.0
         static let resultButtonBottom: CGFloat = 30.0
+        
+        static let notFoundTop: CGFloat = 5.0
     }
     
     private struct Color {
@@ -58,6 +60,8 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         static let doneButtonBackground: UIColor = UIColor.buttonBG
         static let findPasswordButton: UIColor = UIColor.subTitle
         static let resultBackground: UIColor = UIColor.baseBG
+        static let loadingIndicator: UIColor = UIColor.keyColor
+        static let notFoundLabel: UIColor = UIColor.invalidColor
     }
     
     private struct Font {
@@ -65,6 +69,11 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         static let subTitle: UIFont = UIFont.systemFont(ofSize: 16.0)
         static let doneButton: UIFont = UIFont.systemFont(ofSize: 16.0)
         static let findPasswordButton: UIFont = UIFont.systemFont(ofSize: 13.0)
+        static let notFoundLabel: UIFont = UIFont.systemFont(ofSize: 12.0)
+        
+        static let resultID: UIFont = UIFont.systemFont(ofSize: 16.0)
+        static let resultIDBold: UIFont = UIFont.boldSystemFont(ofSize: 16.0)
+        static let resultJoinDate: UIFont = UIFont.systemFont(ofSize: 14.0)
     }
     
     // MARK: Views
@@ -107,14 +116,14 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
     }
     
-    private let resultBackView = UIView().then {
+    let resultBackView = UIView().then {
         $0.backgroundColor = Color.resultBackground
     }
     private let resultLabel = UILabel().then {
         $0.font = Font.subTitle
         $0.textColor = Color.subTitle
         $0.numberOfLines = 2
-        $0.text = "회원님의 아이디는 dorosi 입니다.\n(가입일: 2020. 05. 05)"
+//        $0.text = "회원님의 아이디는 dorosi 입니다.\n(가입일: 2020. 05. 05)"
     }
     let resultDoneButton = EMTNeumorphicButton(type: .custom).then {
         $0.setTitle("로그인", for: .normal)
@@ -135,6 +144,20 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
         $0.setAttributedTitle(NSAttributedString(string: "비밀번호 찾기", attributes: attributes), for: .normal)
+    }
+    
+    private let loadingIndicator = UIActivityIndicatorView().then {
+        $0.hidesWhenStopped = true
+        $0.style = .large
+        $0.color = Color.loadingIndicator
+    }
+    
+    let notFoundLabel = UILabel().then {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.font = Font.notFoundLabel
+        $0.textColor = Color.notFoundLabel
+        $0.textAlignment = .right
+        $0.isHidden = true
     }
     
     // MARK: - Initializing
@@ -161,12 +184,15 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         self.view.addSubview(subTitleLabel)
         self.view.addSubview(nameTextField)
         self.view.addSubview(emailTextField)
+        self.view.addSubview(notFoundLabel)
         self.view.addSubview(doneButton)
         
         self.view.addSubview(resultBackView)
         resultBackView.addSubview(resultLabel)
         resultBackView.addSubview(resultDoneButton)
         resultBackView.addSubview(findPasswordButton)
+        
+        self.view.addSubview(loadingIndicator)
     }
     
     override func setupConstraints() {
@@ -203,6 +229,11 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
             make.height.equalTo(Metric.fieldHeight)
         }
         
+        notFoundLabel.snp.makeConstraints { make in
+            make.top.equalTo(emailTextField.snp.bottom).offset(Metric.notFoundTop)
+            make.right.equalTo(-Metric.leftRightPadding)
+        }
+        
         doneButton.snp.makeConstraints { make in
             make.top.equalTo(emailTextField.snp.bottom).offset(Metric.doneButtonTop)
             make.left.equalTo(Metric.leftRightPadding)
@@ -232,6 +263,10 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
             make.centerX.equalToSuperview()
             make.top.equalTo(resultDoneButton.snp.bottom).offset(Metric.resultButtonBottom)
         }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
     }
     
     // MARK: - Binding
@@ -243,6 +278,7 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
                 guard let self = self else { return }
                 self.navigationController?.popViewController(animated: true)
             }).disposed(by: self.disposeBag)
+        
         //name email
         doneButton.rx.tap
             .map { (self.nameTextField.text, self.emailTextField.text) }
@@ -268,7 +304,59 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
             .bind(to: resultBackView.rx.isHidden)
             .disposed(by: self.disposeBag)
         
+        reactor.state.map { $0.findResult }
+            .filterNil()
+            .subscribe(onNext: { [weak self] user in
+                guard let self = self else { return }
+                self.setFindResult(user)
+            }).disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.failedText }
+            .filterNil()
+            .bind(to: notFoundLabel.rx.text)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.failedText }
+            .map { $0 == nil }
+            .bind(to: notFoundLabel.rx.isHidden)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isLoading }
+            .distinctUntilChanged()
+            .bind(to: loadingIndicator.rx.isAnimating)
+            .disposed(by: self.disposeBag)
+        
         // View
+    }
+    
+    private func setFindResult(_ user: User) {
+        // $0.text = "회원님의 아이디는 dorosi 입니다.\n(가입일: 2020. 05. 05)"
+        guard let userName = user.userName,
+            let joinDate = user.joinedAt?.string(dateFormat: "yyyy. MM. dd") else { return }
+        
+        let attrString = NSMutableAttributedString()
+        
+        let idString = "회원님의 아이디는 \(userName) 입니다.\n"
+        let attrIDString = NSMutableAttributedString(string: idString,
+            attributes: [
+                NSAttributedString.Key.font: Font.resultID,
+                NSAttributedString.Key.foregroundColor: Color.subTitle
+        ])
+        
+        let range = (idString as NSString).range(of: userName)
+        attrIDString.addAttributes([NSAttributedString.Key.font: Font.resultIDBold],
+                                   range: range)
+        
+        let joinDateString = "(가입일: \(joinDate))"
+        let attrDateString = NSAttributedString(string: joinDateString, attributes: [
+                NSAttributedString.Key.font: Font.resultJoinDate,
+                NSAttributedString.Key.foregroundColor: Color.subTitle
+        ])
+        
+        attrString.append(attrIDString)
+        attrString.append(attrDateString)
+        
+        resultLabel.attributedText = attrString
     }
     
     // MARK: - Route

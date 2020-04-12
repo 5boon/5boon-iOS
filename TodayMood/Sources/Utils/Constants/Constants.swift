@@ -44,6 +44,6 @@ struct Constants {
     
     /// DateFormat
     struct DateFormats {
-        static let iso8601 = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+        static let serverFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
     }
 }
