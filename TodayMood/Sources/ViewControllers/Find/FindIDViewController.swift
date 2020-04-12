@@ -23,11 +23,6 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         return .default
     }
     
-    // MARK: DI
-//    struct Dependency {
-//        let userService: UserServiceType
-//    }
-    
     typealias Reactor = FindIDViewReactor
     
     // MARK: Properties
