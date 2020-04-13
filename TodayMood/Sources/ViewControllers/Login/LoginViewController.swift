@@ -126,7 +126,7 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
     }
     
     private let emailTextField = CommonTextField().then {
-        $0.reactor = CommonTextFieldReactor(placeholder: "Email", keyboardType: .emailAddress)
+        $0.reactor = CommonTextFieldReactor(placeholder: "ID", keyboardType: .emailAddress)
     }
     
     private let passwordTextField = CommonTextField().then {

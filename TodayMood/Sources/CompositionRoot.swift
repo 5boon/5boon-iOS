@@ -135,6 +135,7 @@ extension CompositionRoot {
             let findIDFactory = self.configureFindIDScreen(userService: userService)
             let findPasswordFactory = self.configureFindPasswordScreen(userService: userService)
             let signUpViewControllerFactory = self.configureSignUpScreen(userService: userService,
+                                                                         authService: authService,
                                                               presentMainScreen: presentMainScreen)
             
             let loginViewController = LoginViewController(reactor: reactor,
@@ -148,13 +149,15 @@ extension CompositionRoot {
     }
     
     static func configureSignUpScreen(userService: UserServiceType,
+                                      authService: AuthServiceType,
                                       presentMainScreen: @escaping () -> Void) -> () -> SignUpFirstViewController {
         return {
             var pushSecondStepScreen: (() -> SignUpSecondViewController)!
             var pushThirdStepScreen: (() -> SignUpThirdViewController)!
             var pushFinishStepScreen: (() -> SignUpFinishedViewController)!
             
-            let reactor = SignUpReactor(userService: userService)
+            let reactor = SignUpReactor(userService: userService,
+                                        authService: authService)
             
             pushFinishStepScreen = {
                 SignUpFinishedViewController(reactor: reactor,

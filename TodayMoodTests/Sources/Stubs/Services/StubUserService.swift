@@ -11,12 +11,13 @@ import Stubber
 @testable import TodayMood
 
 final class StubUserService: UserServiceType {
+    
     var currentUser: Observable<User?> {
         return .never()
     }
     
-    func signup(userName: String, nickName: String, password: String) -> Observable<User> {
-        return Stubber.invoke(signup, args: (userName, nickName, password))
+    func signup(id: String, password: String, email: String, userName: String) -> Observable<User> {
+        return Stubber.invoke(signup, args: (id, password, email, userName))
     }
     
     func me() -> Observable<User> {
@@ -29,5 +30,9 @@ final class StubUserService: UserServiceType {
     
     func findPassword(username: String, email: String) -> Observable<User> {
         return Stubber.invoke(findPassword, args: (username, email))
+    }
+    
+    func checkDuplicateID(username: String?, email: String?) -> Observable<Void> {
+        return Stubber.invoke(checkDuplicateID, args: (username, email))
     }
 }

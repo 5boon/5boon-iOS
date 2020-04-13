@@ -12,13 +12,15 @@ protocol UserServiceType {
     var currentUser: Observable<User?> { get }
     
     // 회원가입
-    func signup(userName: String, nickName: String, password: String) -> Observable<User>
+    func signup(id: String, password: String, email: String, userName: String) -> Observable<User>
     // 내정보
     func me() -> Observable<User>
     // 아이디 찾기
     func findID(username: String, email: String) -> Observable<User>
     // 비밀번호 찾기
     func findPassword(username: String, email: String) -> Observable<User>
+    // 중복 여부 체크
+    func checkDuplicateID(username: String?, email: String?) -> Observable<Void>
 }
 
 final class UserService: UserServiceType {
@@ -34,10 +36,11 @@ final class UserService: UserServiceType {
         .share(replay: 1)
     
     /// 회원가입
-    func signup(userName: String, nickName: String, password: String) -> Observable<User> {
-        return self.networking.request(.signup(userName: userName,
-                                               nickName: nickName,
-                                               password: password))
+    func signup(id: String, password: String, email: String, userName: String) -> Observable<User> {
+        return self.networking.request(.signup(id: id,
+                                               password: password,
+                                               email: email,
+                                               userName: userName))
             .debug()
             .asObservable()
             .map(User.self)
@@ -68,5 +71,13 @@ final class UserService: UserServiceType {
             .debug()
             .asObservable()
             .map(User.self)
+    }
+    
+    /// 중복 여부 체크
+    func checkDuplicateID(username: String?, email: String?) -> Observable<Void> {
+        return self.networking.request(.checkDuplicateID(username: username, email: email))
+            .debug()
+            .asObservable()
+            .map { _ in Void() }
     }
 }

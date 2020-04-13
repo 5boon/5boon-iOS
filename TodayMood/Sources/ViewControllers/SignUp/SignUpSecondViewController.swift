@@ -128,12 +128,13 @@ final class SignUpSecondViewController: BaseViewController, View {
         $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
     }
     
-    private let duplicateLabel = UILabel().then {
+    let duplicateLabel = UILabel().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.font = Font.duplicateLabel
         $0.textColor = Color.duplicateLabel
         $0.text = "이미 가입되어 있는 이메일 입니다."
         $0.textAlignment = .right
+        $0.isHidden = true
     }
     
     private let loadingIndicator = UIActivityIndicatorView().then {
@@ -266,21 +267,41 @@ final class SignUpSecondViewController: BaseViewController, View {
             }).disposed(by: self.disposeBag)
         
         nextButton.rx.tap
-            .subscribe(onNext: { [weak self] _ in
-                guard let self = self else { return }
-                self.pushToThirdStep()
-            }).disposed(by: self.disposeBag)
+            .map { Reactor.Action.checkDuplicateEmail }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
         
         // State
+        reactor.state.map { $0.isLoading }
+            .bind(to: loadingIndicator.rx.isAnimating)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isDuplicatedEmail }
+            .observeOn(MainScheduler.asyncInstance)
+            .filterNil()
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] isDuplicateID in
+                guard let self = self else { return }
+                if isDuplicateID {
+                    self.duplicateLabel.isHidden = false
+                } else {
+                    self.pushToThirdStep()
+                }
+            }).disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isValidateSecondStepField }
+            .bind(to: nextButton.rx.isEnabled)
+            .disposed(by: self.disposeBag)
         
         // View
+        emailTextField.rx.text
+            .map { Reactor.Action.setEmail($0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
     }
     
     // MARK: - Route
     private func pushToThirdStep() {
-//        let reactor = SignUpThirdViewReactor()
-//        let controller = SignUpThirdViewController(reactor: reactor)
-//        self.navigationController?.pushViewController(controller, animated: true)
         let controller = self.pushThirdStepScreen()
         self.navigationController?.pushViewController(controller, animated: true)
     }

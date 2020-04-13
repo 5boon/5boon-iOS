@@ -132,12 +132,13 @@ final class SignUpFirstViewController: BaseViewController, ReactorKit.View, Pure
         $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
     }
     
-    private let duplicateLabel = UILabel().then {
+    let duplicateLabel = UILabel().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.font = Font.duplicateLabel
         $0.textColor = Color.duplicateLabel
         $0.text = "사용할 수 없는 아이디 입니다."
         $0.textAlignment = .right
+        $0.isHidden = true
     }
     
     private let loadingIndicator = UIActivityIndicatorView().then {
@@ -278,21 +279,47 @@ final class SignUpFirstViewController: BaseViewController, ReactorKit.View, Pure
             }).disposed(by: self.disposeBag)
         
         nextButton.rx.tap
-            .subscribe(onNext: { [weak self] _ in
-                guard let self = self else { return }
-                self.pushToSecondStep()
-            }).disposed(by: self.disposeBag)
+            .map { Reactor.Action.checkDuplicateID }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
         
         // State
+        reactor.state.map { $0.isLoading }
+            .bind(to: loadingIndicator.rx.isAnimating)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isDuplicateID }
+            .observeOn(MainScheduler.asyncInstance)
+            .filterNil()
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] isDuplicateID in
+                guard let self = self else { return }
+                if isDuplicateID {
+                    self.duplicateLabel.isHidden = false
+                } else {
+                    self.pushToSecondStep()
+                }
+            }).disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isValidateFirstStepField }
+            .bind(to: nextButton.rx.isEnabled)
+            .disposed(by: self.disposeBag)
         
         // View
+        idTextField.rx.text
+            .map { Reactor.Action.setID($0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        passwordTextField.rx.text
+            .debug()
+            .map { Reactor.Action.setPassword($0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
     }
     
     // MARK: - Route
     private func pushToSecondStep() {
-//        let reactor = SignUpSecondViewReactor()
-//        let controller = SignUpSecondViewController(reactor: reactor)
-//        self.navigationController?.pushViewController(controller, animated: true)
         let controller = self.pushSecondStepScreen()
         self.navigationController?.pushViewController(controller, animated: true)
     }
