@@ -66,7 +66,10 @@ class SignUpFirstViewControllerSpec: QuickSpec {
             context("해당 아이디가 이미 존재하는 경우") {
                 it("중복된 아이디 표시가 노출된다") {
                     reactor.stub.state.value.isDuplicateID = true
-                    expect(viewController.duplicateLabel.isHidden) == false
+                    waitUntil { done in
+                        done()
+                        expect(viewController.duplicateLabel.isHidden) == false
+                    }
                 }
             }
         }
@@ -76,7 +79,10 @@ class SignUpFirstViewControllerSpec: QuickSpec {
             context("중복체크가 완료되면") {
                 it("두번째 화면으로 이동한다.") {
                     reactor.stub.state.value.isDuplicateID = false
-                    expect(executePushToSecond) == true
+                    waitUntil { done in
+                        done()
+                        expect(executePushToSecond) == true
+                    }
                 }
             }
         }

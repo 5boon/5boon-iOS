@@ -64,7 +64,10 @@ class SignUpSecondViewControllerSpec: QuickSpec {
             context("해당 Email이 이미 존재하는 경우") {
                 it("중복된 이메일 표시가 노출된다") {
                     reactor.stub.state.value.isDuplicatedEmail = true
-                    expect(viewController.duplicateLabel.isHidden) == false
+                    waitUntil { done in
+                        done()
+                        expect(viewController.duplicateLabel.isHidden) == false
+                    }
                 }
             }
         }
@@ -74,7 +77,10 @@ class SignUpSecondViewControllerSpec: QuickSpec {
             context("중복체크가 완료되면") {
                 it("세번째 화면으로 이동한다.") {
                     reactor.stub.state.value.isDuplicatedEmail = false
-                    expect(executePushToThird) == true
+                    waitUntil { done in
+                        done()
+                        expect(executePushToThird) == true
+                    }
                 }
             }
         }

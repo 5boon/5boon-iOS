@@ -78,7 +78,10 @@ class SignUpThirdViewControllerSpec: QuickSpec {
                 it("최종화면으로 이동한다.") {
                     viewController.doneButton.sendActions(for: .touchUpInside)
                     reactor.stub.state.value.signupFinished = true
-                    expect(executePushToFinish) == true
+                    waitUntil { done in
+                        done()
+                        expect(executePushToFinish) == true
+                    }
                 }
             }
         }
