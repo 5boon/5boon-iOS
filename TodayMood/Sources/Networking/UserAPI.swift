@@ -9,7 +9,7 @@ import Moya
 
 enum UserAPI {
     // 회원가입
-    case signup(userName: String, nickName: String, password: String)
+    case signup(id: String, password: String, email: String, userName: String)
     // 내 정보
     case me
     
@@ -62,11 +62,12 @@ extension UserAPI: TargetType {
     
     var task: Task {
         switch self {
-        case .signup(let userName, let nickName, let password):
+        case .signup(let id, let password, let email, let userName):
             let params: [String: Any] = [
-                "username": userName,
-                "nickname": nickName,
-                "password": password
+                "username": id,
+                "password": password,
+                "email": email,
+                "name": userName
             ]
             return .requestParameters(parameters: params, encoding: JSONEncoding.default)
             

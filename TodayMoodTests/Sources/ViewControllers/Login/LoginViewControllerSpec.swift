@@ -32,7 +32,7 @@ class LoginViewControllerSpec: QuickSpec {
                 beforeEach {
                     reactor = LoginViewReactor(authService: authService, userService: userService)
                     reactor.isStubEnabled = true
-                    signUpReactor = SignUpReactor(userService: userService)
+                    signUpReactor = SignUpReactor(userService: userService, authService: authService)
                     let signUpFactory = {
                         return SignUpFirstViewController(reactor: signUpReactor) { () -> SignUpSecondViewController in
                             return SignUpSecondViewController(reactor: signUpReactor) { () -> SignUpThirdViewController in
@@ -78,7 +78,7 @@ class LoginViewControllerSpec: QuickSpec {
             beforeEach {
                 reactor = LoginViewReactor(authService: authService, userService: userService)
                 reactor.isStubEnabled = true
-                signUpReactor = SignUpReactor(userService: userService)
+                signUpReactor = SignUpReactor(userService: userService, authService: authService)
                 let signUpFactory = {
                     return SignUpFirstViewController(reactor: signUpReactor) { () -> SignUpSecondViewController in
                         return SignUpSecondViewController(reactor: signUpReactor) { () -> SignUpThirdViewController in
@@ -122,7 +122,7 @@ class LoginViewControllerSpec: QuickSpec {
                 beforeEach {
                     reactor = LoginViewReactor(authService: authService, userService: userService)
                     reactor.isStubEnabled = true
-                    signUpReactor = SignUpReactor(userService: userService)
+                    signUpReactor = SignUpReactor(userService: userService, authService: authService)
                     
                     let signUpFactory = { () -> SignUpFirstViewController in
                         presentSignupScreen = true
@@ -166,7 +166,7 @@ class LoginViewControllerSpec: QuickSpec {
                 beforeEach {
                     reactor = LoginViewReactor(authService: authService, userService: userService)
                     reactor.isStubEnabled = true
-                    signUpReactor = SignUpReactor(userService: userService)
+                    signUpReactor = SignUpReactor(userService: userService, authService: authService)
                     
                     let signUpFactory = { () -> SignUpFirstViewController in
                         let controller = SignUpFirstViewController(reactor: signUpReactor) { () -> SignUpSecondViewController in
@@ -211,7 +211,7 @@ class LoginViewControllerSpec: QuickSpec {
                 beforeEach {
                     reactor = LoginViewReactor(authService: authService, userService: userService)
                     reactor.isStubEnabled = true
-                    signUpReactor = SignUpReactor(userService: userService)
+                    signUpReactor = SignUpReactor(userService: userService, authService: authService)
                     
                     let signUpFactory = { () -> SignUpFirstViewController in
                         let controller = SignUpFirstViewController(reactor: signUpReactor) { () -> SignUpSecondViewController in
@@ -244,8 +244,6 @@ class LoginViewControllerSpec: QuickSpec {
                 }
             }
         }
-        
-        
         
     } // spec
 }

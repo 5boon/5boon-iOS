@@ -257,22 +257,36 @@ final class SignUpThirdViewController: BaseViewController, ReactorKit.View, Pure
             }).disposed(by: self.disposeBag)
         
         doneButton.rx.tap
+            .map { Reactor.Action.signUp }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isValidateThirdStepField }
+            .bind(to: doneButton.rx.isEnabled)
+            .disposed(by: self.disposeBag)
+        
+        // State
+        reactor.state.map { $0.isLoading }
+            .bind(to: loadingIndicator.rx.isAnimating)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.signupFinished }
+            .observeOn(MainScheduler.asyncInstance)
+            .filter { $0 }
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
                 self.presentFinish()
             }).disposed(by: self.disposeBag)
         
-        // State
-        
         // View
+        nameTextField.rx.text
+            .map { Reactor.Action.setName($0) }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
     }
     
     // MARK: - Route
     private func presentFinish() {
-//        let reactor = SignUpFinishedViewReactor()
-//        let controller = SignUpFinishedViewController(reactor: reactor)
-//        controller.modalPresentationStyle = .fullScreen
-//        self.present(controller, animated: false, completion: nil)
         let controller = self.pushFinishedStepScreen()
         controller.modalPresentationStyle = .fullScreen
         self.present(controller, animated: false, completion: nil)
