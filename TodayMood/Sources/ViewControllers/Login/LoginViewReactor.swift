@@ -13,14 +13,14 @@ class LoginViewReactor: Reactor {
     
     enum Action {
         case login(userName: String?, password: String?)
-        case setEmail(String?)
+        case setID(String?)
         case setPassword(String?)
     }
     
     enum Mutation {
         case setLoggedIn(Bool)
         case setLoading(Bool)
-        case setEmail(String?)
+        case setID(String?)
         case setPassword(String?)
     }
     
@@ -28,7 +28,7 @@ class LoginViewReactor: Reactor {
         var isLoggedIn: Bool = false
         var isLoading: Bool = false
         var isLoginValidate: Bool = false
-        var email: String?
+        var userID: String?
         var password: String?
     }
     
@@ -58,8 +58,8 @@ class LoginViewReactor: Reactor {
                 .map(Mutation.setLoggedIn)
             return Observable.concat(startLoading, request, endLoading)
             
-        case .setEmail(let email):
-            return Observable.just(.setEmail(email))
+        case .setID(let email):
+            return Observable.just(.setID(email))
             
         case .setPassword(let password):
             return Observable.just(.setPassword(password))
@@ -76,15 +76,15 @@ class LoginViewReactor: Reactor {
         case .setLoading(let isLoading):
             state.isLoading = isLoading
             
-        case .setEmail(let email):
-            state.email = email
+        case .setID(let userID):
+            state.userID = userID
             let password = self.currentState.password
-            state.isLoginValidate = String.validateEmail(email) && String.validatePassword(password)
+            state.isLoginValidate = String.validateID(userID) && String.validatePassword(password)
             
         case .setPassword(let password):
             state.password = password
-            let email = self.currentState.email
-            state.isLoginValidate = String.validateEmail(email) && String.validatePassword(password)
+            let userID = self.currentState.userID
+            state.isLoginValidate = String.validateID(userID) && String.validatePassword(password)
         }
         return state
     }
@@ -98,8 +98,8 @@ class LoginViewReactor: Reactor {
     }
     
     private func validationCheck() -> Bool {
-        guard let email = self.currentState.email else { return false }
+        guard let userID = self.currentState.userID else { return false }
         guard let password = self.currentState.password else { return false }
-        return email.isNotEmpty && password.isNotEmpty
+        return userID.isNotEmpty && password.isNotEmpty
     }
 }

@@ -343,12 +343,12 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
             }).disposed(by: self.disposeBag)
         
         emailTextField.rx.text
-            .map { Reactor.Action.setEmail($0) }
+            .map { Reactor.Action.setID($0) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
         emailTextField.rx.clearText
-            .map { Reactor.Action.setEmail(nil) }
+            .map { Reactor.Action.setID(nil) }
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
