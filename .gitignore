@@ -132,4 +132,11 @@ iOSInjectionProject/
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 .DS_Store
+
+
+## Config Files
+Development.xcconfig
+Production.xcconfig
+
+
 # End of https://www.gitignore.io/api/xcode,swift,fastlane,carthage,cocoapods
