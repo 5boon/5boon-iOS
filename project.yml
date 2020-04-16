@@ -6,14 +6,14 @@ options:
   bundleIdPrefix: com.oboon
   deploymentTarget:
     iOS: '13.0'
-fileGroups:
-  - Config
+#fileGroups:
+#  - Config
 configs:
   Debug: debug
   Release: release
-configFiles:
-  Debug: Config/Development.xcconfig
-  Release: Config/Production.xcconfig
+#configFiles:
+#  Debug: Config/Development.xcconfig
+#  Release: Config/Production.xcconfig
 targets:
   TodayMood:
     type: application
@@ -38,9 +38,6 @@ targets:
         }
     settings:
       INFOPLIST_FILE: TodayMood/Supporting Files/Info.plist
-#    configFiles:
-#      Debug: 'Pods/Target Support Files/Pods-TodayMood/Pods-TodayMood.debug.xcconfig'
-#      Release: 'Pods/Target Support Files/Pods-TodayMood/Pods-TodayMood.release.xcconfig'
     sources:
     - TodayMood/Sources
     - path: 'TodayMood/Supporting Files'
