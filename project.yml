@@ -6,14 +6,14 @@ options:
   bundleIdPrefix: com.oboon
   deploymentTarget:
     iOS: '13.0'
-#fileGroups:
-#  - Config
+fileGroups:
+  - Config
 configs:
   Debug: debug
   Release: release
-#configFiles:
-#  Debug: Config/Development.xcconfig
-#  Release: Config/Production.xcconfig
+configFiles:
+  Debug: Config/Development.xcconfig
+  Release: Config/Production.xcconfig
 targets:
   TodayMood:
     type: application
