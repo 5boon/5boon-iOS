@@ -41,8 +41,8 @@ extension AuthAPI: TargetType {
                 "username": userName,
                 "password": password,
                 "scope": "read write",
-                "client_id": Constants.OAuthKeys.clientID,
-                "client_secret": Constants.OAuthKeys.clientSecret,
+                "client_id": Secrets.clientID,
+                "client_secret": Secrets.clientSecret,
                 "grant_type": "password"
             ]
             return .requestParameters(parameters: params, encoding: URLEncoding.default)

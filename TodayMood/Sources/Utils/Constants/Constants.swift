@@ -18,15 +18,6 @@ struct Constants {
         static let refreshToken = "refresh_token"
     }
     
-    /// OAuth 키
-    struct OAuthKeys {
-        @BundleInfoWrapper(key: "ClientID")
-        static var clientID: String
-        
-        @BundleInfoWrapper(key: "ClientSecret")
-        static var clientSecret: String
-    }
-    
     /// URL 
     struct URLs {
         @BundleInfoWrapper(key: "BaseURL")
