@@ -15,8 +15,8 @@ jobs:
     - name: Generate Secret File 
       run: |
         pwd
-        chmod 755 ./github/workflows/secret.py
-        python ./github/workflows/secret.py
+        ls
+        python ./.github/workflows/secret.py
     - name: Install and run xcodegen
       run: |
         brew install xcodegen

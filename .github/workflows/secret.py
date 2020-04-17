@@ -1,4 +1,4 @@
-source_dir = "../../TodayMood/Sources/"
+source_dir = "./TodayMood/Sources/"
 secret_file = "Secrets.swift"
 full_path = source_dir + secret_file
 secret_content = "struct Secrets {\n\tstatic let clientID = \"\"\n\tstatic let clientSecret = \"\"\n}"
