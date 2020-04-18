@@ -12,6 +12,9 @@ jobs:
             destination: platform=iOS Simulator,name=iPhone 8,OS=13.0
     steps:
     - uses: actions/checkout@v1
+    - name: Generate Secret File 
+      run: |
+        python ./.github/workflows/secret.py
     - name: Install and run xcodegen
       run: |
         brew install xcodegen

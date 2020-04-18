@@ -133,10 +133,8 @@ iOSInjectionProject/
 
 .DS_Store
 
-
-## Config Files
-Development.xcconfig
-Production.xcconfig
+## Secret File
+Secrets.swift
 
 
 # End of https://www.gitignore.io/api/xcode,swift,fastlane,carthage,cocoapods

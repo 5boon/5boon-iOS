@@ -21,9 +21,6 @@ protocol AuthServiceType {
 final class AuthService: AuthServiceType {
     
     // MARK: Properties
-    private var cliendID: String = Constants.OAuthKeys.clientID
-    private var clientSecret: String = Constants.OAuthKeys.clientSecret
-    
     private(set) var currentAccessToken: AccessToken?
     
     private let navigator: NavigatorType
