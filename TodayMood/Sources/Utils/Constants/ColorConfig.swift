@@ -64,4 +64,7 @@ extension UIColor {
     static var invalidColor: UIColor {
         return UIColor(named: "InvalidColor")!
     }
+    static var navigationBackground: UIColor {
+        return UIColor(named: "NavigationBackground")!
+    }
 }
