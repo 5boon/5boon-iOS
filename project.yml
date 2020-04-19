@@ -25,8 +25,6 @@ targets:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UILaunchStoryboardName: LaunchScreen
         BaseURL: $(BASE_URL)
-        ClientID: $(CLIENT_ID)
-        ClientSecret: $(CLIENT_SECRET)
         UIViewControllerBasedStatusBarAppearance: true
         UIStatusBarStyle: UIStatusBarStyleLightContent
         NSAppTransportSecurity: {

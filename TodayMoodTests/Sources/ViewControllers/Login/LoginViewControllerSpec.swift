@@ -15,12 +15,12 @@ class LoginViewControllerSpec: QuickSpec {
     override func spec() {
         var authService: StubAuthService!
         var userService: StubUserService!
-
+        
         beforeEach {
-          authService = StubAuthService()
-          userService = StubUserService()
+            authService = StubAuthService()
+            userService = StubUserService()
         }
-
+        
         // 1.
         describe("로그인 화면에서") {
             var reactor: LoginViewReactor!
@@ -47,11 +47,14 @@ class LoginViewControllerSpec: QuickSpec {
                     viewController = LoginViewController(reactor: reactor,
                                                          presentMainScreen: {},
                                                          findIDViewControllerFactory: {
-                                                            return FindIDViewController(reactor: FindIDViewController.Reactor(userService: userService))
+                                                            return FindIDViewController(reactor: FindIDViewController.Reactor(userService: userService),
+                                                                                        findPasswordViewControllerFactory: {
+                                                                                            FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService))
+                                                            })
                     },
                                                          findPasswordViewControllerFactory: { return FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService)) },
                                                          signUpViewControllerFactory: signUpFactory)
-
+                    
                     _ = viewController.view
                 }
                 
@@ -93,11 +96,14 @@ class LoginViewControllerSpec: QuickSpec {
                 viewController = LoginViewController(reactor: reactor,
                                                      presentMainScreen: { presentMainScreen = true },
                                                      findIDViewControllerFactory: {
-                                                        return FindIDViewController(reactor: FindIDViewController.Reactor(userService: userService))
+                                                        return FindIDViewController(reactor: FindIDViewController.Reactor(userService: userService),
+                                                                                    findPasswordViewControllerFactory: {
+                                                                                        FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService))
+                                                        })
                 },
                                                      findPasswordViewControllerFactory: { return FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService)) },
                                                      signUpViewControllerFactory: signUpFactory)
-
+                
                 _ = viewController.view
             }
             
@@ -140,7 +146,10 @@ class LoginViewControllerSpec: QuickSpec {
                     viewController = LoginViewController(reactor: reactor,
                                                          presentMainScreen: { },
                                                          findIDViewControllerFactory: {
-                                                            return FindIDViewController(reactor: FindIDViewController.Reactor(userService: userService))
+                                                            return FindIDViewController(reactor: FindIDViewController.Reactor(userService: userService),
+                                                                                        findPasswordViewControllerFactory: {
+                                                                                            FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService))
+                                                            })
                     },
                                                          findPasswordViewControllerFactory: { return FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService)) },
                                                          signUpViewControllerFactory: signUpFactory)
@@ -184,7 +193,10 @@ class LoginViewControllerSpec: QuickSpec {
                                                          presentMainScreen: { },
                                                          findIDViewControllerFactory: {
                                                             presentFindIDScreen = true
-                                                            return FindIDViewController(reactor: FindIDViewController.Reactor(userService: userService))
+                                                            return FindIDViewController(reactor: FindIDViewController.Reactor(userService: userService),
+                                                                                        findPasswordViewControllerFactory: {
+                                                                                            FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService))
+                                                            })
                     },
                                                          findPasswordViewControllerFactory: { return FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService)) },
                                                          signUpViewControllerFactory: signUpFactory)
@@ -228,7 +240,10 @@ class LoginViewControllerSpec: QuickSpec {
                     viewController = LoginViewController(reactor: reactor,
                                                          presentMainScreen: { },
                                                          findIDViewControllerFactory: {
-                                                            return FindIDViewController(reactor: FindIDViewController.Reactor(userService: userService))
+                                                            return FindIDViewController(reactor: FindIDViewController.Reactor(userService: userService),
+                                                                                        findPasswordViewControllerFactory: {
+                                                                                            FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService))
+                                                            })
                     },
                                                          findPasswordViewControllerFactory: {
                                                             presentFindPWScreen = true

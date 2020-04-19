@@ -19,11 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>113</string>
-	<key>ClientID</key>
-	<string>$(CLIENT_ID)</string>
-	<key>ClientSecret</key>
-	<string>$(CLIENT_SECRET)</string>
+	<string>119</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

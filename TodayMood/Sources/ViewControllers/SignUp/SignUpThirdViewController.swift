@@ -273,6 +273,7 @@ final class SignUpThirdViewController: BaseViewController, ReactorKit.View, Pure
         reactor.state.map { $0.signupFinished }
             .observeOn(MainScheduler.asyncInstance)
             .filter { $0 }
+            .distinctUntilChanged()
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
                 self.presentFinish()
