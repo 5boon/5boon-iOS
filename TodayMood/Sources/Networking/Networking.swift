@@ -13,6 +13,7 @@ import RxSwift
 // MARK: typealias API Networking
 typealias UserNetworking = Networking<UserAPI>
 typealias AuthNetworking = Networking<AuthAPI>
+typealias MoodNetworking = Networking<MoodAPI>
 
 final class Networking<Target: TargetType>: MoyaProvider<Target> {
     init(plugins: [PluginType] = []) {
