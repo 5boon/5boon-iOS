@@ -28,7 +28,10 @@ class FindIDViewControllerSpec: QuickSpec {
                 beforeEach {
                     reactor = FindIDViewReactor(userService: userService)
                     reactor.isStubEnabled = true
-                    viewController = FindIDViewController(reactor: reactor)
+                    viewController = FindIDViewController(reactor: reactor,
+                                                          findPasswordViewControllerFactory: {
+                                                            FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService))
+                    })
                     _ = viewController.view
                 }
                 
@@ -58,7 +61,10 @@ class FindIDViewControllerSpec: QuickSpec {
                 beforeEach {
                     reactor = FindIDViewReactor(userService: userService)
                     reactor.isStubEnabled = true
-                    viewController = FindIDViewController(reactor: reactor)
+                    viewController = FindIDViewController(reactor: reactor,
+                                                          findPasswordViewControllerFactory: {
+                                                            FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService))
+                    })
                     _ = viewController.view
                     
                     reactor.stub.state.value.findResult = UserFixture.kanz
@@ -83,7 +89,10 @@ class FindIDViewControllerSpec: QuickSpec {
                 beforeEach {
                     reactor = FindIDViewReactor(userService: userService)
                     reactor.isStubEnabled = true
-                    viewController = FindIDViewController(reactor: reactor)
+                    viewController = FindIDViewController(reactor: reactor,
+                                                          findPasswordViewControllerFactory: {
+                                                            FindPasswordViewController(reactor: FindPasswordViewController.Reactor(userService: userService))
+                    })
                     _ = viewController.view
                     
                     reactor.stub.state.value.failedText = "해당 ID를 사용하는 사용자가 없습니다."
