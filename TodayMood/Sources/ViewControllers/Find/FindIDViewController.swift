@@ -25,7 +25,6 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
     
     typealias Reactor = FindIDViewReactor
     
-    // MARK: Properties
     private struct Metric {
         static let backButtonTop: CGFloat = 52.0
         static let leftRightPadding: CGFloat = 36.0
@@ -155,9 +154,14 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         $0.isHidden = true
     }
     
+    // MARK: Properties
+    let findPasswordViewControllerFactory: () -> FindPasswordViewController
+    
     // MARK: - Initializing
-    init(reactor: Reactor) {
+    init(reactor: Reactor,
+         findPasswordViewControllerFactory: @escaping () -> FindPasswordViewController) {
         defer { self.reactor = reactor }
+        self.findPasswordViewControllerFactory = findPasswordViewControllerFactory
         super.init()
     }
     
@@ -356,8 +360,7 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
     
     // MARK: - Route
     private func pushToFindPassword() {
-        let reactor = FindPasswordViewReactor(userService: UserService(networking: UserNetworking()))
-        let viewController = FindPasswordViewController(reactor: reactor)
+        let viewController = findPasswordViewControllerFactory()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }

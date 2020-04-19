@@ -132,8 +132,9 @@ extension CompositionRoot {
             let reactor = LoginViewReactor(authService: authService,
                                            userService: userService)
             
-            let findIDFactory = self.configureFindIDScreen(userService: userService)
             let findPasswordFactory = self.configureFindPasswordScreen(userService: userService)
+            let findIDFactory = self.configureFindIDScreen(userService: userService,
+                                                           findPasswordViewControllerFactory: findPasswordFactory)
             let signUpViewControllerFactory = self.configureSignUpScreen(userService: userService,
                                                                          authService: authService,
                                                               presentMainScreen: presentMainScreen)
@@ -180,10 +181,12 @@ extension CompositionRoot {
         }
     }
     
-    static func configureFindIDScreen(userService: UserServiceType) -> () -> FindIDViewController {
+    static func configureFindIDScreen(userService: UserServiceType,
+                                      findPasswordViewControllerFactory: @escaping () -> FindPasswordViewController) -> () -> FindIDViewController {
         return {
             let reactor = FindIDViewReactor(userService: userService)
-            return FindIDViewController(reactor: reactor)
+            return FindIDViewController(reactor: reactor,
+                                        findPasswordViewControllerFactory: findPasswordViewControllerFactory)
         }
     }
     
