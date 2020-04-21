@@ -64,7 +64,12 @@ extension UIColor {
     static var invalidColor: UIColor {
         return UIColor(named: "InvalidColor")!
     }
+    /// F9F9F9
     static var navigationBackground: UIColor {
         return UIColor(named: "NavigationBackground")!
+    }
+    /// 949494
+    static var textViewPlaceholder: UIColor {
+        return UIColor(named: "TextViewPlaceholder")!
     }
 }
