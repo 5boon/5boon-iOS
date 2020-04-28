@@ -1,0 +1,45 @@
+default_platform(:ios)
+
+platform :ios do
+  #desc "Description of what the lane does"
+
+  before_all do 
+
+  end 
+
+  lane :develop do | options | 
+    changelog = read_changelog(
+      changelog_path: './CHANGELOG.md', 
+      section_identifier: '[Unreleased]',
+      excluded_markdown_elements: ['-', '###']
+    )
+    version_number = get_version_number(xcodeproj: "TodayMood.xcodeproj")
+    build_number = get_build_number(xcodeproj: "TodayMood.xcodeproj")
+    time = Time.new 
+
+    output_name = ENV['IPA_NAME'] + '_' + version_number +'('+ build_number + ')' + '_' + time.strftime("%Y%m%d_%H-%M-%S") + ".ipa"
+    full_output = ENV['FASTLANE_PATH'] + version_number + '/' + time.strftime("%Y-%m-%d") + '/' + 'Build(' + build_number + ')' + ENV['DEVELOP_IPA_PATH']
+    add_badge(no_badge:false)
+  end 
+
+
+  lane :custom_lane do
+    # add actions here: https://docs.fastlane.tools/actions
+  end
+
+  after_all do |lane|
+    notification(
+      subtitle:"5boon-iOS [fastlane]", 
+      message:"Fastlane finished '#{lane}' Successfully 🎉", 
+      sound:"Glass"
+      )
+
+    #아이콘 이미지를 원상복구 합니다
+    reset_git_repo(
+      force: true,
+      files: [
+        "./TodayMood/Resources/Assets.xcassets/AppIcon.appiconset/"
+      ]
+    )
+  end 
+end

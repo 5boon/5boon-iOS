@@ -1,0 +1,5 @@
+gem 'fastlane-plugin-badge'
+gem 'fastlane-plugin-changelog'
+gem 'fastlane-plugin-slack_train'
+gem 'fastlane-plugin-firebase_app_distribution'
+gem 'fastlane-plugin-changelog'

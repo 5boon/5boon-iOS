@@ -35,6 +35,8 @@ targets:
             }
         }
     settings:
+      base: 
+        CURRENT_PROJECT_VERSION: 1
       INFOPLIST_FILE: TodayMood/Supporting Files/Info.plist
     sources:
     - TodayMood/Sources

@@ -1,0 +1,13 @@
+git_url("git@github.com:techinpark/certificate.git")
+storage_mode("git")
+
+# The default type, can be: appstore, adhoc, enterprise or development
+type("development") 
+app_identifier(["com.oboon.TodayMood"])
+
+# For all available options run `fastlane match --help`
+# Remove the # in the beginning of the line to enable the other options
+
+username("techin.park@daum.net")
+
+
