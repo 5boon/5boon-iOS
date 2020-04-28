@@ -37,6 +37,15 @@ targets:
     settings:
       base: 
         CURRENT_PROJECT_VERSION: 1
+        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: U6GQL8JQMT
+      configs:
+        Debug:
+          CODE_SIGN_IDENTITY: iPhone Developer
+          PROVISIONING_PROFILE_SPECIFIER: match Development com.oboon.TodayMood
+        Release:
+          CODE_SIGN_IDENTITY: iPhone Distribution
+          PROVISIONING_PROFILE_SPECIFIER: match AppStore com.oboon.TodayMood
       INFOPLIST_FILE: TodayMood/Supporting Files/Info.plist
     sources:
     - TodayMood/Sources
@@ -52,6 +61,9 @@ targets:
         - name: TodayMoodTests
           parallelizable: true
           randomExecutionOrder: true
+    attributes: 
+      ProvisioningStyle: Manual 
+      DevelopmentTeam: Techin Park
     postCompileScripts:
       - script: '${PODS_ROOT}/SwiftLint/swiftlint'
         name: Swiftlint

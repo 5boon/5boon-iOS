@@ -20,13 +20,13 @@ platform :ios do
     output_name = ENV['IPA_NAME'] + '_' + version_number +'('+ build_number + ')' + '_' + time.strftime("%Y%m%d_%H-%M-%S") + ".ipa"
     full_output = ENV['FASTLANE_PATH'] + version_number + '/' + time.strftime("%Y-%m-%d") + '/' + 'Build(' + build_number + ')' + ENV['DEVELOP_IPA_PATH']
     add_badge(no_badge:false)
-    match(type: "development", readonly:true)
+    match(type: "development")
     gym(
       # 키가 workspace 인것을 확인하자
       workspace: ENV['COMMON_XCWORKSPACE'], # [Project path]: 프로젝트 xcworkspace 경로 (xcodeproj 는 secondapp 참고)
       scheme: ENV['SCHEMA_FOR_DEVELOP'], # [Project scheme]: 프로젝트 scheme
       #xcconfig: ENV['XCCONFIG_DEVELOP'],
-      configuration: "Development",
+      configuration: "Debug",
       silent: true,
       clean: true,
       output_directory: full_output,  
