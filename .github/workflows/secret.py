@@ -12,5 +12,4 @@ f = open(full_path,'w')
 f.write(secret_content)
 f.close()
 
-print(client_id) 
 print("[+] Secrets.swift is Generated !")
