@@ -16,6 +16,8 @@ protocol AuthServiceType {
     func requestToken(userName: String, password: String) -> Observable<Void>
     
     func logout()
+    
+    func refreshToken(token: String) -> Observable<String?>
 }
 
 final class AuthService: AuthServiceType {
@@ -40,28 +42,29 @@ final class AuthService: AuthServiceType {
     fileprivate func saveAccessToken(_ accessToken: AccessToken) throws {
         try self.keychain.set(accessToken.accessToken, key: Constants.KeychainKeys.accessToken)
         try self.keychain.set(accessToken.tokenType, key: Constants.KeychainKeys.tokenType)
-        try self.keychain.set(accessToken.scope, key: Constants.KeychainKeys.scope)
         try self.keychain.set(accessToken.refreshToken, key: Constants.KeychainKeys.refreshToken)
+        try self.keychain.set(accessToken.expired, key: Constants.KeychainKeys.expired)
     }
     
     fileprivate func loadAccessToken() -> AccessToken? {
         guard let accessToken = self.keychain[Constants.KeychainKeys.accessToken],
             let tokenType = self.keychain[Constants.KeychainKeys.tokenType],
-            let scope = self.keychain[Constants.KeychainKeys.scope],
-            let refreshToken = self.keychain[Constants.KeychainKeys.refreshToken] else { return nil }
-        return AccessToken(accessToken: accessToken, tokenType: tokenType, scope: scope, refreshToken: refreshToken)
+            let refreshToken = self.keychain[Constants.KeychainKeys.refreshToken],
+            let expired = self.keychain[Constants.KeychainKeys.expired] else { return nil }
+        return AccessToken(accessToken: accessToken, tokenType: tokenType, refreshToken: refreshToken, expired: expired)
     }
     
     fileprivate func deleteAccessToken() {
         try? self.keychain.remove(Constants.KeychainKeys.accessToken)
         try? self.keychain.remove(Constants.KeychainKeys.tokenType)
-        try? self.keychain.remove(Constants.KeychainKeys.scope)
         try? self.keychain.remove(Constants.KeychainKeys.refreshToken)
+        try? self.keychain.remove(Constants.KeychainKeys.expired)
     }
     
     // MARK: Handle authorize
     func requestToken(userName: String, password: String) -> Observable<Void> {
-        return self.networking.request(.requestToken(userName: userName, password: password))
+        return self.networking.rx.request(.requestToken(userName: userName, password: password))
+            .debug()
             .asObservable()
             .map(AccessToken.self)
             .do(onNext: { [weak self] token in
@@ -74,5 +77,17 @@ final class AuthService: AuthServiceType {
     func logout() {
         self.currentAccessToken = nil
         self.deleteAccessToken()
+    }
+    
+    func refreshToken(token: String) -> Observable<String?> {
+        return self.networking.rx.request(.refreshToken(refreshToken: token))
+            .debug()
+            .asObservable()
+            .map(AccessToken.self)
+            .do(onNext: { [weak self] token in
+                try self?.saveAccessToken(token)
+                self?.currentAccessToken = token
+            })
+            .map { $0.accessToken }
     }
 }

@@ -22,4 +22,8 @@ final class StubAuthService: AuthServiceType {
     func logout() {
         Stubber.invoke(logout, args: (), default: Void())
     }
+    
+    func refreshToken(token: String) -> Observable<String?> {
+        return Stubber.invoke(refreshToken, args: (token))
+    }
 }
