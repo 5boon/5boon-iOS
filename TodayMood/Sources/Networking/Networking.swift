@@ -112,6 +112,6 @@ final class Networking<Target: TargetType>: MoyaProvider<Target> {
         }
         
         // 토큰이 만료된 경우
-        return authService.refreshToken(refreshToken: token.refreshToken)
+        return authService.refreshToken(token: token.refreshToken)
     }
 }

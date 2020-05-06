@@ -17,7 +17,7 @@ protocol AuthServiceType {
     
     func logout()
     
-    func refreshToken(refreshToken: String) -> Observable<String?>
+    func refreshToken(token: String) -> Observable<String?>
 }
 
 final class AuthService: AuthServiceType {
@@ -79,8 +79,8 @@ final class AuthService: AuthServiceType {
         self.deleteAccessToken()
     }
     
-    func refreshToken(refreshToken: String) -> Observable<String?> {
-        return self.networking.rx.request(.refreshToken(refreshToken: refreshToken))
+    func refreshToken(token: String) -> Observable<String?> {
+        return self.networking.rx.request(.refreshToken(refreshToken: token))
             .debug()
             .asObservable()
             .map(AccessToken.self)
