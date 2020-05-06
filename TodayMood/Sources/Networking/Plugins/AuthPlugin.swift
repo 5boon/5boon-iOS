@@ -9,7 +9,7 @@ import Moya
 
 struct AuthPlugin: PluginType {
     
-    private let authService: AuthServiceType
+    let authService: AuthServiceType
     
     init(authService: AuthServiceType) {
         self.authService = authService
