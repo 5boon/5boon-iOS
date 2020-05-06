@@ -9,13 +9,19 @@ import Foundation
 
 struct Constants {
     
+    struct OAuth {
+        static var basicCredentials: String {
+            return String.base64Credentials
+        }
+    }
+    
     /// 키체인 고유 키
     struct KeychainKeys {
         static let serviceName = "com.5boon.TodayMood"
         static let accessToken = "access_token"
         static let tokenType = "token_type"
-        static let scope = "scope"
         static let refreshToken = "refresh_token"
+        static let expired = "expired"
     }
     
     /// URL 
