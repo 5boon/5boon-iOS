@@ -15,10 +15,12 @@ class SplashViewControllerSpec: QuickSpec {
         
         var authService: StubAuthService!
         var userService: StubUserService!
-
+        var groupService: StubGroupService!
+        
         beforeEach {
-          authService = StubAuthService()
-          userService = StubUserService()
+            authService = StubAuthService()
+            userService = StubUserService()
+            groupService = StubGroupService()
         }
         
         //
@@ -26,7 +28,8 @@ class SplashViewControllerSpec: QuickSpec {
             context("didappear 된 경우") {
                 it("checkIfAuthenticated 리액터 액션 호출") {
                     let reactor = SplashViewReactor(userService: userService,
-                                                    authService: authService)
+                                                    authService: authService,
+                                                    groupService: groupService)
                     reactor.isStubEnabled = true
                     let viewController = SplashViewController(reactor: reactor,
                                                               presentLoginScreen: {},
@@ -47,7 +50,8 @@ class SplashViewControllerSpec: QuickSpec {
             beforeEach {
                 isExecuted = (false, false)
                 reactor = SplashViewReactor(userService: userService,
-                                            authService: authService)
+                                            authService: authService,
+                                            groupService: groupService)
                 reactor.isStubEnabled = true
                 viewController = SplashViewController(reactor: reactor,
                                                       presentLoginScreen: { isExecuted.presentLoginScreen = true },

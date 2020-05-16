@@ -27,10 +27,14 @@ class SplashViewReactor: Reactor {
     
     private let userService: UserServiceType
     private let authService: AuthServiceType
+    private let groupService: GroupServiceType
     
-    init(userService: UserServiceType, authService: AuthServiceType) {
+    init(userService: UserServiceType,
+         authService: AuthServiceType,
+         groupService: GroupServiceType) {
         self.userService = userService
         self.authService = authService
+        self.groupService = groupService
     }
     
     // MARK: Mutation
@@ -42,6 +46,9 @@ class SplashViewReactor: Reactor {
             }
             
             return self.userService.me()
+                .debug()
+                .flatMap { _ in self.groupService.groupList() }
+                .debug()
                 .map { _ in true }
                 .catchErrorJustReturn(false)
                 .map(Mutation.setAuthenticated)   

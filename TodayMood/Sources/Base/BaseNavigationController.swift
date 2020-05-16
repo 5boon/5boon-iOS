@@ -33,7 +33,8 @@ class BaseNavigationController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationBar.prefersLargeTitles = true
+        self.navigationBar.prefersLargeTitles = false
+        self.navigationBar.isTranslucent = false
         /*
         self.navigationBar.largeTitleTextAttributes = [
             NSAttributedString.Key.foregroundColor: Color.title

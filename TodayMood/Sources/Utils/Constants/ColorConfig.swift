@@ -64,4 +64,42 @@ extension UIColor {
     static var invalidColor: UIColor {
         return UIColor(named: "InvalidColor")!
     }
+    /// F9F9F9
+    static var navigationBackground: UIColor {
+        return UIColor(named: "NavigationBackground")!
+    }
+    /// 949494
+    static var textViewPlaceholder: UIColor {
+        return UIColor(named: "TextViewPlaceholder")!
+    }
+    /// F2F2F2
+    static var underLine: UIColor {
+        return UIColor(named: "ButtonBG")!
+    }
+    
+    // MARK: Mood
+    static var moodBest: UIColor {
+        return UIColor(named: "Best")!
+    }
+    
+    static var moodHappy: UIColor {
+        return UIColor(named: "Happy")!
+    }
+    
+    static var moodSoso: UIColor {
+        return UIColor(named: "Soso")!
+    }
+    
+    static var moodDepressed: UIColor {
+        return UIColor(named: "Depressed")!
+    }
+    
+    static var moodBad: UIColor {
+        return UIColor(named: "Bad")!
+    }
+    
+    static var moodTerrible: UIColor {
+        return UIColor(named: "Terrible")!
+    }
+
 }

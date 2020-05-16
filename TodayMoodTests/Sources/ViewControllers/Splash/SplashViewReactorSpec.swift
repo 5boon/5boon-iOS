@@ -16,14 +16,19 @@ class SplashViewReactorSpec: QuickSpec {
     override func spec() {
         var userService: StubUserService!
         var authService: StubAuthService!
+        var groupService: StubGroupService!
+        
         var reactor: SplashViewReactor!
         
         // initialState
         beforeEach {
             authService = StubAuthService()
             userService = StubUserService()
+            groupService = StubGroupService()
+            
             reactor = SplashViewReactor(userService: userService,
-                                        authService: authService)
+                                        authService: authService,
+                                        groupService: groupService)
             _ = reactor.state
         }
         
@@ -36,17 +41,20 @@ class SplashViewReactorSpec: QuickSpec {
         
         //
         describe("state의 isAuthenticated") {
-            context("checkAuthenicated 후 API 성공한 경우") {
+            context("checkAuthenicated 후 API 두가지 호출을 성공한 경우") {
                 it("isAuthenticated은 true이어야 한다.") {
                     Stubber.register(userService.me) { .just(UserFixture.kanz) }
+                    Stubber.register(groupService.groupList) { .just([GroupFixture.kanzGroup1, GroupFixture.kanzGroup2]) }
                     reactor.action.onNext(.checkIfAuthenticated)
                     expect(reactor.currentState.isAuthenticated) == true
+//                    expect(Stubber.executions(groupService.groupList).count) == 1
                 }
             }
             
-            context("checkAuthenicated 후 API 실패한 경우") {
+            context("checkAuthenicated 후 API 두가지 호출이 실패한 경우") {
                 it("isAuthenticated은 false이어야 한다.") {
                     Stubber.register(userService.me) { .error(StubError()) }
+                    Stubber.register(groupService.groupList) { .error(StubError()) }
                     reactor.action.onNext(.checkIfAuthenticated)
                     expect(reactor.currentState.isAuthenticated) == false
                 }
@@ -54,9 +62,24 @@ class SplashViewReactorSpec: QuickSpec {
         }
         
         context("checkAuthenicated action이 실행되면") {
-            it("me api이 호출되어야 한다.") {
+
+            it("me api -> groupList api 순으로 호출되어야 한다.") {
+                var identifiers: [String] = []
+                
+                Stubber.register(userService.me) {
+                    identifiers.append("me")
+                    return .just(UserFixture.kanz)
+                }
+                
+                Stubber.register(groupService.groupList) {
+                    identifiers.append("groupList")
+                    return .just([GroupFixture.kanzGroup1, GroupFixture.kanzGroup2])
+                }
+                
                 reactor.action.onNext(.checkIfAuthenticated)
                 expect(Stubber.executions(userService.me).count) == 1
+                expect(Stubber.executions(groupService.groupList).count) == 1
+                expect(identifiers) == ["me", "groupList"]
             }
         }
     }

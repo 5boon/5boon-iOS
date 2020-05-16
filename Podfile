@@ -31,6 +31,8 @@ def app_pods
   # UI
   pod 'SnapKit'
   pod 'EMTNeumorphicView'
+  pod 'UITextView+Placeholder'
+  
   
   # Logger
   pod 'SwiftyBeaver'

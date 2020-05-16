@@ -173,6 +173,7 @@ PODS:
   - SwiftLint (0.39.1)
   - SwiftyBeaver (1.8.4)
   - Then (2.6.0)
+  - "UITextView+Placeholder (1.4.0)"
   - URLNavigator (2.3.0)
 
 DEPENDENCIES:
@@ -207,6 +208,7 @@ DEPENDENCIES:
   - SwiftLint
   - SwiftyBeaver
   - Then
+  - "UITextView+Placeholder"
   - URLNavigator
 
 SPEC REPOS:
@@ -262,6 +264,7 @@ SPEC REPOS:
     - SwiftLint
     - SwiftyBeaver
     - Then
+    - "UITextView+Placeholder"
     - URLNavigator
 
 SPEC CHECKSUMS:
@@ -316,8 +319,9 @@ SPEC CHECKSUMS:
   SwiftLint: 55e96a4a4d537d4a3156859fc1c54bd24851a046
   SwiftyBeaver: f9a9aba96a6a6166e21682377804d728b0d20b95
   Then: 90cd104fd951cec1980a03f57704ad8f784d4d79
+  "UITextView+Placeholder": d7b0c400921f66523f3a85d74f774512e14f6502
   URLNavigator: 2593c0e2d293732ec5c44503cf54dceba1a68085
 
-PODFILE CHECKSUM: 45107896bc3c8f8326c838405a0effa7416c79ed
+PODFILE CHECKSUM: 3e8abb3b6288469ce53275f9026c02d4b9d872d8
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1

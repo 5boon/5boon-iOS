@@ -7,15 +7,6 @@
 
 import Foundation
 
-/**
- {
- "id": 8,
- "date_joined": "2020-03-10T10:30:35.031034Z",
- "nickname": "kanz1",
- "username": "kanz1",
- "email": ""
- }
- */
 struct User: ModelType, Identifiable {
     let id: Int?
     let userName: String?
