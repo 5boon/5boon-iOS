@@ -24,6 +24,12 @@ class BaseViewController: UIViewController {
     }
     private(set) var didSetupConstraints = false
 
+    /// There is a bug when trying to go back to previous view controller in a navigation controller
+    /// on iOS 11, a scroll view in the previous screen scrolls weirdly. In order to get this fixed,
+    /// we have to set the scrollView's `contentInsetAdjustmentBehavior` property to `.never` on
+    /// `viewWillAppear()` and set back to the original value on `viewDidAppear()`.
+    private var scrollViewOriginalContentInsetAdjustmentBehaviorRawValue: Int?
+    
     // MARK: - Initialize
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -50,6 +56,29 @@ class BaseViewController: UIViewController {
 
     deinit {
         logger.verbose("DEINIT: \(self.className)")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // fix iOS 11 scroll view bug
+        if #available(iOS 11, *) {
+            if let scrollView = self.view.subviews.first as? UIScrollView {
+                self.scrollViewOriginalContentInsetAdjustmentBehaviorRawValue =
+                    scrollView.contentInsetAdjustmentBehavior.rawValue
+                scrollView.contentInsetAdjustmentBehavior = .never
+            }
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if #available(iOS 11, *) {
+            if let scrollView = self.view.subviews.first as? UIScrollView,
+                let rawValue = self.scrollViewOriginalContentInsetAdjustmentBehaviorRawValue,
+                let behavior = UIScrollView.ContentInsetAdjustmentBehavior(rawValue: rawValue) {
+                scrollView.contentInsetAdjustmentBehavior = behavior
+            }
+        }
     }
 
     // MARK: - Layout Constraints

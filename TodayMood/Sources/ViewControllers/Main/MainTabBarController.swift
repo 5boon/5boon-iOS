@@ -46,8 +46,13 @@ final class MainTabBarController: UITabBarController, ReactorKit.View {
         self.presentMoodWriteFactory = presentMoodWriteFactory
         super.init(nibName: nil, bundle: nil)
         configureTabBar()
-        self.viewControllers = [homeViewController, groupViewController, statisticsViewController, settingsViewController]
-            .map { BaseNavigationController(rootViewController: $0) }
+        self.viewControllers = [
+            BaseNavigationController(rootViewController: homeViewController, navigationBarHidden: true),
+            BaseNavigationController(rootViewController: groupViewController),
+            BaseNavigationController(rootViewController: statisticsViewController),
+            BaseNavigationController(rootViewController: settingsViewController)
+        ]
+        //            .map { BaseNavigationController(rootViewController: $0) }
     }
     
     required init?(coder: NSCoder) {
@@ -55,7 +60,7 @@ final class MainTabBarController: UITabBarController, ReactorKit.View {
     }
     
     private func configureTabBar() {
-        self.tabBar.isHidden = true
+        self.tabBar.isHidden = false
         
         self.view.addSubview(tab)
         
