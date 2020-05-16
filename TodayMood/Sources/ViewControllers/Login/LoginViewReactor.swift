@@ -36,11 +36,14 @@ class LoginViewReactor: Reactor {
     
     private let authService: AuthServiceType
     private let userService: UserServiceType
+    private let groupService: GroupServiceType
     
     init(authService: AuthServiceType,
-         userService: UserServiceType) {
+         userService: UserServiceType,
+         groupService: GroupServiceType) {
         self.authService = authService
         self.userService = userService
+        self.groupService = groupService
     }
     
     // MARK: Mutation
@@ -53,6 +56,7 @@ class LoginViewReactor: Reactor {
             let endLoading: Observable<Mutation> = Observable.just(.setLoading(false))
             let request: Observable<Mutation> = self.login(userName: userName, password: password)
                 .flatMap { _ in self.fetchMeInfo() }
+                .flatMap { _ in self.fetchGroupList() }
                 .map { _ in true }
                 .catchErrorJustReturn(false)
                 .map(Mutation.setLoggedIn)
@@ -101,5 +105,9 @@ class LoginViewReactor: Reactor {
         guard let userID = self.currentState.userID else { return false }
         guard let password = self.currentState.password else { return false }
         return userID.isNotEmpty && password.isNotEmpty
+    }
+    
+    private func fetchGroupList() -> Observable<[PublicGroup]> {
+        return self.groupService.groupList()
     }
 }

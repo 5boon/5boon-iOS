@@ -15,12 +15,13 @@ import RxSwift
 typealias UserNetworking = Networking<UserAPI>
 typealias AuthNetworking = Networking<AuthAPI>
 typealias MoodNetworking = Networking<MoodAPI>
+typealias GroupNetworking = Networking<GroupAPI>
 
 final class Networking<Target: TargetType>: MoyaProvider<Target> {
     init(plugins: [PluginType] = []) {
         var finalPlugins: [PluginType] = []
         finalPlugins.append(contentsOf: plugins)
-        finalPlugins.append(NetworkLoggerPlugin())
+        // finalPlugins.append(NetworkLoggerPlugin())
         
         let endpointClosure = { (target: Target) -> Endpoint in
             let defaultEndpoint = MoyaProvider.defaultEndpointMapping(for: target)

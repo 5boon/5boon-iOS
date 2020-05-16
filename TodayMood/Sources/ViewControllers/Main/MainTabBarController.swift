@@ -21,7 +21,7 @@ final class MainTabBarController: UITabBarController, ReactorKit.View {
     typealias Reactor = MainTabBarReactor
     
     // MARK: Views
-    private let tab = MainTabBar().then {
+    let tab = MainTabBar().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.layer.masksToBounds = false
     }
@@ -34,12 +34,16 @@ final class MainTabBarController: UITabBarController, ReactorKit.View {
         return window.safeAreaInsets
     }
     
+    let presentMoodWriteFactory: () -> MoodWriteStatusViewController
+    
     init(reactor: MainTabBarReactor,
          homeViewController: HomeViewController,
          groupViewController: GroupViewController,
          statisticsViewController: StatisticsViewController,
-         settingsViewController: SettingsViewController) {
+         settingsViewController: SettingsViewController,
+         presentMoodWriteFactory: @escaping () -> MoodWriteStatusViewController) {
         defer { self.reactor = reactor }
+        self.presentMoodWriteFactory = presentMoodWriteFactory
         super.init(nibName: nil, bundle: nil)
         configureTabBar()
         self.viewControllers = [homeViewController, groupViewController, statisticsViewController, settingsViewController]
@@ -52,7 +56,7 @@ final class MainTabBarController: UITabBarController, ReactorKit.View {
     
     private func configureTabBar() {
         self.tabBar.isHidden = true
-
+        
         self.view.addSubview(tab)
         
         tab.snp.makeConstraints { make in
@@ -87,6 +91,7 @@ final class MainTabBarController: UITabBarController, ReactorKit.View {
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
                 logger.debug("centerButtonTap")
+                self.presentMoodWrite()
             }).disposed(by: self.disposeBag)
         
         // State
@@ -105,5 +110,13 @@ final class MainTabBarController: UITabBarController, ReactorKit.View {
         }
         guard let scrollView = viewController.view.subviews.first as? UIScrollView else { return }
         scrollView.setContentOffset(.zero, animated: true)
+    }
+    
+    // MARK: Route
+    private func presentMoodWrite() {
+        let controller = self.presentMoodWriteFactory()
+        let nav = controller.navigationWrap(navigationBarHidden: true)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: true, completion: nil)
     }
 }

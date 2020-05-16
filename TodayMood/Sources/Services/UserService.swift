@@ -54,6 +54,7 @@ final class UserService: UserServiceType {
             .map(User.self)
             .do(onNext: { [weak self] user in
                 self?.userSubject.onNext(user)
+                GlobalStates.shared.currentUser.accept(user)
             })
     }
     
