@@ -76,6 +76,10 @@ extension UIColor {
     static var underLine: UIColor {
         return UIColor(named: "ButtonBG")!
     }
+    /// 949494
+    static var timeLineSummary: UIColor {
+        return UIColor(named: "TextViewPlaceholder")!
+    }
     
     // MARK: Mood
     static var moodBest: UIColor {
