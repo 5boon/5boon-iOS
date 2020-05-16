@@ -15,10 +15,12 @@ class LoginViewControllerSpec: QuickSpec {
     override func spec() {
         var authService: StubAuthService!
         var userService: StubUserService!
+        var groupService: StubGroupService!
         
         beforeEach {
             authService = StubAuthService()
             userService = StubUserService()
+            groupService = StubGroupService()
         }
         
         // 1.
@@ -30,7 +32,7 @@ class LoginViewControllerSpec: QuickSpec {
                 var signUpReactor: SignUpReactor!
                 
                 beforeEach {
-                    reactor = LoginViewReactor(authService: authService, userService: userService)
+                    reactor = LoginViewReactor(authService: authService, userService: userService, groupService: groupService)
                     reactor.isStubEnabled = true
                     signUpReactor = SignUpReactor(userService: userService, authService: authService)
                     let signUpFactory = {
@@ -79,7 +81,7 @@ class LoginViewControllerSpec: QuickSpec {
             var signUpReactor: SignUpReactor!
             
             beforeEach {
-                reactor = LoginViewReactor(authService: authService, userService: userService)
+                reactor = LoginViewReactor(authService: authService, userService: userService, groupService: groupService)
                 reactor.isStubEnabled = true
                 signUpReactor = SignUpReactor(userService: userService, authService: authService)
                 let signUpFactory = {
@@ -126,7 +128,7 @@ class LoginViewControllerSpec: QuickSpec {
             
             context("회원가입 버튼을 누르면") {
                 beforeEach {
-                    reactor = LoginViewReactor(authService: authService, userService: userService)
+                    reactor = LoginViewReactor(authService: authService, userService: userService, groupService: groupService)
                     reactor.isStubEnabled = true
                     signUpReactor = SignUpReactor(userService: userService, authService: authService)
                     
@@ -173,7 +175,7 @@ class LoginViewControllerSpec: QuickSpec {
             
             context("아이디찾기 버튼을 클릭하면") {
                 beforeEach {
-                    reactor = LoginViewReactor(authService: authService, userService: userService)
+                    reactor = LoginViewReactor(authService: authService, userService: userService, groupService: groupService)
                     reactor.isStubEnabled = true
                     signUpReactor = SignUpReactor(userService: userService, authService: authService)
                     
@@ -221,7 +223,7 @@ class LoginViewControllerSpec: QuickSpec {
             
             context("비밀번호찾기 버튼을 클릭하면") {
                 beforeEach {
-                    reactor = LoginViewReactor(authService: authService, userService: userService)
+                    reactor = LoginViewReactor(authService: authService, userService: userService, groupService: groupService)
                     reactor.isStubEnabled = true
                     signUpReactor = SignUpReactor(userService: userService, authService: authService)
                     

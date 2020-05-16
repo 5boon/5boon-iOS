@@ -16,13 +16,16 @@ class LoginViewReactorSpec: QuickSpec {
     override func spec() {
         var userService: StubUserService!
         var authService: StubAuthService!
+        var groupService: StubGroupService!
         var reactor: LoginViewReactor!
         
         beforeEach {
             authService = StubAuthService()
             userService = StubUserService()
+            groupService = StubGroupService()
             reactor = LoginViewReactor(authService: authService,
-                                       userService: userService)
+                                       userService: userService,
+                                       groupService: groupService)
             _ = reactor.state
         }
         
@@ -47,10 +50,17 @@ class LoginViewReactorSpec: QuickSpec {
                         identifiers.append("me")
                         return .just(UserFixture.kanz)
                     }
+                    
+                    Stubber.register(groupService.groupList) {
+                        identifiers.append("groupList")
+                        return .just([GroupFixture.kanzGroup1, GroupFixture.kanzGroup2])
+                    }
+                    
                     reactor.action.onNext(.login(userName: "kanz", password: "111111"))
                     expect(Stubber.executions(authService.requestToken).count) == 1
                     expect(Stubber.executions(userService.me).count) == 1
-                    expect(identifiers) == ["requestToken", "me"]
+                    expect(Stubber.executions(groupService.groupList).count) == 1
+                    expect(identifiers) == ["requestToken", "me", "groupList"]
                 }
             }
         }
