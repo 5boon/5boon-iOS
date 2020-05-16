@@ -19,7 +19,6 @@ final class HomeViewController: BaseViewController, View {
     
     typealias Reactor = HomeViewReactor
     
-    // MARK: Properties
     private struct Metric {
         // static let topPadding: CGFloat = 16.0
     }
@@ -40,6 +39,8 @@ final class HomeViewController: BaseViewController, View {
     private let tableView = UITableView().then {
         $0.backgroundColor = UIColor.red.alpha(0.3)
     }
+    
+    // MARK: Properties
     
     // MARK: - Initializing
     init(reactor: Reactor) {
@@ -74,8 +75,16 @@ final class HomeViewController: BaseViewController, View {
     func bind(reactor: Reactor) {
         
         // Action
+        self.rx.viewDidLoad
+            .map { Reactor.Action.firstLoad }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
         
         // State
+        reactor.state.map { $0.moods }
+            .subscribe(onNext: { list in
+                logger.debug(list)
+            }).disposed(by: self.disposeBag)
         
         // View
     }

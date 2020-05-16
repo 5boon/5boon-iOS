@@ -12,35 +12,50 @@ import RxSwift
 class HomeViewReactor: Reactor {
     
     enum Action {
-        
+        case firstLoad
     }
     
     enum Mutation {
-        
+        case setMoods([Mood])
     }
     
     struct State {
-        
+        var moods: [Mood]
     }
     
-    let initialState = State()
+    let initialState: State
+    
+    private let moodService: MoodServiceType
+    
+    init(moodService: MoodServiceType) {
+        self.moodService = moodService
+        initialState = State(moods: [])
+    }
     
     // MARK: Mutation
     func mutate(action: Action) -> Observable<Mutation> {
-//        switch <#value#> {
-//        case <#pattern#>:
-//            <#code#>
-//        }
+        switch action {
+        case .firstLoad:
+            let request = self.requestMoods()
+            return request
+        }
         return .empty()
     }
     
     // MARK: Reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-//        switch mutation {
-//        case <#pattern#>:
-//            <#code#>
-//        }
+        switch mutation {
+        case .setMoods(let moods):
+            state.moods = moods
+        }
         return state
+    }
+    
+    private func requestMoods() -> Observable<Mutation> {
+        return self.moodService.moodList()
+            .map { list -> Mutation in
+                return .setMoods(list.results)
+        }
     }
 }

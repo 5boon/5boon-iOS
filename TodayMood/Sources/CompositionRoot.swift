@@ -219,13 +219,20 @@ extension CompositionRoot {
             
             let presentMoodWriteFactory = self.configureMoodWriteScreen(moodService: moodService)
             
+            let homeVC = self.configureHomeScreen(moodService: moodService)
+            
             let reactor = MainTabBarReactor()
             window.rootViewController = MainTabBarController(reactor: reactor,
-                                                             homeViewController: HomeViewController(reactor: HomeViewReactor()),
+                                                             homeViewController: homeVC,
                                                              groupViewController: GroupViewController(reactor: GroupViewReactor()),
                                                              statisticsViewController: StatisticsViewController(reactor: StatisticsViewReactor()),
                                                              settingsViewController: SettingsViewController(reactor: SettingsViewReactor()), presentMoodWriteFactory: presentMoodWriteFactory)
         }
+    }
+    
+    static func configureHomeScreen(moodService: MoodServiceType) -> HomeViewController {
+        let reactor = HomeViewReactor(moodService: moodService)
+        return HomeViewController(reactor: reactor)
     }
     
     static func configureMoodWriteScreen(moodService: MoodServiceType) -> () -> MoodWriteStatusViewController {
