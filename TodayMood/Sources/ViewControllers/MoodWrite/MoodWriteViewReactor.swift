@@ -113,7 +113,8 @@ class MoodWriteViewReactor: Reactor {
         return self.moodService.createMood(status: status.rawValue,
                                            simpleSummary: summary,
                                            groupList: groupList)
-            .map { _ -> Mutation in
+            .map { mood -> Mutation in
+                NotificationCenter.default.post(name: .createMoodFinished, object: mood)
                 return .setIsSendFinished(true)
         }.catchErrorJustReturn(.setIsSendFinished(false))
     }

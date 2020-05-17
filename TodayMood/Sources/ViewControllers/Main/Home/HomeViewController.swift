@@ -27,31 +27,16 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
     
     private struct Metric {
         static let gradientHeight: CGFloat = 375.0 / UIScreen.main.bounds.width * 241.0
-        
-        static let timeLineLeft: CGFloat = 44.0
-        static let timeLineTop: CGFloat = 23.0
-        
-        static let shareButtonRight: CGFloat = 37.0
-        static let shareButtonTop: CGFloat = 37.0
-        static let shareButtonWidthHeight: CGFloat = 24.0
-        
-        static let dateTop: CGFloat = 2.0
-        static let dateLeft: CGFloat = 44.0
-        static let dateRight: CGFloat = 12.0
-        
-        static let tableViewTop: CGFloat = 10.0
+        static let tableHeaderHeight: CGFloat = 75.0
     }
     
     private struct Color {
         static let background: UIColor = UIColor.baseBG
         static let refreshControl: UIColor = UIColor.keyColor
-        static let timeLine: UIColor = UIColor.keyColor
-        static let date: UIColor = UIColor.title
     }
     
     private struct Font {
-        static let timeLine: UIFont = UIFont.systemFont(ofSize: 13.0)
-        static let date: UIFont = UIFont.systemFont(ofSize: 20.0)
+        
     }
     
     private struct Reusable {
@@ -59,27 +44,13 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
     }
     
     // MARK: Views
-    private let gradientView = TopGradientView().then {
+    private let gradientView = HomeGradientView().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.colors = [UIColor.gradientTop, UIColor.gradientBottom]
     }
     
-    private let timeLineLabel = UILabel().then {
-        $0.font = Font.timeLine
-        $0.textColor = Color.timeLine
-        $0.text = "timeline"
-    }
-    
-    private let dateLabel = UILabel().then {
-        $0.font = Font.date
-        $0.textColor = Color.date
-        $0.text = "3월 4일의 기분"
-    }
-    
-    private let shareButton = EMTNeumorphicButton(type: .custom).then {
-        $0.setImage(UIImage(named: "timeline_share"), for: .normal)
-        $0.neumorphicLayer?.elementBackgroundColor = Color.background.cgColor
-        $0.neumorphicLayer?.cornerRadius = Metric.shareButtonWidthHeight / 2.0
+    private let tableHeaderView = TimeLineHeaderView().then {
+        $0.reactor = TimeLineHeaderViewReactor()
     }
     
     private let tableView = UITableView().then {
@@ -116,6 +87,7 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        addNotifications()
     }
     
     // MARK: - UI Setup
@@ -123,10 +95,8 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
         super.addViews()
         
         self.view.addSubview(gradientView)
-        self.view.addSubview(timeLineLabel)
-        self.view.addSubview(shareButton)
-        self.view.addSubview(dateLabel)
         self.view.addSubview(tableView)
+        tableView.tableHeaderView = tableHeaderView
         tableView.refreshControl = refreshControl
         self.view.addSubview(loadingIndicator)
     }
@@ -139,26 +109,14 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
             make.height.equalTo(Metric.gradientHeight)
         }
         
-        timeLineLabel.snp.makeConstraints { make in
-            make.left.equalTo(Metric.timeLineLeft)
-            make.top.equalTo(gradientView.snp.bottom).offset(Metric.timeLineTop)
-        }
-        
-        shareButton.snp.makeConstraints { make in
-            make.width.height.equalTo(Metric.shareButtonWidthHeight)
-            make.right.equalTo(-Metric.shareButtonRight)
-            make.top.equalTo(gradientView.snp.bottom).offset(Metric.shareButtonTop)
-        }
-        
-        dateLabel.snp.makeConstraints { make in
-            make.top.equalTo(timeLineLabel.snp.bottom).offset(Metric.dateTop)
-            make.left.equalTo(Metric.dateLeft)
-            make.right.lessThanOrEqualTo(shareButton.snp.left).offset(-Metric.dateRight)
-        }
-        
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(dateLabel.snp.bottom).offset(Metric.tableViewTop)
+            make.top.equalTo(gradientView.snp.bottom)
             make.left.right.bottom.equalToSuperview()
+        }
+        
+        tableHeaderView.snp.makeConstraints { make in
+            make.width.equalTo(tableView.snp.width)
+            make.height.equalTo(Metric.tableHeaderHeight)
         }
         
         loadingIndicator.snp.makeConstraints { make in
@@ -196,11 +154,6 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
             })
             .bind(to: refreshControl.rx.isRefreshing)
             .disposed(by: self.disposeBag)
-        
-        reactor.state.map { $0.moods }
-            .subscribe(onNext: { list in
-                // logger.debug(list)
-            }).disposed(by: self.disposeBag)
         
         let datasource = dataSource()
         reactor.state.map { $0.sections }
@@ -240,6 +193,17 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
                 return cell
             }
         })
+    }
+    
+    // MARK: - Notification
+    private func addNotifications() {
+        NotificationCenter.default.rx.notification(.createMoodFinished)
+            .subscribe(onNext: { [weak self] noti in
+                guard let self = self,
+                    let reactor = self.reactor,
+                    let mood = noti.object as? Mood else { return }
+                reactor.action.onNext(.createdMoodInsert(mood))
+            }).disposed(by: self.disposeBag)
     }
     
     // MARK: - Route

@@ -7,12 +7,12 @@
 
 import UIKit
 
-class TopGradientView: UIView {
+class TopGradientView: BaseView {
     
     var colors: [UIColor]!
     
-    override init(frame: CGRect) {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
     }
     
     required init?(coder: NSCoder) {

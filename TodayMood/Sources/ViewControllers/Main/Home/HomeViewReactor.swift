@@ -15,6 +15,7 @@ class HomeViewReactor: Reactor {
         case firstLoad
         case refresh
         case loadMore
+        case createdMoodInsert(Mood)
     }
     
     enum Mutation {
@@ -23,6 +24,7 @@ class HomeViewReactor: Reactor {
         case setLoading(Bool)
         case setRefreshing(Bool)
         case setNext(String?)
+        case createdMoodInsert(Mood)
     }
     
     struct State {
@@ -75,6 +77,9 @@ class HomeViewReactor: Reactor {
             let endLoading: Observable<Mutation> = Observable.just(.setLoading(false))
             let draftMoreRequest: Observable<Mutation> = self.requestMoreMoods(next: next)
             return Observable.concat(startLoading, draftMoreRequest, endLoading)
+            
+        case .createdMoodInsert(let mood):
+            return Observable.just(.createdMoodInsert(mood))
         }
     }
     
@@ -95,6 +100,10 @@ class HomeViewReactor: Reactor {
             state.next = next
         case .setNext(let next):
             state.next = next
+        case .createdMoodInsert(let mood):
+            var moods = state.moods
+            moods.insert(mood, at: 0)
+            state.moods = moods
         }
         return state
     }

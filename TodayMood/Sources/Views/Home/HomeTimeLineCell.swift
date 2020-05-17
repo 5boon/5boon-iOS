@@ -19,8 +19,8 @@ final class HomeTimeLineCell: BaseTableViewCell, ReactorKit.View {
     typealias Reactor = HomeTimeLineCellReactor
     
     private struct Metric {
-        static let containerLeft: CGFloat = 38.0
-        static let containerRight: CGFloat = 37.0
+        static let containerLeft: CGFloat = 16.0
+        static let containerRight: CGFloat = 16.0
         static let containerTopBottom: CGFloat = 8.0
         
         static let clockWidthHeight: CGFloat = 21.0
@@ -87,17 +87,17 @@ final class HomeTimeLineCell: BaseTableViewCell, ReactorKit.View {
         $0.textColor = Color.summaryLabel
         $0.numberOfLines = 2
     }
-
+    
     private let heightView = UIView().then {
         $0.backgroundColor = .clear
     }
     
     // MARK: Properties
-//    override var isHighlighted: Bool {
-//        didSet {
-//            self.containerView.neumorphicLayer?.depthType = isHighlighted ? .concave : .convex
-//        }
-//    }
+    //    override var isHighlighted: Bool {
+    //        didSet {
+    //            self.containerView.neumorphicLayer?.depthType = isHighlighted ? .concave : .convex
+    //        }
+    //    }
     
     // MARK: - Initializing
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -151,13 +151,13 @@ final class HomeTimeLineCell: BaseTableViewCell, ReactorKit.View {
         }
         
         timeLabel.snp.makeConstraints { make in
-//            make.top.equalTo(Metric.timeLabelTop)
+            //            make.top.equalTo(Metric.timeLabelTop)
             make.left.equalTo(clockImageView.snp.right).offset(Metric.clockRight)
             make.centerY.equalTo(clockImageView.snp.centerY)
         }
         
         moodLabel.snp.makeConstraints { make in
-//            make.top.equalTo(Metric.moodLabelTop)
+            //            make.top.equalTo(Metric.moodLabelTop)
             make.left.equalTo(timeLabel.snp.right).offset(Metric.moodLabelLeft)
             make.right.lessThanOrEqualTo(moreButton.snp.left).offset(-Metric.moreButtonRight)
             make.centerY.equalTo(clockImageView.snp.centerY)
@@ -189,7 +189,11 @@ final class HomeTimeLineCell: BaseTableViewCell, ReactorKit.View {
         reactor.state.map { $0.mood.summary }
             .bind(to: summaryLabel.rx.text)
             .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.mood.createdAt }
+            .filterNil()
+            .map { $0.timeAgo() }
+            .bind(to: timeLabel.rx.text)
+            .disposed(by: self.disposeBag)
     }
-    
-    
 }
