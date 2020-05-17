@@ -42,5 +42,6 @@ struct Constants {
     /// DateFormat
     struct DateFormats {
         static let serverFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        static let moodsQueryFormat = "yyyy-MM-dd" // 기분 조회시
     }
 }

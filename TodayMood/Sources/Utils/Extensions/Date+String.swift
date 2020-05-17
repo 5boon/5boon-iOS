@@ -17,13 +17,15 @@ extension Date {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         dateFormatter.calendar = calendar
-        dateFormatter.timeZone = tz ?? TimeZone(abbreviation: "UTC")
+        // dateFormatter.timeZone = tz ?? TimeZone(abbreviation: "UTC")
+        dateFormatter.timeZone = tz ?? TimeZone(identifier: "Asia/Seoul")
         return dateFormatter.string(from: self)
     }
     
     // MARK: - DateComponents
     func components(calendar: Calendar = Calendar(identifier: .gregorian)) -> DateComponents {
-        let timeZone = TimeZone(abbreviation: "UTC") ?? .current
+        // let timeZone = TimeZone(abbreviation: "UTC") ?? .current
+        let timeZone = TimeZone(identifier: "Asia/Seoul") ?? .current
         return calendar.dateComponents(in: timeZone, from: self)
     }
     
