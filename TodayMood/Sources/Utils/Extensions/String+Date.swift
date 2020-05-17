@@ -20,7 +20,7 @@ extension String {
     
     func convertServerDate() -> Date? {
         return self.date(dateFormat: Constants.DateFormats.serverFormat,
-                         tz: TimeZone(abbreviation: "UTC"),
+                         tz: TimeZone(identifier: "Asia/Seoul"),
                          calendar: Calendar(identifier: .gregorian))
     }
 }
