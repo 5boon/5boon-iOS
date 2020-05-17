@@ -37,11 +37,12 @@ final class UserService: UserServiceType {
     
     /// 회원가입
     func signup(id: String, password: String, email: String, userName: String) -> Observable<User> {
-        return self.networking.request(.signup(id: id,
+        return self.networking.rx.request(.signup(id: id,
                                                password: password,
                                                email: email,
                                                userName: userName))
             .debug()
+            .filterSuccessfulStatusCodes()
             .asObservable()
             .map(User.self)
     }
@@ -60,24 +61,27 @@ final class UserService: UserServiceType {
     
     /// 아이디 찾기
     func findID(username: String, email: String) -> Observable<User> {
-        return self.networking.request(.findID(username: username, email: email))
+        return self.networking.rx.request(.findID(username: username, email: email))
             .debug()
+            .filterSuccessfulStatusCodes()
             .asObservable()
             .map(User.self)
     }
     
     /// 비밀번호 찾기
     func findPassword(username: String, email: String) -> Observable<User> {
-        return self.networking.request(.findPassword(username: username, email: email))
+        return self.networking.rx.request(.findPassword(username: username, email: email))
             .debug()
+            .filterSuccessfulStatusCodes()
             .asObservable()
             .map(User.self)
     }
     
     /// 중복 여부 체크
     func checkDuplicateID(username: String?, email: String?) -> Observable<Void> {
-        return self.networking.request(.checkDuplicateID(username: username, email: email))
+        return self.networking.rx.request(.checkDuplicateID(username: username, email: email))
             .debug()
+            .filterSuccessfulStatusCodes()
             .asObservable()
             .map { _ in Void() }
     }
