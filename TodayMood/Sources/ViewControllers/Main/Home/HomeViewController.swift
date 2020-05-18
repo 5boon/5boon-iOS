@@ -50,7 +50,7 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
     }
     
     private let tableHeaderView = TimeLineHeaderView().then {
-        $0.reactor = TimeLineHeaderViewReactor()
+        $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private let tableView = UITableView().then {
@@ -134,9 +134,9 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
             .disposed(by: self.disposeBag)
         
         refreshControl.rx.controlEvent(.valueChanged)
-        .map { Reactor.Action.refresh }
-        .bind(to: reactor.action)
-        .disposed(by: self.disposeBag)
+            .map { Reactor.Action.refresh }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
         
         // State
         reactor.state.map { $0.isLoading }
@@ -180,8 +180,40 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
                 tableView?.deselectRow(at: indexPath, animated: true)
             }).disposed(by: self.disposeBag)
         
-//        tableView.rx.setDelegate(self)
-//            .disposed(by: self.disposeBag)
+        //        tableView.rx.setDelegate(self)
+        //            .disposed(by: self.disposeBag)
+        
+        // SubReactor
+        bindGradientReactor(reactor: reactor)
+        bindTimeLineHeaderReactor(reactor: reactor)
+    }
+    
+    private func bindGradientReactor(reactor: Reactor) {
+        gradientView.reactor = reactor.homeGradientViewReactor
+        
+        gradientView.rx.prevTapped
+            .map { _ in Reactor.Action.movePrev }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        gradientView.rx.nextTapped
+            .map { _ in Reactor.Action.moveNext }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        gradientView.rx.prevGesture
+            .map { _ in Reactor.Action.movePrev }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        gradientView.rx.nextGesture
+            .map { _ in Reactor.Action.moveNext }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func bindTimeLineHeaderReactor(reactor: Reactor) {
+        tableHeaderView.reactor = reactor.homeTimeLineHeaderViewReactor
     }
     
     private func dataSource() -> RxTableViewSectionedReloadDataSource<TimeLineSection> {
