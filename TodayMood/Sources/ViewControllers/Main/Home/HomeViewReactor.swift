@@ -150,6 +150,7 @@ class HomeViewReactor: Reactor {
     private func requestMoods(date: Date) -> Observable<Mutation> {
         return self.moodService.moodList(date: date.string(dateFormat: Constants.DateFormats.moodsQueryFormat))
             .map { list -> Mutation in
+                self.homeGradientViewReactor.action.onNext(.updateMood(list.results.first))
                 return .setMoods(list.results, next: list.next)
         }.catchErrorJustReturn(.setMoods([], next: nil))
     }

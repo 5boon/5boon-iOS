@@ -140,9 +140,20 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
     // MARK: - Binding
     func bind(reactor: Reactor) {
         
-        reactor.state.map { $0.latestMood }
-            .subscribe(onNext: { mood in
-                
+        reactor.state.map { ($0.user, $0.latestMood) }
+            .subscribe(onNext: { [weak self] (user, latestMood) in
+                guard let self = self, let userName = user?.userName else { return }
+                if let mood = latestMood {
+                    self.firstLineLabel.text = "오늘 \(userName)님의"
+                    self.firstLineLabel.font = Font.regular
+                    self.secondLineLabel.text = "기분은 \(mood.moodStatus.title)"
+                    self.secondLineLabel.font = Font.bold
+                } else {
+                    self.firstLineLabel.text = "어서오세요. \(userName)님"
+                    self.firstLineLabel.font = Font.bold
+                    self.secondLineLabel.text = "오늘의 기분을 등록해 주세요."
+                    self.secondLineLabel.font = Font.regular
+                }
             }).disposed(by: self.disposeBag)
         
         reactor.state.map { $0.currentDate }
