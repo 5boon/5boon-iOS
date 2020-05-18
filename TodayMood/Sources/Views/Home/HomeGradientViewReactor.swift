@@ -58,9 +58,21 @@ class HomeGradientViewReactor: Reactor {
         switch mutation {
         case .setCurrentDate(let date):
             state.currentDate = date
+            state.isEnableMoveToPrev = self.previousEnable(date)
+            state.isEnableMoveToNext = self.nextEnable(date)
         case .setMood(let mood):
             state.latestMood = mood
         }
         return state
+    }
+    
+    private func previousEnable(_ date: Date) -> Bool {
+        let today = self.currentState.today
+        return date.compare(today) == .orderedAscending || date.compare(today) == .orderedSame
+    }
+    
+    private func nextEnable(_ date: Date) -> Bool {
+        let today = self.currentState.today
+        return date.compare(today) != .orderedSame
     }
 }

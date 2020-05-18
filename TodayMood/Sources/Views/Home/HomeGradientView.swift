@@ -152,6 +152,16 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
                 let dateString = date.string(dateFormat: "yyyy년 M월 d일")
                 self.dateLabel.text = dateString
             }).disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isEnableMoveToPrev }
+            .map { !$0 }
+            .bind(to: prevButton.rx.isHidden)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isEnableMoveToNext }
+            .map { !$0 }
+            .bind(to: nextButton.rx.isHidden)
+            .disposed(by: self.disposeBag)
     }
 }
 
@@ -167,12 +177,14 @@ extension Reactive where Base: HomeGradientView {
     var prevGesture: Observable<Void> {
         return base.rx.swipeGesture(.right)
             .when(.recognized)
+            .filter { _ in self.base.reactor?.currentState.isEnableMoveToPrev == true }
             .map { _ in Void() }
     }
     
     var nextGesture: Observable<Void> {
         return base.rx.swipeGesture(.left)
             .when(.recognized)
+            .filter { _ in self.base.reactor?.currentState.isEnableMoveToNext == true }
             .map { _ in Void() }
     }
 }
