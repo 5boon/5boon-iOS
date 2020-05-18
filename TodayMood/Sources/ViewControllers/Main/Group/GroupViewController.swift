@@ -21,21 +21,31 @@ final class GroupViewController: BaseViewController, View {
     
     // MARK: Properties
     private struct Metric {
-        // static let topPadding: CGFloat = 16.0
+        static let cellHeight: CGFloat = 80.0
+        static let leftRightMargin: CGFloat = 11.0
+        static let topMargin: CGFloat = 16.0
+        
     }
     
     private struct Color {
-        // static let backgroundColor = UIColor.color(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        static let backgroundColor = UIColor.baseBG
+        
     }
     
     private struct Font {
         // static let title = UIFont.systemFont(ofSize: 15.0)
     }
     
+    private struct Localized {
+        static let title = NSLocalizedString("그룹", comment: "그룹")
+    }
+    
     // MARK: Views
     let label = UILabel().then {
         $0.text = "Group"
     }
+    
+    private let addButton = UIBarButtonItem(title: "추가", style: .plain, target: nil, action: nil)
     
     // MARK: - Initializing
     init(reactor: Reactor) {
@@ -50,6 +60,8 @@ final class GroupViewController: BaseViewController, View {
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = Localized.title
+        self.navigationItem.rightBarButtonItem = addButton
     }
     
     // MARK: - UI Setup
@@ -70,6 +82,18 @@ final class GroupViewController: BaseViewController, View {
         
         // Action
         
+        addButton.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                
+                let groupAddVC = GroupAddViewController(reactor: GroupAddViewReactor())
+                groupAddVC.modalPresentationStyle = .overFullScreen
+                groupAddVC.view.alpha = 0.9
+                self.present(groupAddVC, animated: false, completion: nil)
+                
+                
+            }).disposed(by: self.disposeBag)
+        
         // State
         
         // View
@@ -77,4 +101,6 @@ final class GroupViewController: BaseViewController, View {
     
     
     // MARK: - Route
+    
+    // MARK: - Private
 }
