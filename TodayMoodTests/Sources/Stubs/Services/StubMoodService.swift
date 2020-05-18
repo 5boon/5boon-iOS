@@ -11,7 +11,7 @@ import Stubber
 @testable import TodayMood
 
 final class StubMoodService: MoodServiceType {
-    func createMood(status: Int, simpleSummary: String, groupList: [Int]) -> Observable<Void> {
+    func createMood(status: Int, simpleSummary: String, groupList: [Int]) -> Observable<Mood> {
         return Stubber.invoke(createMood, args: (status, simpleSummary, groupList))
     }
 }
