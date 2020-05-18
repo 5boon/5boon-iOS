@@ -16,6 +16,8 @@ class MainTabBarControllerSpec: QuickSpec {
 
         var reactor: MainTabBarReactor!
         
+        var moodService: StubMoodService!
+        
         var homeVC: HomeViewController!
         var groupVC: GroupViewController!
         var statisticsVC: StatisticsViewController!
@@ -25,12 +27,17 @@ class MainTabBarControllerSpec: QuickSpec {
         
         describe("탭바 화면에서") {
             var presentWriteScreen: Bool = false
+            
+            beforeEach {
+                moodService = StubMoodService()
+            }
+            
             context("TabBar의 작성버튼을 클릭하면") {
                 beforeEach {
                     reactor = MainTabBarReactor()
                     reactor.isStubEnabled = true
                     
-                    homeVC = self.homeVC()
+                    homeVC = self.homeVC(moodService: moodService)
                     groupVC = self.groupVC()
                     statisticsVC = self.statisticsVC()
                     settingVC = self.settingVC()
@@ -55,8 +62,8 @@ class MainTabBarControllerSpec: QuickSpec {
         }
     }
     
-    func homeVC() -> HomeViewController {
-        let reactor = HomeViewReactor()
+    func homeVC(moodService: StubMoodService) -> HomeViewController {
+        let reactor = HomeViewReactor(moodService: moodService)
         return HomeViewController(reactor: reactor)
     }
     
