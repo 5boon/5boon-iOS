@@ -61,8 +61,21 @@ final class CompositionRoot {
         var presentMainScreen: (() -> Void)!
         var presentLoginScreen: (() -> Void)!
         
-        presentMainScreen = self.configurePresentMainScreen(window: window,
-                                                            moodService: moodService)
+        presentMainScreen = {
+            let presentMoodWriteFactory = self.configureMoodWriteScreen(moodService: moodService)
+            
+            let homeVC = self.configureHomeScreen(moodService: moodService)
+            let settingVC = self.configureSettingsScreen(authService: authService,
+                                                         presentLoginScreen: presentLoginScreen)
+            
+            let reactor = MainTabBarReactor()
+            window.rootViewController = MainTabBarController(reactor: reactor,
+                                                             homeViewController: homeVC,
+                                                             groupViewController: GroupViewController(reactor: GroupViewReactor()),
+                                                             statisticsViewController: StatisticsViewController(reactor: StatisticsViewReactor()),
+                                                             settingsViewController: settingVC,
+                                                             presentMoodWriteFactory: presentMoodWriteFactory)
+        }
         
         presentLoginScreen = self.configurePresentLoginScreen(window: window,
                                                               authService: authService,
@@ -214,19 +227,25 @@ extension CompositionRoot {
 
 // MARK: - Main
 extension CompositionRoot {
-    static func configurePresentMainScreen(window: UIWindow, moodService: MoodServiceType) -> () -> Void {
+    static func configurePresentMainScreen(window: UIWindow,
+                                           moodService: MoodServiceType,
+                                           authService: AuthServiceType,
+                                           presentLoginScreen: @escaping () -> Void) -> () -> Void {
         return {
             
             let presentMoodWriteFactory = self.configureMoodWriteScreen(moodService: moodService)
             
             let homeVC = self.configureHomeScreen(moodService: moodService)
+            let settingVC = self.configureSettingsScreen(authService: authService,
+                                                         presentLoginScreen: presentLoginScreen)
             
             let reactor = MainTabBarReactor()
             window.rootViewController = MainTabBarController(reactor: reactor,
                                                              homeViewController: homeVC,
                                                              groupViewController: GroupViewController(reactor: GroupViewReactor()),
                                                              statisticsViewController: StatisticsViewController(reactor: StatisticsViewReactor()),
-                                                             settingsViewController: SettingsViewController(reactor: SettingsViewReactor()), presentMoodWriteFactory: presentMoodWriteFactory)
+                                                             settingsViewController: settingVC,
+                                                             presentMoodWriteFactory: presentMoodWriteFactory)
         }
     }
     
@@ -252,7 +271,7 @@ extension CompositionRoot {
                 })
             }
             
-            var summaryViewController = MoodWriteSummaryViewController(reactor: reactor,
+            let summaryViewController = MoodWriteSummaryViewController(reactor: reactor,
                                                                        presentMoodWritePublicSettingViewControllerFactory: presentPublicSettingScreen)
             
             pushSummaryScreen = {
@@ -264,4 +283,9 @@ extension CompositionRoot {
         }
     }
 
+    static func configureSettingsScreen(authService: AuthServiceType,
+                                        presentLoginScreen: @escaping () -> Void) -> SettingsViewController {
+        let reactor = SettingsViewReactor(authService: authService)
+        return SettingsViewController(reactor: reactor, presentLoginScreen: presentLoginScreen)
+    }
 }
