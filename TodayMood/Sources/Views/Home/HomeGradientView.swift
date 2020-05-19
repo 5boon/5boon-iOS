@@ -24,6 +24,10 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
         static let howFeelTop: CGFloat = 16.0
         static let feelIconTop: CGFloat = 120.0
         static let feelIconRight: CGFloat = 30.0
+        
+        static let arrowBottom: CGFloat = 85.0
+        static let arrowLeft: CGFloat = 27.0
+        static let arrowRight: CGFloat = 27.0
     }
     
     private struct Color {
@@ -32,7 +36,8 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
     
     private struct Font {
         static let dateLabel: UIFont = UIFont.systemFont(ofSize: 14.0)
-        static let howFeelLabel: UIFont = UIFont.systemFont(ofSize: 20.0)
+        static let regular: UIFont = UIFont.systemFont(ofSize: 20.0)
+        static let bold: UIFont = UIFont.boldSystemFont(ofSize: 20.0)
     }
     
     // MARK: UI Views
@@ -42,15 +47,28 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
         $0.text = "2020년 3월 5일"
     }
     
-    private let howFeelLabel = UILabel().then {
-        $0.font = Font.howFeelLabel
+    private let firstLineLabel = UILabel().then {
+        $0.font = Font.regular
         $0.textColor = Color.label
-        $0.text = "오늘 지찬규님의\n기분은 최고에요"
-        $0.numberOfLines = 2
+        $0.text = "어서오세요. 지찬규님"
+    }
+    
+    private let secondLineLabel = UILabel().then {
+        $0.font = Font.bold
+        $0.textColor = Color.label
+        $0.text = "오늘의 기분을 등록해주세요."
     }
     
     private let feelIconImageView = UIImageView().then {
         $0.image = UIImage(named: MoodStatusTypes.happy.iconName)
+    }
+    
+    fileprivate let prevButton = UIButton().then {
+        $0.setImage(UIImage(named: "home_arrow_left"), for: .normal)
+    }
+    
+    fileprivate let nextButton = UIButton().then {
+        $0.setImage(UIImage(named: "home_arrow_right"), for: .normal)
     }
     
     // MARK: Properties
@@ -74,8 +92,12 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
         super.addViews()
         
         self.addSubview(dateLabel)
-        self.addSubview(howFeelLabel)
+        self.addSubview(firstLineLabel)
+        self.addSubview(secondLineLabel)
         self.addSubview(feelIconImageView)
+        
+        self.addSubview(prevButton)
+        self.addSubview(nextButton)
     }
     
     override func setupConstraints() {
@@ -87,8 +109,14 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
             make.right.equalTo(-Metric.labelRight)
         }
         
-        howFeelLabel.snp.makeConstraints { make in
+        firstLineLabel.snp.makeConstraints { make in
             make.top.equalTo(dateLabel.snp.bottom).offset(Metric.howFeelTop)
+            make.left.equalTo(Metric.labelLeft)
+            make.right.equalTo(-Metric.labelRight)
+        }
+        
+        secondLineLabel.snp.makeConstraints { make in
+            make.top.equalTo(firstLineLabel.snp.bottom)
             make.left.equalTo(Metric.labelLeft)
             make.right.equalTo(-Metric.labelRight)
         }
@@ -97,15 +125,77 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
             make.right.equalTo(-Metric.feelIconRight)
             make.top.equalTo(Metric.feelIconTop)
         }
+        
+        prevButton.snp.makeConstraints { make in
+            make.bottom.equalTo(-Metric.arrowBottom)
+            make.left.equalTo(Metric.arrowLeft)
+        }
+        
+        nextButton.snp.makeConstraints { make in
+            make.bottom.equalTo(-Metric.arrowBottom)
+            make.right.equalTo(-Metric.arrowRight)
+        }
     }
     
     // MARK: - Binding
     func bind(reactor: Reactor) {
         
-        // Action
+        reactor.state.map { ($0.user, $0.latestMood) }
+            .subscribe(onNext: { [weak self] (user, latestMood) in
+                guard let self = self, let userName = user?.userName else { return }
+                if let mood = latestMood {
+                    self.firstLineLabel.text = "오늘 \(userName)님의"
+                    self.firstLineLabel.font = Font.regular
+                    self.secondLineLabel.text = "기분은 \(mood.moodStatus.title)"
+                    self.secondLineLabel.font = Font.bold
+                } else {
+                    self.firstLineLabel.text = "어서오세요. \(userName)님"
+                    self.firstLineLabel.font = Font.bold
+                    self.secondLineLabel.text = "오늘의 기분을 등록해 주세요."
+                    self.secondLineLabel.font = Font.regular
+                }
+            }).disposed(by: self.disposeBag)
         
-        // State
+        reactor.state.map { $0.currentDate }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] date in
+                guard let self = self else { return }
+                let dateString = date.string(dateFormat: "yyyy년 M월 d일")
+                self.dateLabel.text = dateString
+            }).disposed(by: self.disposeBag)
         
-        // View
+        reactor.state.map { $0.isEnableMoveToPrev }
+            .map { !$0 }
+            .bind(to: prevButton.rx.isHidden)
+            .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.isEnableMoveToNext }
+            .map { !$0 }
+            .bind(to: nextButton.rx.isHidden)
+            .disposed(by: self.disposeBag)
+    }
+}
+
+extension Reactive where Base: HomeGradientView {
+    var prevTapped: ControlEvent<Void> {
+        return base.prevButton.rx.tap
+    }
+    
+    var nextTapped: ControlEvent<Void> {
+        return base.nextButton.rx.tap
+    }
+    
+    var prevGesture: Observable<Void> {
+        return base.rx.swipeGesture(.right)
+            .when(.recognized)
+            .filter { _ in self.base.reactor?.currentState.isEnableMoveToPrev == true }
+            .map { _ in Void() }
+    }
+    
+    var nextGesture: Observable<Void> {
+        return base.rx.swipeGesture(.left)
+            .when(.recognized)
+            .filter { _ in self.base.reactor?.currentState.isEnableMoveToNext == true }
+            .map { _ in Void() }
     }
 }

@@ -16,6 +16,9 @@ class HomeViewReactor: Reactor {
         case refresh
         case loadMore
         case createdMoodInsert(Mood)
+        
+        case moveNext
+        case movePrev
     }
     
     enum Mutation {
@@ -25,6 +28,8 @@ class HomeViewReactor: Reactor {
         case setRefreshing(Bool)
         case setNext(String?)
         case createdMoodInsert(Mood)
+        
+        case setCurrentDate(Date)
     }
     
     struct State {
@@ -38,16 +43,24 @@ class HomeViewReactor: Reactor {
             return [.timeLine(sectionItems)]
         }
         var next: String?
-        var date: Date? // 2020-03-14
+        var today: Date
+        var currentDate: Date
     }
     
     let initialState: State
     
     private let moodService: MoodServiceType
+    let homeGradientViewReactor: HomeGradientViewReactor
+    let homeTimeLineHeaderViewReactor: TimeLineHeaderViewReactor
     
     init(moodService: MoodServiceType) {
+        let today = Date.startOfToday()
         self.moodService = moodService
-        initialState = State(moods: [])
+        self.homeGradientViewReactor = HomeGradientViewReactor(currentDate: today)
+        self.homeTimeLineHeaderViewReactor = TimeLineHeaderViewReactor(currentDate: today)
+        initialState = State(moods: [],
+                             today: today,
+                             currentDate: today)
     }
     
     // MARK: Mutation
@@ -58,7 +71,7 @@ class HomeViewReactor: Reactor {
             let startRefreshing: Observable<Mutation> = Observable.just(.setRefreshing(true))
             let endRefresing: Observable<Mutation> = Observable.just(.setRefreshing(false))
             let clearPaging: Observable<Mutation> = self.clearPaging()
-            let moodsRequest: Observable<Mutation> = self.requestMoods()
+            let moodsRequest: Observable<Mutation> = self.requestMoods(date: self.currentState.currentDate)
             return Observable.concat(clearPaging, startRefreshing, moodsRequest, endRefresing)
             
         case .firstLoad:
@@ -66,7 +79,7 @@ class HomeViewReactor: Reactor {
             guard self.currentState.isLoading == false else { return .empty() }
             let startLoading: Observable<Mutation> = Observable.just(.setLoading(true))
             let endLoading: Observable<Mutation> = Observable.just(.setLoading(false))
-            let moodsRequest: Observable<Mutation> = self.requestMoods()
+            let moodsRequest: Observable<Mutation> = self.requestMoods(date: self.currentState.currentDate)
             return Observable.concat(startLoading, moodsRequest, endLoading)
             
         case .loadMore:
@@ -80,6 +93,26 @@ class HomeViewReactor: Reactor {
             
         case .createdMoodInsert(let mood):
             return Observable.just(.createdMoodInsert(mood))
+            
+        case .movePrev:
+            let prevDay = self.currentState.currentDate.add(.day, value: -1) ?? Date()
+            let prev: Observable<Mutation> = Observable.just(.setCurrentDate(prevDay))
+            let moodsRequest: Observable<Mutation> = self.requestMoods(date: prevDay)
+            
+            self.homeGradientViewReactor.action.onNext(.updateDate(prevDay))
+            self.homeTimeLineHeaderViewReactor.action.onNext(.update(prevDay))
+            
+            return Observable.concat(prev, moodsRequest)
+            
+        case .moveNext:
+            let nextDay = self.currentState.currentDate.add(.day, value: 1) ?? Date()
+            let next: Observable<Mutation> = Observable.just(.setCurrentDate(nextDay))
+            let moodsRequest: Observable<Mutation> = self.requestMoods(date: nextDay)
+            
+            self.homeGradientViewReactor.action.onNext(.updateDate(nextDay))
+            self.homeTimeLineHeaderViewReactor.action.onNext(.update(nextDay))
+            
+            return Observable.concat(next, moodsRequest)
         }
     }
     
@@ -104,6 +137,8 @@ class HomeViewReactor: Reactor {
             var moods = state.moods
             moods.insert(mood, at: 0)
             state.moods = moods
+        case .setCurrentDate(let date):
+            state.currentDate = date
         }
         return state
     }
@@ -112,17 +147,17 @@ class HomeViewReactor: Reactor {
         return Observable.just(.setNext(nil))
     }
     
-    private func requestMoods() -> Observable<Mutation> {
-        let date = self.currentState.date
-        return self.moodService.moodList(date: date?.string(dateFormat: Constants.DateFormats.moodsQueryFormat))
+    private func requestMoods(date: Date) -> Observable<Mutation> {
+        return self.moodService.moodList(date: date.string(dateFormat: Constants.DateFormats.moodsQueryFormat))
             .map { list -> Mutation in
+                self.homeGradientViewReactor.action.onNext(.updateMood(list.results.first))
                 return .setMoods(list.results, next: list.next)
         }.catchErrorJustReturn(.setMoods([], next: nil))
     }
     
     private func requestMoreMoods(next: String?) -> Observable<Mutation> {
-        let date = self.currentState.date
-        return self.moodService.moodList(date: date?.string(dateFormat: Constants.DateFormats.moodsQueryFormat),
+        let date = self.currentState.currentDate
+        return self.moodService.moodList(date: date.string(dateFormat: Constants.DateFormats.moodsQueryFormat),
                                          page: next)
             .map { list -> Mutation in
                 return .appendMoods(list.results, next: list.next)
