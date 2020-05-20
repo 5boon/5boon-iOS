@@ -46,7 +46,7 @@ class MoodWriteStatusViewControllerSpec: QuickSpec {
                 }
                 
                 it("한줄 메모 페이지로 이동한다.") {
-                    statusVC.reactor?.action.onNext(.selectStatus(.happy))
+                    statusVC.reactor?.action.onNext(.selectStatus(.good))
                     expect(pushToSummaryScreen).toEventually(beTrue())
                 }
             }

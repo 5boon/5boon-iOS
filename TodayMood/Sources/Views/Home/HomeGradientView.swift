@@ -60,7 +60,7 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
     }
     
     private let feelIconImageView = UIImageView().then {
-        $0.image = UIImage(named: MoodStatusTypes.happy.iconName)
+        $0.image = UIImage(named: MoodStatusTypes.good.iconName)
     }
     
     fileprivate let prevButton = UIButton().then {
