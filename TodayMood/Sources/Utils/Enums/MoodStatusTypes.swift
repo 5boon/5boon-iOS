@@ -16,25 +16,25 @@ enum MoodStatusTypes: Int, CaseIterable, IdentifiableType {
     var identity: Int { rawValue }
     
     case best = 25
-    case happy = 20
+    case good = 20
     case soso = 15
-    case depressed = 10
+    case mope = 10
     case bad = 5
-    case terrible = 0
+    case worst = 0
     
     var iconName: String {
         switch self {
         case .best:
             return "ic_best"
-        case .happy:
+        case .good:
             return "ic_happy"
         case .soso:
             return "ic_soso"
-        case .depressed:
+        case .mope:
             return "ic_terrible"
         case .bad:
             return "ic_bad"
-        case .terrible:
+        case .worst:
             return "ic_terrible"
         }
     }
@@ -43,15 +43,15 @@ enum MoodStatusTypes: Int, CaseIterable, IdentifiableType {
         switch self {
         case .best:
             return "최고에요"
-        case .happy:
+        case .good:
             return "좋아요"
         case .soso:
             return "그냥 그래요"
-        case .depressed:
+        case .mope:
             return "우울해요"
         case .bad:
             return "나빠요"
-        case .terrible:
+        case .worst:
             return "최악이에요"
         }
     }
@@ -60,15 +60,15 @@ enum MoodStatusTypes: Int, CaseIterable, IdentifiableType {
         switch self {
         case .best:
             return UIColor.moodBest
-        case .happy:
+        case .good:
             return UIColor.moodHappy
         case .soso:
             return UIColor.moodSoso
-        case .depressed:
+        case .mope:
             return UIColor.moodDepressed
         case .bad:
             return UIColor.moodBad
-        case .terrible:
+        case .worst:
             return UIColor.moodTerrible
         }
     }
