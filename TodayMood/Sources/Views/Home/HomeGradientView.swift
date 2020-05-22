@@ -154,6 +154,7 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
                     self.secondLineLabel.text = "오늘의 기분을 등록해 주세요."
                     self.secondLineLabel.font = Font.regular
                 }
+                self.animation()
             }).disposed(by: self.disposeBag)
         
         reactor.state.map { $0.currentDate }
@@ -174,8 +175,15 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
             .bind(to: nextButton.rx.isHidden)
             .disposed(by: self.disposeBag)
     }
+    
+    private func animation() {
+        guard let reactor = self.reactor, let latestMood = reactor.currentState.latestMood else { return }
+        self.gradientLayer.animateChanges(to: [latestMood.moodStatus.gradientTop, latestMood.moodStatus.gradientBottom],
+                                          duration: 1.0)
+    }
 }
 
+// MARK: Reactive Extension
 extension Reactive where Base: HomeGradientView {
     var prevTapped: ControlEvent<Void> {
         return base.prevButton.rx.tap
