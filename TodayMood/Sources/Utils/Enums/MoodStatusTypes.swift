@@ -72,4 +72,38 @@ enum MoodStatusTypes: Int, CaseIterable, IdentifiableType {
             return UIColor.moodTerrible
         }
     }
+    
+    var gradientTop: UIColor {
+        switch self {
+        case .best:
+            return UIColor(hexString: "#EA6D7D") ?? .clear
+        case .good:
+            return UIColor(hexString: "#EA8E9A") ?? .clear
+        case .soso:
+            return UIColor(hexString: "#F4B1BA") ?? .clear
+        case .mope:
+            return UIColor(hexString: "#9795FF") ?? .clear
+        case .bad:
+            return UIColor(hexString: "#5070C2") ?? .clear
+        case .worst:
+            return UIColor(hexString: "#494F67") ?? .clear
+        }
+    }
+    
+    var gradientBottom: UIColor {
+        switch self {
+        case .best:
+            return UIColor(hexString: "#EA8E9A") ?? .clear
+        case .good:
+            return UIColor(hexString: "#F4B1BA") ?? .clear
+        case .soso:
+            return UIColor(hexString: "#9795FF") ?? .clear
+        case .mope:
+            return UIColor(hexString: "#5070C2") ?? .clear
+        case .bad:
+            return UIColor(hexString: "#494F67") ?? .clear
+        case .worst:
+            return UIColor(hexString: "#383B47") ?? .clear
+        }
+    }
 }

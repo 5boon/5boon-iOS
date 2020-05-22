@@ -127,6 +127,9 @@ class HomeViewReactor: Reactor {
         case .setMoods(let moods, let next):
             state.moods = moods
             state.next = next
+            if let latestMood = moods.first {
+                self.homeGradientViewReactor.action.onNext(.updateMood(latestMood))
+            }
         case .appendMoods(let moods, let next):
             let newMoods = state.moods + moods
             state.moods = newMoods
@@ -137,6 +140,7 @@ class HomeViewReactor: Reactor {
             var moods = state.moods
             moods.insert(mood, at: 0)
             state.moods = moods
+            self.homeGradientViewReactor.action.onNext(.updateMood(mood))
         case .setCurrentDate(let date):
             state.currentDate = date
         }
@@ -150,7 +154,6 @@ class HomeViewReactor: Reactor {
     private func requestMoods(date: Date) -> Observable<Mutation> {
         return self.moodService.moodList(date: date.string(dateFormat: Constants.DateFormats.moodsQueryFormat))
             .map { list -> Mutation in
-                self.homeGradientViewReactor.action.onNext(.updateMood(list.results.first))
                 return .setMoods(list.results, next: list.next)
         }.catchErrorJustReturn(.setMoods([], next: nil))
     }
