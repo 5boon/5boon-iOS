@@ -26,7 +26,10 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
     typealias Reactor = FindIDViewReactor
     
     private struct Metric {
-        static let backButtonTop: CGFloat = 52.0
+        static let backButtonTop: CGFloat = 48.0
+        static let backButtonWidthHeight: CGFloat = 24.0
+        static let backButtonLeft: CGFloat = 27.0
+        
         static let leftRightPadding: CGFloat = 36.0
         
         static let fieldHeight: CGFloat = 44.0
@@ -38,7 +41,7 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         
         static let nameTop: CGFloat = 20.0
         static let emailTop: CGFloat = 12.0
-        static let doneButtonTop: CGFloat = 30.0
+        static let doneButtonTop: CGFloat = 24.0
         
         static let resultButtonTop: CGFloat = 35.0
         static let resultButtonBottom: CGFloat = 30.0
@@ -56,6 +59,8 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         static let resultBackground: UIColor = UIColor.baseBG
         static let loadingIndicator: UIColor = UIColor.keyColor
         static let notFoundLabel: UIColor = UIColor.invalidColor
+        
+        static let findEmailButton: UIColor = UIColor.subTitle
     }
     
     private struct Font {
@@ -68,13 +73,14 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         static let resultID: UIFont = UIFont.systemFont(ofSize: 16.0)
         static let resultIDBold: UIFont = UIFont.boldSystemFont(ofSize: 16.0)
         static let resultJoinDate: UIFont = UIFont.systemFont(ofSize: 14.0)
+        
+        static let findEmailButton: UIFont = UIFont.systemFont(ofSize: 13.0)
+        static let findEmailButtonBold: UIFont = UIFont.boldSystemFont(ofSize: 13.0)
     }
     
     // MARK: Views
-    private let backButton = UIButton(type: .system).then {
-        $0.setImage(UIImage(named: "back_arrow")?.withRenderingMode(.alwaysTemplate),
-                    for: .normal)
-        $0.tintColor = UIColor.keyColor
+    private let backButton = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "back_arrow"), for: .normal)
     }
     
     private let titleLabel = UILabel().then {
@@ -108,6 +114,25 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         $0.neumorphicLayer?.cornerRadius = 12.0
         $0.neumorphicLayer?.lightShadowOpacity = 0.1
         $0.neumorphicLayer?.shadowOffset = CGSize(width: 0, height: 0)
+    }
+    
+    private let findEmailButton = UIButton().then {
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: Font.findEmailButton,
+            .foregroundColor: Color.findEmailButton,
+            .paragraphStyle: NSMutableParagraphStyle().then {
+                $0.lineSpacing = 6.0
+                $0.alignment = .center
+            }
+        ]
+        let fullText = "만약 가입 당시 기입한 Email이 기억나지 않는다면?\n비밀번호 찾기"
+        let boldText = "비밀번호 찾기"
+        let range = (fullText as NSString).range(of: boldText)
+        let attrString = NSMutableAttributedString(string: fullText,
+                                            attributes: attributes)
+        attrString.addAttributes([.underlineStyle: NSUnderlineStyle.single.rawValue], range: range)
+        $0.setAttributedTitle(attrString, for: .normal)
+        $0.titleLabel?.numberOfLines = 2
     }
     
     let resultBackView = UIView().then {
@@ -185,6 +210,7 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         self.view.addSubview(emailTextField)
         self.view.addSubview(notFoundLabel)
         self.view.addSubview(doneButton)
+        self.view.addSubview(findEmailButton)
         
         self.view.addSubview(resultBackView)
         resultBackView.addSubview(resultLabel)
@@ -199,7 +225,8 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         
         backButton.snp.makeConstraints { make in
             make.top.equalTo(Metric.backButtonTop)
-            make.left.equalTo(Metric.leftRightPadding)
+            make.left.equalTo(Metric.backButtonLeft)
+            make.width.height.equalTo(Metric.backButtonWidthHeight)
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -266,6 +293,11 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
         loadingIndicator.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+        
+        findEmailButton.snp.makeConstraints { make in
+            make.top.equalTo(doneButton.snp.bottom).offset(20.0)
+            make.centerX.equalToSuperview()
+        }
     }
     
     // MARK: - Binding
@@ -292,6 +324,12 @@ final class FindIDViewController: BaseViewController, ReactorKit.View {
             }).disposed(by: self.disposeBag)
         
         findPasswordButton.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.pushToFindPassword()
+            }).disposed(by: self.disposeBag)
+        
+        findEmailButton.rx.tap
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
                 self.pushToFindPassword()
