@@ -231,7 +231,7 @@ final class CommonTextField: BaseView, View {
                     make.left.equalTo(Metric.padding)
                 }
             }
-            self.layoutIfNeeded()
+            // self.layoutIfNeeded()
         })
     }
 }

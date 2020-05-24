@@ -27,7 +27,10 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
     
     // MARK: Properties
     private struct Metric {
-        static let backButtonTop: CGFloat = 52.0
+        static let backButtonTop: CGFloat = 48.0
+        static let backButtonWidthHeight: CGFloat = 24.0
+        static let backButtonLeft: CGFloat = 27.0
+        
         static let leftRightPadding: CGFloat = 36.0
         
         static let fieldHeight: CGFloat = 44.0
@@ -39,7 +42,7 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
         
         static let idTop: CGFloat = 20.0
         static let nameTop: CGFloat = 12.0
-        static let doneButtonTop: CGFloat = 30.0
+        static let doneButtonTop: CGFloat = 24.0
         
         static let resultButtonTop: CGFloat = 35.0
         static let resultButtonBottom: CGFloat = 30.0
@@ -70,10 +73,8 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
     }
     
     // MARK: Views
-    private let backButton = UIButton(type: .system).then {
-        $0.setImage(UIImage(named: "back_arrow")?.withRenderingMode(.alwaysTemplate),
-                    for: .normal)
-        $0.tintColor = UIColor.keyColor
+    private let backButton = UIButton(type: .custom).then {
+        $0.setImage(UIImage(named: "back_arrow"), for: .normal)
     }
     
     private let titleLabel = UILabel().then {
@@ -183,7 +184,8 @@ final class FindPasswordViewController: BaseViewController, ReactorKit.View {
         
         backButton.snp.makeConstraints { make in
             make.top.equalTo(Metric.backButtonTop)
-            make.left.equalTo(Metric.leftRightPadding)
+            make.left.equalTo(Metric.backButtonLeft)
+            make.width.height.equalTo(Metric.backButtonWidthHeight)
         }
         
         titleLabel.snp.makeConstraints { make in
