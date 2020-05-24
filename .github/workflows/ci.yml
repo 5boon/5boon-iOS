@@ -11,7 +11,6 @@ jobs:
           - sdk: iphonesimulator13.0
             destination: platform=iOS Simulator,name=iPhone 8,OS=13.0
     steps:
-    - uses: actions/checkout@v1
     - name: Generate Secret File 
       env:
         CLIENT_ID: ${{ secrets.CLIENT_ID }}
