@@ -269,8 +269,8 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
             make.height.equalTo(Metric.fieldHeight)
         }
         
-        emailTopToTitle.activate()
         emailTopToGradient.deactivate()
+        emailTopToTitle.activate()
         
         passwordTextField.snp.makeConstraints { make in
             make.top.equalTo(emailTextField.snp.bottom).offset(Metric.passwordTop)
@@ -405,9 +405,9 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
             .drive(onNext: { [weak self] willShowVisibleHeight in
                 guard let self = self else { return }
                 if willShowVisibleHeight >= 0 {
+                    self.emailTopToTitle.deactivate()
                     UIView.animate(withDuration: 0.5, animations: {
                         self.titleLabel.alpha = 0.0
-                        self.emailTopToTitle.deactivate()
                         self.emailTopToGradient.activate()
                         self.view.layoutIfNeeded()
                     })
@@ -416,11 +416,12 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
         
         RxKeyboard.instance.visibleHeight
             .drive(onNext: { [weak self] visibleHeight in
-                guard let self = self, self.emailTextField.constraints.isNotEmpty else { return }
+                guard let self = self, self.emailTextField.constraints.isNotEmpty,
+                    let emailTopToGradient = self.emailTopToGradient  else { return }
                 if visibleHeight < 1.0 {
+                    emailTopToGradient.deactivate()
                     UIView.animate(withDuration: 0.5, animations: {
                         self.titleLabel.alpha = 1.0
-                        self.emailTopToGradient.deactivate()
                         self.emailTopToTitle.activate()
                         self.view.layoutIfNeeded()
                     })
