@@ -67,12 +67,11 @@ final class SignUpFirstViewController: BaseViewController, ReactorKit.View, Pure
         $0.setImage(UIImage(named: "back_arrow"), for: .normal)
     }
     
-    private let progressFirst = UIImageView().then {
-        $0.image = UIImage(named: "ic_loading")
+    private let progressFirst = DotLoadingIndicator().then {
+        $0.tintColor = UIColor.white
         $0.layer.cornerRadius = Metric.progressWidthHeight / 2.0
         $0.layer.masksToBounds = true
         $0.backgroundColor = Color.progressOn
-        $0.contentMode = .center
     }
     
     private let arrowFirst = UIImageView().then {
@@ -146,6 +145,8 @@ final class SignUpFirstViewController: BaseViewController, ReactorKit.View, Pure
         $0.color = Color.loadingIndicator
         $0.hidesWhenStopped = true
     }
+    
+//    private let dot = DotLoadingIndicator()
     
     // MARK: Properties
     let pushSecondStepScreen: () -> SignUpSecondViewController

@@ -80,12 +80,11 @@ final class SignUpSecondViewController: BaseViewController, View {
         $0.tintColor = Color.progressOn
     }
     
-    private let progressSecond = UIImageView().then {
-        $0.image = UIImage(named: "ic_loading")
+    private let progressSecond = DotLoadingIndicator().then {
+        $0.tintColor = UIColor.white
         $0.layer.cornerRadius = Metric.progressWidthHeight / 2.0
         $0.layer.masksToBounds = true
         $0.backgroundColor = Color.progressOn
-        $0.contentMode = .center
     }
     
     private let arrowSecond = UIImageView().then {
