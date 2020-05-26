@@ -72,6 +72,10 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
         $0.hidesWhenStopped = true
     }
     
+    private let emptyView = CommonEmptyView().then {
+        $0.type = .homeMood
+    }
+    
     // MARK: Properties
     
     // MARK: - Initializing
@@ -154,6 +158,12 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
             })
             .bind(to: refreshControl.rx.isRefreshing)
             .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.moods.isEmpty }
+            .subscribe(onNext: { [weak self] isEmpty in
+                guard let self = self else { return }
+                self.tableView.backgroundView = (isEmpty) ? self.emptyView : nil
+            }).disposed(by: self.disposeBag)
         
         let datasource = dataSource()
         reactor.state.map { $0.sections }
