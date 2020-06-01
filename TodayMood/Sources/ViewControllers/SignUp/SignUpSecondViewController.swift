@@ -21,7 +21,10 @@ final class SignUpSecondViewController: BaseViewController, View {
     typealias Reactor = SignUpReactor
     
     private struct Metric {
-        static let backButtonTop: CGFloat = 52.0
+        static let backButtonTop: CGFloat = 48.0
+        static let backButtonWidthHeight: CGFloat = 24.0
+        static let backButtonLeft: CGFloat = 27.0
+        
         static let leftRightPadding: CGFloat = 36.0
         
         static let progressWidthHeight: CGFloat = 35.0
@@ -187,6 +190,7 @@ final class SignUpSecondViewController: BaseViewController, View {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(Metric.backButtonTop)
             make.left.equalTo(Metric.leftRightPadding)
+            make.width.height.equalTo(Metric.backButtonWidthHeight)
         }
         
         progressSecond.snp.makeConstraints { make in
