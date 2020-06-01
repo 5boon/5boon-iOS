@@ -9,7 +9,11 @@ import UIKit
 
 class TopGradientView: BaseView {
     
-    var colors: [UIColor]!
+    var colors: [UIColor]! {
+        didSet {
+            createGradientLayer()
+        }
+    }
     var gradientLayer: CAGradientLayer!
     
     override init() {
@@ -27,6 +31,9 @@ class TopGradientView: BaseView {
     
     // MARK: Create Gradient Layer
     func createGradientLayer() {
+        if gradientLayer != nil {
+            gradientLayer.removeFromSuperlayer()
+        }
         gradientLayer = CAGradientLayer()
         gradientLayer.frame = self.bounds
         gradientLayer.colors = self.colors.map { $0.cgColor }
