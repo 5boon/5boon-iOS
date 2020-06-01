@@ -26,8 +26,9 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
     typealias Reactor = MoodWriteViewReactor
     
     private struct Metric {
-        static let backButtonTop: CGFloat = 52.0
-        static let backButtonLeft: CGFloat = 36.0
+        static let backButtonTop: CGFloat = 48.0
+        static let backButtonWidthHeight: CGFloat = 24.0
+        static let backButtonLeft: CGFloat = 27.0
         
         static let gradientHeight: CGFloat = 375.0 / UIScreen.main.bounds.width * 241.0
         static let navButtonTop: CGFloat = 46.0
@@ -47,6 +48,13 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
         static let textViewTop: CGFloat = 25.0
         static let textViewLeftRight: CGFloat = 40.0
         static let textViewBottom: CGFloat = 12.0
+        
+        static let stackViewSpacing: CGFloat = 5.0
+        static let stackViewLeft: CGFloat = 5.0
+        static let stackViewHeight: CGFloat = 30.0
+        static let stackViewRight: CGFloat = 10.0
+        
+        static let groupTitleWidthHeight: CGFloat = 30.0
     }
     
     private struct Color {
@@ -56,6 +64,9 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
         static let textViewPlaceholder: UIColor = UIColor.textViewPlaceholder
         static let textViewBackground: UIColor = UIColor.baseBG
         static let textView: UIColor = UIColor.title
+        static let groupTitle: UIColor = UIColor.white
+        static let groupTitleBackground: UIColor = UIColor.keyColor
+        static let moreButton: UIColor = UIColor.textViewPlaceholder
     }
     
     private struct Font {
@@ -64,6 +75,8 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
         static let feel: UIFont = UIFont.systemFont(ofSize: 20.0)
         static let feelBold: UIFont = UIFont.boldSystemFont(ofSize: 20.0)
         static let textView: UIFont = UIFont.systemFont(ofSize: 16.0)
+        static let groupTitle: UIFont = UIFont.systemFont(ofSize: 16.0)
+        static let moreButton: UIFont = UIFont.systemFont(ofSize: 12.0)
     }
     
     // MARK: Views
@@ -100,7 +113,16 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
         $0.image = UIImage(named: MoodStatusTypes.good.iconName)
     }
     
-    let publicSettingView = PublicSettingView()
+    let publicSettingView = PublicSettingView().then {
+        $0.setContentHuggingPriority(.required, for: .horizontal)
+        $0.setContentCompressionResistancePriority(.required, for: .horizontal)
+    }
+    
+    let groupStackView = UIStackView().then {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.spacing = Metric.stackViewSpacing
+        $0.axis = .horizontal
+    }
     
     private let summaryTextView = UITextView().then {
         $0.placeholder = "오늘의 간단한 한 줄을 기록해주세요"
@@ -112,6 +134,12 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
                                              left: Metric.textViewLeftRight,
                                              bottom: 5.0,
                                              right: Metric.textViewLeftRight)
+    }
+    
+    private let moreButton = UIButton(type: .custom).then {
+        $0.setTitle(" +더 보기 ", for: .normal)
+        $0.setTitleColor(Color.moreButton, for: .normal)
+        $0.titleLabel?.font = Font.moreButton
     }
     
     // MARK: Properties
@@ -147,6 +175,7 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
         
         self.view.addSubview(publicSettingView)
         self.view.addSubview(summaryTextView)
+        self.view.addSubview(groupStackView)
     }
     
     override func setupConstraints() {
@@ -160,6 +189,7 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(Metric.backButtonTop)
             make.left.equalTo(Metric.backButtonLeft)
+            make.width.height.equalTo(Metric.backButtonWidthHeight)
         }
         
         doneButton.snp.makeConstraints { make in
@@ -193,6 +223,14 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
             make.bottom.equalTo(-Metric.textViewBottom)
             make.left.right.equalToSuperview()
         }
+        
+        groupStackView.snp.makeConstraints { make in
+            make.left.equalTo(publicSettingView.snp.right).offset(Metric.stackViewLeft)
+            make.centerY.equalTo(publicSettingView.snp.centerY)
+//            make.right.equalTo(-Metric.stackViewRight)
+            make.right.lessThanOrEqualTo(-Metric.stackViewRight)
+            make.height.equalTo(Metric.stackViewHeight)
+        }
     }
     
     // MARK: - Binding
@@ -212,6 +250,16 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
             .bind(to: reactor.action)
             .disposed(by: self.disposeBag)
         
+        moreButton.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.summaryTextView.resignFirstResponder()
+                self.presentPublicSetting()
+                    .map { Reactor.Action.selectPublicSetting($0.0, $0.1) }
+                    .bind(to: reactor.action)
+                    .disposed(by: self.disposeBag)
+            }).disposed(by: self.disposeBag)
+        
         // State
         reactor.state.map { $0.enableRequest }
             .distinctUntilChanged()
@@ -229,13 +277,53 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
             }).disposed(by: self.disposeBag)
         
         reactor.state.map { ($0.user, $0.selectedStatus) }
+            .observeOn(MainScheduler.instance)
             .filter { $0.0 != nil && $0.1 != nil }
             .subscribe(onNext: { [weak self] (arg) in
                 guard let self = self,
                     let user = arg.0, let userName = user.userName,
                     let moodStatus = arg.1 else { return }
-                // $0.text = "안녕하세요. 제이님\n오늘의 기분은 어떠세요?"
                 self.feelLabel.text = "오늘 \(userName)님의\n기분은 \(moodStatus.title)"
+                self.gradientView.colors = [moodStatus.gradientTop, moodStatus.gradientBottom]
+            }).disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.writeDate }
+            .subscribe(onNext: { [weak self] date in
+                guard let self = self else { return }
+                let df = DateFormatter()
+                df.dateFormat = "yyyy년 M월 d일"
+                let writeDate = df.string(from: date)
+                self.dateLabel.text = writeDate
+            }).disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.selectedGroups }
+            .subscribe(onNext: { [weak self] groups in
+                guard let self = self else { return }
+                var width = self.publicSettingView.frame.origin.x + self.publicSettingView.frame.width + 5.0
+                
+                self.groupStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }                
+                groups.forEach { group in
+                    if width + Metric.stackViewHeight + 5.0 < self.view.frame.width - 50.0 {
+                        let groupTitle = String(group.moodGroup.title.prefix(1))
+                        let label = UILabel().then {
+                            $0.font = Font.groupTitle
+                            $0.textColor = Color.groupTitle
+                            $0.textAlignment = .center
+                            $0.text = groupTitle
+                            $0.backgroundColor = Color.groupTitleBackground
+                            $0.layer.cornerRadius = Metric.stackViewHeight / 2.0
+                            $0.layer.masksToBounds = true
+                        }
+                        label.widthAnchor.constraint(equalToConstant: Metric.stackViewHeight).isActive = true
+                        label.heightAnchor.constraint(equalToConstant: Metric.stackViewHeight).isActive = true
+                        self.groupStackView.addArrangedSubview(label)
+                        
+                        width += Metric.stackViewHeight + 5.0
+                    } else {
+                        self.groupStackView.addArrangedSubview(self.moreButton)
+                        return
+                    }
+                }
             }).disposed(by: self.disposeBag)
         
         // View
@@ -251,7 +339,6 @@ final class MoodWriteSummaryViewController: BaseViewController, View {
                 guard let self = self else { return }
                 self.summaryTextView.resignFirstResponder()
                 self.presentPublicSetting()
-                    .debug()
                     .map { Reactor.Action.selectPublicSetting($0.0, $0.1) }
                     .bind(to: reactor.action)
                     .disposed(by: self.disposeBag)

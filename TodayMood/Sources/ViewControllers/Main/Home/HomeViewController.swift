@@ -240,11 +240,10 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
     // MARK: - Notification
     private func addNotifications() {
         NotificationCenter.default.rx.notification(.createMoodFinished)
-            .subscribe(onNext: { [weak self] noti in
+            .subscribe(onNext: { [weak self] _ in
                 guard let self = self,
-                    let reactor = self.reactor,
-                    let mood = noti.object as? Mood else { return }
-                reactor.action.onNext(.createdMoodInsert(mood))
+                    let reactor = self.reactor else { return }
+                reactor.action.onNext(.setToday)
             }).disposed(by: self.disposeBag)
     }
     

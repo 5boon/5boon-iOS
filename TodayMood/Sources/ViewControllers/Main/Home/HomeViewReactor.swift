@@ -19,6 +19,7 @@ class HomeViewReactor: Reactor {
         
         case moveNext
         case movePrev
+        case setToday
     }
     
     enum Mutation {
@@ -113,6 +114,16 @@ class HomeViewReactor: Reactor {
             self.homeTimeLineHeaderViewReactor.action.onNext(.update(nextDay))
             
             return Observable.concat(next, moodsRequest)
+            
+        case .setToday:
+            let today = Date.startOfToday()
+            let setToday: Observable<Mutation> = Observable.just(.setCurrentDate(today))
+            let moodsRequest: Observable<Mutation> = self.requestMoods(date: today)
+            
+            self.homeGradientViewReactor.action.onNext(.updateDate(today))
+            self.homeTimeLineHeaderViewReactor.action.onNext(.update(today))
+            
+            return Observable.concat(setToday, moodsRequest)
         }
     }
     
