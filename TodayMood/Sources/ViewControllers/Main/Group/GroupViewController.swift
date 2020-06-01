@@ -34,7 +34,7 @@ final class GroupViewController: BaseViewController, View {
     
     // MARK: Views
     let label = UILabel().then {
-        $0.text = "Group"
+        $0.text = "Group" // 테스트
     }
     
     // MARK: - Initializing
