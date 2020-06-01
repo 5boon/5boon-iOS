@@ -1,12 +1,23 @@
+name: Danger Swift
+
+on: [pull_request]
+
 jobs:
-  build:
+  danger:
+    name: Danger
     runs-on: ubuntu-latest
-    name: "Run Danger"
+
     steps:
-      - uses: actions/checkout@v1
-      - name: Danger
-        uses: danger/swift@3.3.0
+      - uses: actions/checkout@master
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
         with:
-            args: --failOnErrors --no-publish-check
+            ruby-version: '2.x'
+            architecture: 'x64'
+      - name: Setup Danger
+        run: |
+          gem install danger danger-swiftlint
+      - name: Run Danger
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: danger
