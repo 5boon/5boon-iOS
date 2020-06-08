@@ -24,3 +24,21 @@ extension CAGradientLayer {
         CATransaction.commit()
     }
 }
+
+extension UIView {
+    // https://www.andrewcbancroft.com/2014/09/24/slide-in-animation-in-swift/
+    func slideFrom(from: CATransitionSubtype, duration: TimeInterval = 0.5, completionDelegate: CAAnimationDelegate? = nil) {
+        let slideAnimation = CATransition()
+        
+        if let delegate = completionDelegate {
+            slideAnimation.delegate = delegate
+        }
+        
+        slideAnimation.type = .push
+        slideAnimation.subtype = from
+        slideAnimation.duration = duration
+        slideAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        slideAnimation.fillMode = .removed
+        self.layer.add(slideAnimation, forKey: "slideTrasition")
+    }
+}
