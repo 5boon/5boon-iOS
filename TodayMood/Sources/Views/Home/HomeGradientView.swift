@@ -41,7 +41,7 @@ final class HomeGradientView: TopGradientView, ReactorKit.View {
     }
     
     // MARK: UI Views
-    private let dateLabel = UILabel().then {
+    let dateLabel = UILabel().then {
         $0.font = Font.dateLabel
         $0.textColor = Color.label
         $0.text = "2020년 3월 5일"
@@ -197,6 +197,9 @@ extension Reactive where Base: HomeGradientView {
         return base.rx.swipeGesture(.right)
             .when(.recognized)
             .filter { _ in self.base.reactor?.currentState.isEnableMoveToPrev == true }
+            .do(onNext: { [weak base] _ in
+                base?.dateLabel.slideFrom(from: .fromLeft)
+            })
             .map { _ in Void() }
     }
     
@@ -204,6 +207,9 @@ extension Reactive where Base: HomeGradientView {
         return base.rx.swipeGesture(.left)
             .when(.recognized)
             .filter { _ in self.base.reactor?.currentState.isEnableMoveToNext == true }
+            .do(onNext: { [weak base] _ in
+                base?.dateLabel.slideFrom(from: .fromRight)
+            })
             .map { _ in Void() }
     }
 }
