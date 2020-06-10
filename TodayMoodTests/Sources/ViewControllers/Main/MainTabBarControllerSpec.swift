@@ -18,6 +18,7 @@ class MainTabBarControllerSpec: QuickSpec {
         
         var moodService: StubMoodService!
         var authService: StubAuthService!
+        var groupService: StubGroupService!
         
         var homeVC: HomeViewController!
         var groupVC: GroupViewController!
@@ -32,6 +33,7 @@ class MainTabBarControllerSpec: QuickSpec {
             beforeEach {
                 moodService = StubMoodService()
                 authService = StubAuthService()
+                groupService = StubGroupService()
             }
             
             context("TabBar의 작성버튼을 클릭하면") {
@@ -40,7 +42,7 @@ class MainTabBarControllerSpec: QuickSpec {
                     reactor.isStubEnabled = true
                     
                     homeVC = self.homeVC(moodService: moodService)
-                    groupVC = self.groupVC()
+                    groupVC = self.groupVC(groupService: groupService)
                     statisticsVC = self.statisticsVC()
                     settingVC = self.settingVC(authService: authService)
                     presentMoodWriteFactory = {
@@ -69,8 +71,8 @@ class MainTabBarControllerSpec: QuickSpec {
         return HomeViewController(reactor: reactor)
     }
     
-    func groupVC() -> GroupViewController {
-        let reactor = GroupViewReactor()
+    func groupVC(groupService: StubGroupService) -> GroupViewController {
+        let reactor = GroupViewReactor(groupService: groupService)
         return GroupViewController(reactor: reactor)
     }
     
