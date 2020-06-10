@@ -71,7 +71,7 @@ final class CompositionRoot {
             let reactor = MainTabBarReactor()
             window.rootViewController = MainTabBarController(reactor: reactor,
                                                              homeViewController: homeVC,
-                                                             groupViewController: GroupViewController(reactor: GroupViewReactor()),
+                                                             groupViewController: GroupViewController(reactor: GroupViewReactor(groupService: groupService)),
                                                              statisticsViewController: StatisticsViewController(reactor: StatisticsViewReactor()),
                                                              settingsViewController: settingVC,
                                                              presentMoodWriteFactory: presentMoodWriteFactory)
@@ -230,6 +230,7 @@ extension CompositionRoot {
     static func configurePresentMainScreen(window: UIWindow,
                                            moodService: MoodServiceType,
                                            authService: AuthServiceType,
+                                           groupService: GroupServiceType,
                                            presentLoginScreen: @escaping () -> Void) -> () -> Void {
         return {
             
@@ -242,7 +243,7 @@ extension CompositionRoot {
             let reactor = MainTabBarReactor()
             window.rootViewController = MainTabBarController(reactor: reactor,
                                                              homeViewController: homeVC,
-                                                             groupViewController: GroupViewController(reactor: GroupViewReactor()),
+                                                             groupViewController: GroupViewController(reactor: GroupViewReactor(groupService: groupService)),
                                                              statisticsViewController: StatisticsViewController(reactor: StatisticsViewReactor()),
                                                              settingsViewController: settingVC,
                                                              presentMoodWriteFactory: presentMoodWriteFactory)
