@@ -12,36 +12,38 @@ import RxSwift
 class TimeLineHeaderViewReactor: Reactor {
     
     enum Action {
-        
+        case update(Date)
     }
     
     enum Mutation {
-        
+        case setCurrentDate(Date)
     }
     
     struct State {
-        
+        var currentDate: Date
     }
     
-    let initialState = State()
+    let initialState: State
+    
+    init(currentDate: Date) {
+        initialState = State(currentDate: currentDate)
+    }
     
     // MARK: Mutation
     func mutate(action: Action) -> Observable<Mutation> {
-//        switch <#value#> {
-//        case <#pattern#>:
-//            <#code#>
-//        }
-        return .empty()
+        switch action {
+        case .update(let date):
+            return Observable.just(.setCurrentDate(date))
+        }
     }
     
     // MARK: Reduce
     func reduce(state: State, mutation: Mutation) -> State {
         var state = state
-//        switch mutation {
-//        case <#pattern#>:
-//            <#code#>
-//        }
+        switch mutation {
+        case .setCurrentDate(let date):
+            state.currentDate = date
+        }
         return state
     }
 }
-

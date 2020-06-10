@@ -21,7 +21,10 @@ final class SignUpSecondViewController: BaseViewController, View {
     typealias Reactor = SignUpReactor
     
     private struct Metric {
-        static let backButtonTop: CGFloat = 52.0
+        static let backButtonTop: CGFloat = 48.0
+        static let backButtonWidthHeight: CGFloat = 24.0
+        static let backButtonLeft: CGFloat = 27.0
+        
         static let leftRightPadding: CGFloat = 36.0
         
         static let progressWidthHeight: CGFloat = 35.0
@@ -80,12 +83,11 @@ final class SignUpSecondViewController: BaseViewController, View {
         $0.tintColor = Color.progressOn
     }
     
-    private let progressSecond = UIImageView().then {
-        $0.image = UIImage(named: "ic_loading")
+    private let progressSecond = DotLoadingIndicator().then {
+        $0.tintColor = UIColor.white
         $0.layer.cornerRadius = Metric.progressWidthHeight / 2.0
         $0.layer.masksToBounds = true
         $0.backgroundColor = Color.progressOn
-        $0.contentMode = .center
     }
     
     private let arrowSecond = UIImageView().then {
@@ -188,6 +190,7 @@ final class SignUpSecondViewController: BaseViewController, View {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(Metric.backButtonTop)
             make.left.equalTo(Metric.leftRightPadding)
+            make.width.height.equalTo(Metric.backButtonWidthHeight)
         }
         
         progressSecond.snp.makeConstraints { make in

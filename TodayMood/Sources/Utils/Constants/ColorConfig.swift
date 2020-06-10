@@ -106,4 +106,7 @@ extension UIColor {
         return UIColor(named: "Terrible")!
     }
 
+    static var emptyTitle: UIColor {
+        return UIColor(hexString: "#DDDDDD")
+    }
 }

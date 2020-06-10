@@ -48,7 +48,6 @@ final class SplashViewController: BaseViewController, View {
         $0.image = UIImage(named: "img_splash_character")
     }
     
-    
     // MARK: - Initializing
     init(reactor: Reactor,
          presentLoginScreen: @escaping () -> Void,

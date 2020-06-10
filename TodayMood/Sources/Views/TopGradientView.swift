@@ -9,7 +9,12 @@ import UIKit
 
 class TopGradientView: BaseView {
     
-    var colors: [UIColor]!
+    var colors: [UIColor]! {
+        didSet {
+            createGradientLayer()
+        }
+    }
+    var gradientLayer: CAGradientLayer!
     
     override init() {
         super.init()
@@ -26,19 +31,22 @@ class TopGradientView: BaseView {
     
     // MARK: Create Gradient Layer
     func createGradientLayer() {
-        let layer = CAGradientLayer()
-        layer.frame = self.bounds
-        layer.colors = self.colors.map { $0.cgColor }
-        layer.startPoint = CGPoint(x: 0.0, y: 0.0)
-        layer.endPoint = CGPoint(x: 1.0, y: 1.0)
+        if gradientLayer != nil {
+            gradientLayer.removeFromSuperlayer()
+        }
+        gradientLayer = CAGradientLayer()
+        gradientLayer.frame = self.bounds
+        gradientLayer.colors = self.colors.map { $0.cgColor }
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
         // self.layer.addSublayer(layer)
-        self.layer.insertSublayer(layer, at: 0)
+        self.layer.insertSublayer(gradientLayer, at: 0)
         
         let path = UIBezierPath(roundedRect: self.bounds,
                                 byRoundingCorners: [.bottomLeft, .bottomRight],
                                 cornerRadii: CGSize(width: 30.0, height: 30.0))
         let mask = CAShapeLayer()
         mask.path = path.cgPath
-        layer.mask = mask
+        gradientLayer.mask = mask
     }
 }

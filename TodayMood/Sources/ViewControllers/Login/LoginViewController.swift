@@ -12,6 +12,7 @@ import Pure
 import ReactorKit
 import ReusableKit
 import RxCocoa
+import RxKeyboard
 import RxSwift
 import RxViewController
 import SnapKit
@@ -34,6 +35,7 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
         static let copyrightBottom: CGFloat = 5.0
         
         static let emailTop: CGFloat = 50.0
+        static let emailTopToGradient: CGFloat = 18.0
         static let passwordTop: CGFloat = 12.0
         
         static let fieldHeight: CGFloat = 44.0
@@ -183,6 +185,8 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
     let findIDViewControllerFactory: () -> FindIDViewController
     let findPasswordViewControllerFactory: () -> FindPasswordViewController
     let pushSignUpViewControllerFactory: () -> SignUpFirstViewController
+    var emailTopToTitle: Constraint!
+    var emailTopToGradient: Constraint!
     
     // MARK: - Initializing
     init(reactor: Reactor,
@@ -258,11 +262,15 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
         }
         
         emailTextField.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(Metric.emailTop)
+            emailTopToTitle = make.top.equalTo(titleLabel.snp.bottom).offset(Metric.emailTop).constraint
+            emailTopToGradient = make.top.equalTo(gradientView.snp.bottom).offset(Metric.emailTopToGradient).constraint
             make.left.equalTo(Metric.leftRightPadding)
             make.right.equalTo(-Metric.leftRightPadding)
             make.height.equalTo(Metric.fieldHeight)
         }
+        
+        emailTopToGradient.deactivate()
+        emailTopToTitle.activate()
         
         passwordTextField.snp.makeConstraints { make in
             make.top.equalTo(emailTextField.snp.bottom).offset(Metric.passwordTop)
@@ -316,6 +324,15 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
     func bind(reactor: Reactor) {
 
         // Action
+        self.view.rx.tapGesture(configuration: { (_, delegate) in
+            delegate.simultaneousRecognitionPolicy = .never
+        })
+            .when(.recognized)
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.view.endEditing(true)
+            }).disposed(by: self.disposeBag)
+        
         loginButton.rx.tap
             .map { _ -> (String?, String?) in
                 return (self.emailTextField.text, self.passwordTextField.text)
@@ -382,15 +399,45 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
             .disposed(by: self.disposeBag)
         
         // View
+        
+        // Keyboard
+        RxKeyboard.instance.willShowVisibleHeight
+            .drive(onNext: { [weak self] willShowVisibleHeight in
+                guard let self = self else { return }
+                if willShowVisibleHeight >= 0 {
+                    self.emailTopToTitle.deactivate()
+                    UIView.animate(withDuration: 0.5, animations: {
+                        self.titleLabel.alpha = 0.0
+                        self.emailTopToGradient.activate()
+                        self.view.layoutIfNeeded()
+                    })
+                }
+            }).disposed(by: self.disposeBag)
+        
+        RxKeyboard.instance.visibleHeight
+            .drive(onNext: { [weak self] visibleHeight in
+                guard let self = self, self.emailTextField.constraints.isNotEmpty,
+                    let emailTopToGradient = self.emailTopToGradient  else { return }
+                if visibleHeight < 1.0 {
+                    emailTopToGradient.deactivate()
+                    UIView.animate(withDuration: 0.5, animations: {
+                        self.titleLabel.alpha = 1.0
+                        self.emailTopToTitle.activate()
+                        self.view.layoutIfNeeded()
+                    })
+                }
+            }).disposed(by: self.disposeBag)
     }
     
     // MARK: - Route
     private func pushToSignUp() {
+        self.view.endEditing(true)
         let controller = self.pushSignUpViewControllerFactory()
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
     private func presentSocialLogin() {
+        self.view.endEditing(true)
         let reactor = SocialLoginViewReactor()
         let viewController = SocialLoginViewController(reactor: reactor)
         viewController.modalPresentationStyle = .overCurrentContext
@@ -399,11 +446,13 @@ final class LoginViewController: BaseViewController, ReactorKit.View {
     }
     
     private func pushToFindID() {
+        self.view.endEditing(true)
         let viewController = self.findIDViewControllerFactory()
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
     private func pushToFindPassword() {
+        self.view.endEditing(true)
         let viewController = self.findPasswordViewControllerFactory()
         self.navigationController?.pushViewController(viewController, animated: true)
     }

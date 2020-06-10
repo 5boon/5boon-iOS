@@ -109,10 +109,12 @@ final class TimeLineHeaderView: BaseView, ReactorKit.View {
     // MARK: - Binding
     func bind(reactor: Reactor) {
         
-        // Action
-        
-        // State
-        
-        // View
+        reactor.state.map { $0.currentDate }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] date in
+                guard let self = self else { return }
+                let dateString = date.string(dateFormat: "M월 d일")
+                self.dateLabel.text = "\(dateString)의 기분"
+            }).disposed(by: self.disposeBag)
     }
 }

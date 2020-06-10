@@ -50,7 +50,7 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
     }
     
     private let tableHeaderView = TimeLineHeaderView().then {
-        $0.reactor = TimeLineHeaderViewReactor()
+        $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private let tableView = UITableView().then {
@@ -70,6 +70,10 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
     
     private let loadingIndicator = UIActivityIndicatorView().then {
         $0.hidesWhenStopped = true
+    }
+    
+    private let emptyView = CommonEmptyView().then {
+        $0.type = .homeMood
     }
     
     // MARK: Properties
@@ -134,9 +138,9 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
             .disposed(by: self.disposeBag)
         
         refreshControl.rx.controlEvent(.valueChanged)
-        .map { Reactor.Action.refresh }
-        .bind(to: reactor.action)
-        .disposed(by: self.disposeBag)
+            .map { Reactor.Action.refresh }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
         
         // State
         reactor.state.map { $0.isLoading }
@@ -154,6 +158,12 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
             })
             .bind(to: refreshControl.rx.isRefreshing)
             .disposed(by: self.disposeBag)
+        
+        reactor.state.map { $0.moods.isEmpty }
+            .subscribe(onNext: { [weak self] isEmpty in
+                guard let self = self else { return }
+                self.tableView.backgroundView = (isEmpty) ? self.emptyView : nil
+            }).disposed(by: self.disposeBag)
         
         let datasource = dataSource()
         reactor.state.map { $0.sections }
@@ -180,8 +190,40 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
                 tableView?.deselectRow(at: indexPath, animated: true)
             }).disposed(by: self.disposeBag)
         
-//        tableView.rx.setDelegate(self)
-//            .disposed(by: self.disposeBag)
+        //        tableView.rx.setDelegate(self)
+        //            .disposed(by: self.disposeBag)
+        
+        // SubReactor
+        bindGradientReactor(reactor: reactor)
+        bindTimeLineHeaderReactor(reactor: reactor)
+    }
+    
+    private func bindGradientReactor(reactor: Reactor) {
+        gradientView.reactor = reactor.homeGradientViewReactor
+        
+        gradientView.rx.prevTapped
+            .map { _ in Reactor.Action.movePrev }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        gradientView.rx.nextTapped
+            .map { _ in Reactor.Action.moveNext }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        gradientView.rx.prevGesture
+            .map { _ in Reactor.Action.movePrev }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+        
+        gradientView.rx.nextGesture
+            .map { _ in Reactor.Action.moveNext }
+            .bind(to: reactor.action)
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func bindTimeLineHeaderReactor(reactor: Reactor) {
+        tableHeaderView.reactor = reactor.homeTimeLineHeaderViewReactor
     }
     
     private func dataSource() -> RxTableViewSectionedReloadDataSource<TimeLineSection> {
@@ -198,11 +240,10 @@ final class HomeViewController: BaseViewController, ReactorKit.View {
     // MARK: - Notification
     private func addNotifications() {
         NotificationCenter.default.rx.notification(.createMoodFinished)
-            .subscribe(onNext: { [weak self] noti in
+            .subscribe(onNext: { [weak self] _ in
                 guard let self = self,
-                    let reactor = self.reactor,
-                    let mood = noti.object as? Mood else { return }
-                reactor.action.onNext(.createdMoodInsert(mood))
+                    let reactor = self.reactor else { return }
+                reactor.action.onNext(.setToday)
             }).disposed(by: self.disposeBag)
     }
     

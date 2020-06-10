@@ -9,7 +9,6 @@ import Foundation
 import UIKit
 
 extension Date {
-    
     // MARK: String
     func string(dateFormat: String,
                 tz: TimeZone? = .current,
@@ -27,10 +26,5 @@ extension Date {
         // let timeZone = TimeZone(abbreviation: "UTC") ?? .current
         let timeZone = TimeZone(identifier: "Asia/Seoul") ?? .current
         return calendar.dateComponents(in: timeZone, from: self)
-    }
-    
-    // MARK: Add Date
-    func add(_ component: Calendar.Component, value: Int) -> Date? {
-        return Calendar(identifier: .gregorian).date(byAdding: component, value: value, to: self)
     }
 }

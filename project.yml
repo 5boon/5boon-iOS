@@ -34,6 +34,7 @@ targets:
                 }
             }
         }
+        UIUserInterfaceStyle: Light
     settings:
       INFOPLIST_FILE: TodayMood/Supporting Files/Info.plist
     sources:

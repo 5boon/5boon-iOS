@@ -22,7 +22,10 @@ final class SignUpFirstViewController: BaseViewController, ReactorKit.View, Pure
     typealias Reactor = SignUpReactor
     
     private struct Metric {
-        static let backButtonTop: CGFloat = 52.0
+        static let backButtonTop: CGFloat = 48.0
+        static let backButtonWidthHeight: CGFloat = 24.0
+        static let backButtonLeft: CGFloat = 27.0
+        
         static let leftRightPadding: CGFloat = 36.0
         
         static let progressWidthHeight: CGFloat = 35.0
@@ -67,12 +70,11 @@ final class SignUpFirstViewController: BaseViewController, ReactorKit.View, Pure
         $0.setImage(UIImage(named: "back_arrow"), for: .normal)
     }
     
-    private let progressFirst = UIImageView().then {
-        $0.image = UIImage(named: "ic_loading")
+    private let progressFirst = DotLoadingIndicator().then {
+        $0.tintColor = UIColor.white
         $0.layer.cornerRadius = Metric.progressWidthHeight / 2.0
         $0.layer.masksToBounds = true
         $0.backgroundColor = Color.progressOn
-        $0.contentMode = .center
     }
     
     private let arrowFirst = UIImageView().then {
@@ -147,6 +149,8 @@ final class SignUpFirstViewController: BaseViewController, ReactorKit.View, Pure
         $0.hidesWhenStopped = true
     }
     
+//    private let dot = DotLoadingIndicator()
+    
     // MARK: Properties
     let pushSecondStepScreen: () -> SignUpSecondViewController
     
@@ -193,6 +197,7 @@ final class SignUpFirstViewController: BaseViewController, ReactorKit.View, Pure
         backButton.snp.makeConstraints { make in
             make.top.equalTo(Metric.backButtonTop)
             make.left.equalTo(Metric.leftRightPadding)
+            make.width.height.equalTo(Metric.backButtonWidthHeight)
         }
         
         progressSecond.snp.makeConstraints { make in
