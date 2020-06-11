@@ -73,7 +73,9 @@ class MainTabBarControllerSpec: QuickSpec {
     
     func groupVC(groupService: StubGroupService) -> GroupViewController {
         let reactor = GroupViewReactor(groupService: groupService)
-        return GroupViewController(reactor: reactor)
+        return GroupViewController(reactor: reactor, presentAddGroupFactory: {
+            GroupAddViewController(reactor: GroupAddViewReactor(groupService: groupService))
+        })
     }
     
     func statisticsVC() -> StatisticsViewController {
