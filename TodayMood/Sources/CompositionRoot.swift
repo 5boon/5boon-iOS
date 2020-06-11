@@ -67,11 +67,12 @@ final class CompositionRoot {
             let homeVC = self.configureHomeScreen(moodService: moodService)
             let settingVC = self.configureSettingsScreen(authService: authService,
                                                          presentLoginScreen: presentLoginScreen)
+            let groupVC = self.configureGroupScreen(groupService: groupService)
             
             let reactor = MainTabBarReactor()
             window.rootViewController = MainTabBarController(reactor: reactor,
                                                              homeViewController: homeVC,
-                                                             groupViewController: GroupViewController(reactor: GroupViewReactor(groupService: groupService)),
+                                                             groupViewController: groupVC,
                                                              statisticsViewController: StatisticsViewController(reactor: StatisticsViewReactor()),
                                                              settingsViewController: settingVC,
                                                              presentMoodWriteFactory: presentMoodWriteFactory)
@@ -227,29 +228,6 @@ extension CompositionRoot {
 
 // MARK: - Main
 extension CompositionRoot {
-    static func configurePresentMainScreen(window: UIWindow,
-                                           moodService: MoodServiceType,
-                                           authService: AuthServiceType,
-                                           groupService: GroupServiceType,
-                                           presentLoginScreen: @escaping () -> Void) -> () -> Void {
-        return {
-            
-            let presentMoodWriteFactory = self.configureMoodWriteScreen(moodService: moodService)
-            
-            let homeVC = self.configureHomeScreen(moodService: moodService)
-            let settingVC = self.configureSettingsScreen(authService: authService,
-                                                         presentLoginScreen: presentLoginScreen)
-            
-            let reactor = MainTabBarReactor()
-            window.rootViewController = MainTabBarController(reactor: reactor,
-                                                             homeViewController: homeVC,
-                                                             groupViewController: GroupViewController(reactor: GroupViewReactor(groupService: groupService)),
-                                                             statisticsViewController: StatisticsViewController(reactor: StatisticsViewReactor()),
-                                                             settingsViewController: settingVC,
-                                                             presentMoodWriteFactory: presentMoodWriteFactory)
-        }
-    }
-    
     static func configureHomeScreen(moodService: MoodServiceType) -> HomeViewController {
         let reactor = HomeViewReactor(moodService: moodService)
         return HomeViewController(reactor: reactor)
@@ -288,5 +266,19 @@ extension CompositionRoot {
                                         presentLoginScreen: @escaping () -> Void) -> SettingsViewController {
         let reactor = SettingsViewReactor(authService: authService)
         return SettingsViewController(reactor: reactor, presentLoginScreen: presentLoginScreen)
+    }
+}
+
+// MARK: - Group
+extension CompositionRoot {
+    static func configureGroupScreen(groupService: GroupServiceType) -> GroupViewController {
+        var presentAddGroupScreen: (() -> GroupAddViewController)!
+        
+        presentAddGroupScreen = {
+            GroupAddViewController(reactor: GroupAddViewReactor(groupService: groupService))
+        }
+        
+        let reactor = GroupViewReactor(groupService: groupService)
+        return GroupViewController(reactor: reactor, presentAddGroupFactory: presentAddGroupScreen)
     }
 }

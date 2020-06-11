@@ -20,7 +20,6 @@ final class GroupViewController: BaseViewController, View {
     
     typealias Reactor = GroupViewReactor
     
-    // MARK: Properties
     private struct Metric {
         static let cellHeight: CGFloat = 80.0
         static let leftRightMargin: CGFloat = 11.0
@@ -74,9 +73,14 @@ final class GroupViewController: BaseViewController, View {
         $0.type = .homeMood
     }
     
+    // MARK: Properties
+    var presentAddGroupFactory: () -> GroupAddViewController
+    
     // MARK: - Initializing
-    init(reactor: Reactor) {
+    init(reactor: Reactor,
+         presentAddGroupFactory: @escaping () -> GroupAddViewController) {
         defer { self.reactor = reactor }
+        self.presentAddGroupFactory = presentAddGroupFactory
         super.init()
     }
     
@@ -181,10 +185,10 @@ final class GroupViewController: BaseViewController, View {
     
     // MARK: - Route
     private func presentAddGroup() {
-        let groupAddVC = GroupAddViewController(reactor: GroupAddViewReactor())
-        groupAddVC.modalPresentationStyle = .overFullScreen
-        groupAddVC.view.alpha = 0.9
-        self.present(groupAddVC, animated: false, completion: nil)
+        let controller = self.presentAddGroupFactory()
+        controller.modalPresentationStyle = .overFullScreen
+        controller.view.alpha = 0.9
+        self.present(controller, animated: false, completion: nil)
     }
     
     // MARK: - Private
