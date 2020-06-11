@@ -14,4 +14,8 @@ extension String {
         }
         return String(data: data, encoding: .utf8)
     }
+    
+    func trim() -> String {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 }

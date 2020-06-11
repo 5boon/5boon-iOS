@@ -9,6 +9,7 @@ import Moya
 
 enum GroupAPI {
     case groupList
+    case createGroup(title: String, summary: String)
 }
 
 extension GroupAPI: TargetType {
@@ -20,6 +21,8 @@ extension GroupAPI: TargetType {
         switch self {
         case .groupList:
             return "/groups/mine/"
+        case .createGroup:
+            return "/groups/"
         }
     }
     
@@ -27,6 +30,8 @@ extension GroupAPI: TargetType {
         switch self {
         case .groupList:
             return .get
+        case .createGroup:
+            return .post
         }
     }
     
@@ -38,6 +43,12 @@ extension GroupAPI: TargetType {
         switch self {
         case .groupList:
             return .requestPlain
+        case .createGroup(let title, let summary):
+            let params: [String: Any] = [
+                "title": title,
+                "summary": summary
+            ]
+            return .requestParameters(parameters: params, encoding: JSONEncoding.default)
         }
     }
     

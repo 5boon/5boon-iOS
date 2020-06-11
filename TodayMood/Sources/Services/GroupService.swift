@@ -9,6 +9,7 @@ import RxSwift
 
 protocol GroupServiceType {
     func groupList() -> Observable<[PublicGroup]>
+    func createGroup(title: String, summary: String) -> Observable<MoodGroup>
 }
 
 final class GroupService: GroupServiceType {
@@ -27,5 +28,12 @@ final class GroupService: GroupServiceType {
             .do(onNext: { groups in
                 GlobalStates.shared.groups.accept(groups)
             })
+    }
+    
+    func createGroup(title: String, summary: String) -> Observable<MoodGroup> {
+        return self.networking.request(.createGroup(title: title, summary: summary))
+            .debug()
+            .asObservable()
+            .map(MoodGroup.self)
     }
 }
