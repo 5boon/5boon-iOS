@@ -1,58 +1,81 @@
 platform :ios, '13.0'
 inhibit_all_warnings!
 
+
+def is_pod_binary_cache_enabled
+  ENV['IS_POD_BINARY_CACHE_ENABLED'] == 'true'
+end
+
+if is_pod_binary_cache_enabled
+  plugin 'cocoapods-binary-cache'
+  # set_custom_xcodebuild_options_for_prebuilt_frameworks :simulator => "DEBUG_INFORMATION_FORMAT=dwarf", :device => "ARCHS=arm64 DEBUG_INFORMATION_FORMAT=dwarf"
+  # TODO: BUILD_LIBRARY_FOR_DISTRIBUTION is to build with library evolution, but it doesn't work in Xcode 10.2 now, need find another way
+  # set_custom_xcodebuild_options_for_prebuilt_frameworks :simulator => "BUILD_LIBRARY_FOR_DISTRIBUTION=YES", :device => "ARCHS=arm64 BUILD_LIBRARY_FOR_DISTRIBUTION=YES"
+  set_is_prebuild_job(true)
+  enable_devpod_prebuild
+  
+end
+
+def binary_pod(name, *args)
+  if is_pod_binary_cache_enabled
+    pod name, args, :binary => true
+  else
+    pod name, args
+  end
+end
+
 def firebase
-  pod 'Firebase/Analytics'
-  pod 'Firebase/Crashlytics' 
-  pod 'Firebase/Performance'
+  binary_pod 'Firebase/Analytics'
+  binary_pod 'Firebase/Crashlytics' 
+  binary_pod 'Firebase/Performance'
 end
 
 def app_pods
   # Architecture
-  pod 'ReactorKit'
+  binary_pod 'ReactorKit'
   
   # Networking
-  pod 'Alamofire'
-  pod 'Moya'
-  pod 'Moya/RxSwift', '~> 14.0'
+  binary_pod 'Alamofire'
+  binary_pod 'Moya'
+  binary_pod 'Moya/RxSwift', '~> 14.0'
   
   # Image Cache
-  pod 'Kingfisher'
+  binary_pod 'Kingfisher'
   
   # Rx
-  pod 'RxSwift'
-  pod 'RxCocoa'
-  pod 'RxDataSources'
-  pod 'RxGesture'
-  pod 'RxViewController'
-  pod 'RxOptional'
-  pod 'RxKeyboard'
+  binary_pod 'RxSwift'
+  binary_pod 'RxCocoa'
+  binary_pod 'RxDataSources'
+  binary_pod 'RxGesture'
+  binary_pod 'RxViewController'
+  binary_pod 'RxOptional'
+  binary_pod 'RxKeyboard'
   
   # UI
-  pod 'SnapKit'
-  pod 'EMTNeumorphicView'
-  pod 'UITextView+Placeholder'
+  binary_pod 'SnapKit'
+  binary_pod 'EMTNeumorphicView'
+  binary_pod 'UITextView+Placeholder'
   
   
   # Logger
-  pod 'SwiftyBeaver'
+  binary_pod 'SwiftyBeaver'
   
   # Lint
-  pod 'SwiftLint'
+  binary_pod 'SwiftLint'
   
   # etc
-  pod 'Then'
-  pod 'ReusableKit'
-  pod 'AcknowList'
-  pod 'URLNavigator'
-  pod 'Immutable'
-  pod 'Bagel', '~>  1.3.2'
+  binary_pod 'Then'
+  binary_pod 'ReusableKit'
+  binary_pod 'AcknowList'
+  binary_pod 'URLNavigator'
+  binary_pod 'Immutable'
+  binary_pod 'Bagel', '~>  1.3.2'
   
   # DI
-  pod 'Pure'
+  binary_pod 'Pure'
   
   # Keychain
-  pod 'KeychainAccess'
+  binary_pod 'KeychainAccess'
   
   # SNS
   # pod 'FBSDKLoginKit'
@@ -61,13 +84,26 @@ end
 
 
 def testing_pods
-    pod 'Quick'
-    pod 'Nimble'
-    pod 'RxTest'
-    pod 'RxBlocking'
-    pod 'Stubber'
-    pod 'Immutable'
+    binary_pod 'Quick'
+    binary_pod 'Nimble'
+    binary_pod 'RxTest'
+    binary_pod 'RxBlocking'
+    binary_pod 'Stubber'
+    binary_pod 'Immutable'
 end
+
+# plugin 'cocoapods-rome', {:pre_compile => Proc.new { |installer|
+# installer.pods_project.targets.each do |target|
+#     target.build_configurations.each do |config|
+#       config.build_settings['BITCODE_GENERATION_MODE'] = 'bitcode'
+#       config.build_settings['ENABLE_BITCODE'] = 'YES'
+#       config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'YES'
+#     end
+# end
+
+#     dsym: false,
+#     configuration: 'Release'
+# }
 
 
 target 'TodayMood' do
@@ -81,5 +117,15 @@ target 'TodayMood' do
     inherit! :search_paths
     testing_pods
   end
-  
+  current_target_definition.swift_version = '4.2'
+
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES' # Only work from Xcode 11
+      config.build_settings['SWIFT_VERSION'] = '4.2'
+    end
+  end
 end
