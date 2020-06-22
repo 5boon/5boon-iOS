@@ -75,6 +75,9 @@ class MainTabBarControllerSpec: QuickSpec {
         let reactor = GroupViewReactor(groupService: groupService)
         return GroupViewController(reactor: reactor, presentAddGroupFactory: {
             GroupAddViewController(reactor: GroupAddViewReactor(groupService: groupService))
+        }, pushGroupDetailFactory: { groupInfo -> GroupDetailViewController in
+            let reactor = GroupDetailViewReactor(groupService: groupService, groupInfo: groupInfo)
+            return GroupDetailViewController(reactor: reactor)
         })
     }
     

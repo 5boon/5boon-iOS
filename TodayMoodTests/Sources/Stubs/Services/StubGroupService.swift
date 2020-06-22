@@ -18,4 +18,12 @@ final class StubGroupService: GroupServiceType {
     func createGroup(title: String, summary: String) -> Observable<MoodGroup> {
         return Stubber.invoke(createGroup, args: (title, summary))
     }
+    
+    func joinGroup(groupCode: String) -> Observable<PublicGroup> {
+        return Stubber.invoke(joinGroup, args: (groupCode))
+    }
+    
+    func groupDetail(groupID: Int, displayMine: Bool = false) -> Observable<[GroupMemberMood]> {
+        return Stubber.invoke(groupDetail, args: (groupID, displayMine))
+    }
 }

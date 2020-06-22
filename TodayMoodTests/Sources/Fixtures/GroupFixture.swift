@@ -8,31 +8,66 @@
 import Foundation
 @testable import TodayMood
 
+/*
+ {
+ "id" : 7,
+ "is_reader" : true,
+ "people" : [
+ {
+ "id" : 8,
+ "name" : "kanz1"
+ }
+ ],
+ "people_cnt" : 1,
+ "mood_group" : {
+ "code" : "c0c0b1e00f1c088134968e6b01f2cf96a96f62eeb3c34d082b3ff2925063ef92",
+ "id" : 5,
+ "created" : "2020-05-13T23:52:46",
+ "title" : "칸즈와 아이들",
+ "modified" : "2020-05-13T23:52:46",
+ "summary" : "iOS 공부하는 집단"
+ }
+ }
+ */
 struct GroupFixture {
     static let kanzGroup1: PublicGroup = fixture([
         "id": 7,
-        "user": 8,
         "mood_group": [
-          "id": 5,
-          "created": "2020-05-13T23:52:46",
-          "modified": "2020-05-13T23:52:46",
-          "title": "칸즈와 아이들",
-          "summary": "iOS 공부하는 집단"
+            "id": 5,
+            "created": "2020-05-13T23:52:46",
+            "modified": "2020-05-13T23:52:46",
+            "title": "칸즈와 아이들",
+            "summary": "iOS 공부하는 집단",
+            "code": "asdfasdfasdfadsf"
         ],
-        "is_reader": true
+        "is_reader": true,
+        "people": [
+            [
+                "id": 8,
+                "name": "kanz1"
+            ]
+        ],
+        "people_cnt": 1
     ])
     
     static let kanzGroup2: PublicGroup = fixture([
-        "id": 9,
-        "user": 8,
+        "id": 7,
         "mood_group": [
-          "id": 7,
-          "created": "2020-05-14T18:23:48",
-          "modified": "2020-05-14T18:23:48",
-          "title": "제이의",
-          "summary": "hoxy 하는 집단"
+            "id": 5,
+            "created": "2020-05-13T23:52:46",
+            "modified": "2020-05-13T23:52:46",
+            "title": "칸즈와 아이들",
+            "summary": "iOS 공부하는 집단",
+            "code": "asdfasdfasdfadsf"
         ],
-        "is_reader": true
+        "is_reader": true,
+        "people": [
+            [
+                "id": 8,
+                "name": "kanz1"
+            ]
+        ],
+        "people_cnt": 1
     ])
 }
 
