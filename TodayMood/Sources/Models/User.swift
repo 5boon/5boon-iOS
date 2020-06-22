@@ -7,6 +7,7 @@
 
 import Foundation
 
+// 내정보
 struct User: ModelType, Identifiable {
     let id: Int?
     let userName: String?

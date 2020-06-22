@@ -61,6 +61,8 @@ final class GroupViewController: BaseViewController, View {
     
     private let addButton = UIBarButtonItem(image: UIImage(named: "nav_add"), style: .plain, target: nil, action: nil)
     
+    private let joinButton = UIBarButtonItem(image: UIImage(systemName: "envelope"), style: .plain, target: nil, action: nil)
+    
     private let refreshControl = UIRefreshControl().then {
         $0.tintColor = Color.refreshControl
     }
@@ -75,12 +77,15 @@ final class GroupViewController: BaseViewController, View {
     
     // MARK: Properties
     var presentAddGroupFactory: () -> GroupAddViewController
+    var pushGroupDetailFactory: (PublicGroup) -> GroupDetailViewController
     
     // MARK: - Initializing
     init(reactor: Reactor,
-         presentAddGroupFactory: @escaping () -> GroupAddViewController) {
+         presentAddGroupFactory: @escaping () -> GroupAddViewController,
+         pushGroupDetailFactory: @escaping (PublicGroup) -> GroupDetailViewController) {
         defer { self.reactor = reactor }
         self.presentAddGroupFactory = presentAddGroupFactory
+        self.pushGroupDetailFactory = pushGroupDetailFactory
         super.init()
     }
     
@@ -92,7 +97,7 @@ final class GroupViewController: BaseViewController, View {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = Localized.title
-        self.navigationItem.rightBarButtonItem = addButton
+        self.navigationItem.rightBarButtonItems = [addButton, joinButton]
     }
     
     // MARK: - UI Setup
@@ -128,6 +133,16 @@ final class GroupViewController: BaseViewController, View {
                 self.presentAddGroup()
             }).disposed(by: self.disposeBag)
         
+        joinButton.rx.tap
+            .flatMap { [weak self] _ -> Observable<String> in
+                guard let self = self else { return .empty() }
+                return self.presentInvitationAlert()
+        }.map {
+            Reactor.Action.joinGroup($0)
+        }
+        .bind(to: reactor.action)
+        .disposed(by: self.disposeBag)
+        
         // State
         reactor.state.map { $0.isLoading }
             .distinctUntilChanged()
@@ -162,7 +177,8 @@ final class GroupViewController: BaseViewController, View {
                 guard let self = self else { return }
                 switch sectionItem {
                 case .groupList(let cellReactor):
-                    logger.debug(cellReactor.currentState)
+                    // logger.debug(cellReactor.currentState)
+                    self.pushToGroupdetail(groupInfo: cellReactor.currentState.group)
                 }
             }).disposed(by: self.disposeBag)
         
@@ -191,5 +207,35 @@ final class GroupViewController: BaseViewController, View {
         self.present(controller, animated: false, completion: nil)
     }
     
-    // MARK: - Private
+    private func presentInvitationAlert() -> Observable<String> {
+        
+        return Observable.create { observer -> Disposable in
+            
+            let alert = UIAlertController(title: "그룹참여",
+                                          message: "그룹 참여를 위해 코드를 입력해주세요.",
+                                          preferredStyle: .alert)
+            alert.addTextField { textField in
+                textField.enablesReturnKeyAutomatically = true
+            }
+            
+            alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+            alert.addAction(UIAlertAction(title: "참여", style: .default, handler: { _ in
+                guard let code = alert.textFields?.first?.text, code.isNotEmpty else {
+                    observer.onCompleted()
+                    return
+                }
+                observer.onNext(code)
+                observer.onCompleted()
+            }))
+            
+            self.present(alert, animated: true, completion: nil)
+            
+            return Disposables.create {}
+        }
+    }
+    
+    private func pushToGroupdetail(groupInfo: PublicGroup) {
+        let controller = self.pushGroupDetailFactory(groupInfo)
+        self.navigationController?.pushViewController(controller, animated: true)
+    }
 }

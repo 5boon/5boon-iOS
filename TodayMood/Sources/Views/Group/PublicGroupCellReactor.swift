@@ -15,11 +15,13 @@ class PublicGroupCellReactor: Reactor {
     
     struct State {
         var group: PublicGroup
+        var user: User?
     }
     
     let initialState: State
     
     init(group: PublicGroup) {
-        initialState = State(group: group)
+        initialState = State(group: group,
+                             user: GlobalStates.shared.currentUser.value)
     }
 }

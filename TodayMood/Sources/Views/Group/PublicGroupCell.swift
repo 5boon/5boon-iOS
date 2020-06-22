@@ -162,5 +162,11 @@ final class PublicGroupCell: BaseTableViewCell, ReactorKit.View {
         reactor.state.map { $0.group.moodGroup.title }
             .bind(to: groupNameLabel.rx.text)
             .disposed(by: self.disposeBag)
+        
+        reactor.state.map { ($0.user, $0.group.groupMemberCount) }
+            .subscribe(onNext: { [weak self] (user, count) in
+                guard let self = self, let userName = user?.userName else { return }
+                self.groupMemberCountLabel.text = "\(userName)님 외 \(count - 1)명 참여"
+            }).disposed(by: self.disposeBag)
     }
 }
