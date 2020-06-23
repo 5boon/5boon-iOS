@@ -10,6 +10,14 @@ import RxSwift
 protocol GroupServiceType {
     func groupList() -> Observable<[PublicGroup]>
     func createGroup(title: String, summary: String) -> Observable<MoodGroup>
+    func joinGroup(groupCode: String) -> Observable<PublicGroup>
+    func groupDetail(groupID: Int, displayMine: Bool) -> Observable<[GroupMemberMood]>
+}
+
+extension GroupServiceType {
+    func groupDetail(groupID: Int, displayMine: Bool = false) -> Observable<[GroupMemberMood]> {
+        return self.groupDetail(groupID: groupID, displayMine: displayMine)
+    }
 }
 
 final class GroupService: GroupServiceType {
@@ -35,5 +43,19 @@ final class GroupService: GroupServiceType {
             .debug()
             .asObservable()
             .map(MoodGroup.self)
+    }
+    
+    func joinGroup(groupCode: String) -> Observable<PublicGroup> {
+        return self.networking.request(.joinGroup(groupCode: groupCode))
+            .debug()
+            .asObservable()
+            .map(PublicGroup.self)
+    }
+    
+    func groupDetail(groupID: Int, displayMine: Bool = false) -> Observable<[GroupMemberMood]> {
+        return self.networking.request(.groupDetail(groupID: groupID, displayMine: displayMine))
+            .debug()
+            .asObservable()
+            .map([GroupMemberMood].self)
     }
 }

@@ -273,12 +273,20 @@ extension CompositionRoot {
 extension CompositionRoot {
     static func configureGroupScreen(groupService: GroupServiceType) -> GroupViewController {
         var presentAddGroupScreen: (() -> GroupAddViewController)!
+        var pushGroupDetailFactory: ((PublicGroup) -> GroupDetailViewController)!
         
         presentAddGroupScreen = {
             GroupAddViewController(reactor: GroupAddViewReactor(groupService: groupService))
         }
         
+        pushGroupDetailFactory = { (groupInfo) -> GroupDetailViewController in
+            let reactor = GroupDetailViewReactor(groupService: groupService, groupInfo: groupInfo)
+            return GroupDetailViewController(reactor: reactor)
+        }
+        
         let reactor = GroupViewReactor(groupService: groupService)
-        return GroupViewController(reactor: reactor, presentAddGroupFactory: presentAddGroupScreen)
+        return GroupViewController(reactor: reactor,
+                                   presentAddGroupFactory: presentAddGroupScreen,
+                                   pushGroupDetailFactory: pushGroupDetailFactory)
     }
 }

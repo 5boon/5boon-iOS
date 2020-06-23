@@ -7,52 +7,25 @@
 
 import Foundation
 
+// 그룹리스트
 struct PublicGroup: ModelType, Identifiable {
     let id: Int // 그룹 상세 조회용 ID
-    let ownerID: Int // 그룹 생성한 User ID
     let isLeader: Bool // 그룹의 리더인지
     
     let moodGroup: MoodGroup // MoodGroup
+    let groupMembers: [GroupUser]
+    let groupMemberCount: Int
     
     enum CodingKeys: String, CodingKey {
         case id
         case isLeader = "is_reader"
-        case ownerID = "user"
         case moodGroup = "mood_group"
+        case groupMembers = "people"
+        case groupMemberCount = "people_cnt"
     }
-    /*
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let moodGroup = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .moodGroup)
-        
-        id = try container.decode(Int.self, forKey: .id)
-        ownerID = try container.decode(Int.self, forKey: .ownerID)
-        isLeader = try container.decode(Bool.self, forKey: .isLeader)
-        
-        moodGroupID = try moodGroup.decode(Int.self, forKey: .moodGroupID)
-        title = try moodGroup.decode(String.self, forKey: .title)
-        summary = try moodGroup.decode(String.self, forKey: .summary)
-        created = try moodGroup.decode(String.self, forKey: .created)
-        modified = try moodGroup.decode(String.self, forKey: .modified)
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        var moodGroup = container.nestedContainer(keyedBy: CodingKeys.self, forKey: .moodGroup)
-        
-        try container.encode(id, forKey: .id)
-        try container.encode(ownerID, forKey: .ownerID)
-        try container.encode(isLeader, forKey: .isLeader)
-        
-        try moodGroup.encode(moodGroupID, forKey: .moodGroupID)
-        try moodGroup.encode(title, forKey: .title)
-        try moodGroup.encode(summary, forKey: .summary)
-        try moodGroup.encode(created, forKey: .created)
-        try moodGroup.encode(modified, forKey: .modified)
-    }
-     */
 }
 
+// 그룹의 정보
 struct MoodGroup: ModelType, Identifiable {
     let id: Int
     let title: String
@@ -65,6 +38,7 @@ struct MoodGroup: ModelType, Identifiable {
     var modifiedAt: Date? {
         modified?.convertServerDate()
     }
+    let groupCode: String
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -72,5 +46,17 @@ struct MoodGroup: ModelType, Identifiable {
         case summary
         case created
         case modified
+        case groupCode = "code"
+    }
+}
+
+// 그룹 구성원
+struct GroupUser: ModelType, Identifiable {
+    let id: Int
+    let name: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
     }
 }

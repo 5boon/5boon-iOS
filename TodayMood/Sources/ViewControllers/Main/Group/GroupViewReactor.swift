@@ -14,6 +14,7 @@ class GroupViewReactor: Reactor {
     enum Action {
         case firstLoad
         case refresh
+        case joinGroup(String)
     }
     
     enum Mutation {
@@ -61,8 +62,13 @@ class GroupViewReactor: Reactor {
             let endLoading: Observable<Mutation> = Observable.just(.setLoading(false))
             let groupsRequest: Observable<Mutation> = self.requestGroup()
             return Observable.concat(startLoading, groupsRequest, endLoading)
+            
+        case .joinGroup(let groupCode):
+            let startLoading: Observable<Mutation> = Observable.just(.setLoading(true))
+            let endLoading: Observable<Mutation> = Observable.just(.setLoading(false))
+            let joinRequest: Observable<Mutation> = self.requestJoinGroup(groupCode: groupCode)
+            return Observable.concat(startLoading, joinRequest, endLoading)
         }
-        return .empty()
     }
     
     // MARK: Reduce
@@ -84,5 +90,12 @@ class GroupViewReactor: Reactor {
             .map { list -> Mutation in
                 return .setGroups(list)
         }.catchErrorJustReturn(.setGroups([]))
+    }
+    
+    private func requestJoinGroup(groupCode: String) -> Observable<Mutation> {
+        return self.groupService.joinGroup(groupCode: groupCode)
+            .flatMap { _ in
+                self.requestGroup()
+        }
     }
 }
