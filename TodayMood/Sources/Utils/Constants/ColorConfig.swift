@@ -109,4 +109,18 @@ extension UIColor {
     static var emptyTitle: UIColor {
         return UIColor(hexString: "#DDDDDD")
     }
+    
+    // MARK: Group
+    static var groupCountText: UIColor {
+        return UIColor(hexString: "#CCCCCC")
+    }
+}
+
+extension UIColor {
+    static func getRandomColor() -> UIColor {
+        return UIColor(red: .random(in: 0...1),
+                       green: .random(in: 0...1),
+                       blue: .random(in: 0...1),
+                       alpha: 1.0)
+    }
 }

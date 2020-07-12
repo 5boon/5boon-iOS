@@ -47,6 +47,7 @@ def app_pods
   pod 'URLNavigator'
   pod 'Immutable'
   pod 'Bagel', '~>  1.3.2'
+  pod 'SideMenu', '~> 6.0'
   
   # DI
   pod 'Pure'
