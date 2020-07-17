@@ -31,6 +31,12 @@ class GroupDetailViewReactor: Reactor {
         var groupMemberMoods: [GroupMemberMood] = []
         
         var isLoading: Bool = false
+        var sections: [GroupDetailMoodSection] {
+            let sectionItems: [GroupDetailMoodSectionItem] = groupMemberMoods.map {
+                GroupDetailMoodCellReactor(mood: $0)
+            }.map(GroupDetailMoodSectionItem.groupMood)
+            return [.groupMood(sectionItems)]
+        }
     }
     
     let initialState: State
@@ -66,6 +72,12 @@ class GroupDetailViewReactor: Reactor {
     }
     
     private func requestGroupDetail() -> Observable<Mutation> {
-        return .empty()
+        return self.groupService.groupDetail(groupID: self.currentState.groupID, displayMine: true)
+            .map { moods -> Mutation in
+                let filtered = moods.filter({ mood -> Bool in
+                    return mood.mood != nil
+                })
+                return .setGroupMemberMoods(filtered)
+        }.catchErrorJustReturn(.setGroupMemberMoods([]))
     }
 }

@@ -15,7 +15,7 @@ import Foundation
  }
  */
 struct Mood: ModelType, Identifiable {
-    let id: Int
+    let id: Int?
     let moodStatus: MoodStatusTypes // 기분 점수
     let summary: String // 한줄 요약
     let created: String?
@@ -32,7 +32,7 @@ struct Mood: ModelType, Identifiable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(Int.self, forKey: .id)
+        id = try? container.decode(Int.self, forKey: .id)
         let status = try container.decode(Int.self, forKey: .moodStatus)
         moodStatus = MoodStatusTypes(rawValue: status) ?? .soso
         summary = try container.decode(String.self, forKey: .summary)

@@ -10,6 +10,7 @@ import UIKit
 import ReactorKit
 import ReusableKit
 import RxCocoa
+import RxDataSources
 import RxSwift
 import RxViewController
 import SideMenu
@@ -25,21 +26,28 @@ final class GroupDetailViewController: BaseViewController, ReactorKit.View {
     }
     
     private struct Color {
-        // static let backgroundColor = UIColor.color(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        static let background: UIColor = UIColor.baseBG
     }
     
     private struct Font {
         // static let title = UIFont.systemFont(ofSize: 15.0)
     }
     
-    /*
-     private struct Reusable {
-     static let sendCell = ReusableCell<CommonDropDownMenuTableViewCell>()
-     }
-     */
+    private struct Reusable {
+        static let moodCell = ReusableCell<GroupDetailMoodCell>()
+    }
     
     // MARK: Views
     private var menuButton = UIBarButtonItem(image: UIImage(named: "nav_menu"), style: .plain, target: nil, action: nil)
+    
+    private let tableView = UITableView().then {
+        $0.backgroundColor = Color.background
+        $0.separatorStyle = .none
+        $0.register(Reusable.moodCell)
+        $0.estimatedRowHeight = 48.0
+        $0.rowHeight =  UITableView.automaticDimension
+        $0.tableFooterView = UIView()
+    }
     
     // MARK: Properties
     
@@ -62,13 +70,16 @@ final class GroupDetailViewController: BaseViewController, ReactorKit.View {
     // MARK: - UI Setup
     override func addViews() {
         super.addViews()
-        // self.view.addSubView(<#UIView#>)
         
+        self.view.addSubview(tableView)
     }
     
     override func setupConstraints() {
         super.setupConstraints()
-        // <#UIView#>.snp.makeConstraints
+        
+        tableView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
     
     // MARK: - Binding
@@ -91,8 +102,24 @@ final class GroupDetailViewController: BaseViewController, ReactorKit.View {
             .bind(to: self.rx.title)
             .disposed(by: self.disposeBag)
         
+        let dataSource = self.dataSource()
+        reactor.state.map { $0.sections }
+            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: self.disposeBag)
         
         // View
+        tableView.rx.itemSelected(dataSource: dataSource)
+            .subscribe(onNext: { sectionItem in
+                switch sectionItem {
+                case .groupMood(let cellReactor):
+                    logger.debug(cellReactor.currentState)
+                }
+            }).disposed(by: self.disposeBag)
+        
+        tableView.rx.itemSelected
+            .subscribe(onNext: { [weak tableView] indexPath in
+                tableView?.deselectRow(at: indexPath, animated: true)
+            }).disposed(by: self.disposeBag)
     }
     
     private func makeSettings() -> SideMenuSettings {
@@ -110,6 +137,17 @@ final class GroupDetailViewController: BaseViewController, ReactorKit.View {
 //        settings.enableTapToDismissGesture = false
         settings.enableSwipeToDismissGesture = false
         return settings
+    }
+    
+    private func dataSource() -> RxTableViewSectionedReloadDataSource<GroupDetailMoodSection> {
+        return .init(configureCell: { (dataSource, tableView, indexPath, sectionItem) -> UITableViewCell in
+            switch sectionItem {
+            case .groupMood(let cellReactor):
+                let cell = tableView.dequeue(Reusable.moodCell, for: indexPath)
+                cell.reactor = cellReactor
+                return cell
+            }
+        })
     }
     
     // MARK: - Route
