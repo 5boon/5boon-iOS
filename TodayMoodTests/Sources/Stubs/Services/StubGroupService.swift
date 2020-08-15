@@ -26,4 +26,8 @@ final class StubGroupService: GroupServiceType {
     func groupDetail(groupID: Int, displayMine: Bool = false) -> Observable<[GroupMemberMood]> {
         return Stubber.invoke(groupDetail, args: (groupID, displayMine))
     }
+    
+    func leaveGroup(groupID: Int) -> Observable<Void> {
+        return Stubber.invoke(leaveGroup, args: (groupID))
+    }
 }
