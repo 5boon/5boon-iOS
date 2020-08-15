@@ -40,7 +40,7 @@ struct GroupFixture {
             "summary": "iOS 공부하는 집단",
             "code": "asdfasdfasdfadsf"
         ],
-        "is_reader": true,
+//        "is_reader": true,
         "people": [
             [
                 "id": 8,
@@ -60,7 +60,7 @@ struct GroupFixture {
             "summary": "iOS 공부하는 집단",
             "code": "asdfasdfasdfadsf"
         ],
-        "is_reader": true,
+//        "is_reader": true,
         "people": [
             [
                 "id": 8,

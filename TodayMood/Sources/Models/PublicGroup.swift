@@ -10,7 +10,7 @@ import Foundation
 // 그룹리스트
 struct PublicGroup: ModelType, Identifiable {
     let id: Int // 그룹 상세 조회용 ID
-    let isLeader: Bool // 그룹의 리더인지
+//    let isLeader: Bool // 그룹의 리더인지
     
     let moodGroup: MoodGroup // MoodGroup
     let groupMembers: [GroupUser]
@@ -18,7 +18,7 @@ struct PublicGroup: ModelType, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case id
-        case isLeader = "is_reader"
+//        case isLeader = "is_reader"
         case moodGroup = "mood_group"
         case groupMembers = "people"
         case groupMemberCount = "people_cnt"
