@@ -12,6 +12,7 @@ protocol GroupServiceType {
     func createGroup(title: String, summary: String) -> Observable<MoodGroup>
     func joinGroup(groupCode: String) -> Observable<PublicGroup>
     func groupDetail(groupID: Int, displayMine: Bool) -> Observable<[GroupMemberMood]>
+    func leaveGroup(groupID: Int) -> Observable<Void>
 }
 
 extension GroupServiceType {
@@ -57,5 +58,12 @@ final class GroupService: GroupServiceType {
             .debug()
             .asObservable()
             .map([GroupMemberMood].self)
+    }
+    
+    func leaveGroup(groupID: Int) -> Observable<Void> {
+        return self.networking.request(.leaveGroup(groupID: groupID))
+            .debug()
+            .asObservable()
+            .map { _ in Void() }
     }
 }

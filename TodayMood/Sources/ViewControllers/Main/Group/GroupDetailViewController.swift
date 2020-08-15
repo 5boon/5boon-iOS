@@ -50,6 +50,10 @@ final class GroupDetailViewController: BaseViewController, ReactorKit.View {
     }
     
     // MARK: Properties
+    private let refreshSubject = PublishSubject<Void>()
+    var refreshObservable: Observable<Void> {
+        return refreshSubject.asObservable()
+    }
     
     // MARK: - Initializing
     init(reactor: Reactor) {
@@ -95,6 +99,18 @@ final class GroupDetailViewController: BaseViewController, ReactorKit.View {
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
                 self.presentGroupMemberManage()
+                    .subscribe(onNext: { routeType in
+                        logger.debug(routeType)
+                        switch routeType {
+                        case .leaveGroup:
+                            logger.debug("leaveGroup")
+                            reactor.action.onNext(.leaveGroup)
+                        case .inviteMember:
+                            logger.debug("inviteMember")
+                        case .groupSetting:
+                            logger.debug("groupSetting")
+                        }
+                    }).disposed(by: self.disposeBag)
             }).disposed(by: self.disposeBag)
         
         // State
@@ -107,6 +123,17 @@ final class GroupDetailViewController: BaseViewController, ReactorKit.View {
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
         
+        reactor.state.map { $0.isLeaveFinished }
+            .filterNil()
+            .filter { $0 == true }
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                self.refreshSubject.onNext(())
+                self.refreshSubject.onCompleted()
+                self.navigationController?.popViewController(animated: true)
+            }).disposed(by: self.disposeBag)
+
         // View
         tableView.rx.itemSelected(dataSource: dataSource)
             .subscribe(onNext: { sectionItem in
@@ -151,8 +178,8 @@ final class GroupDetailViewController: BaseViewController, ReactorKit.View {
     }
     
     // MARK: - Route
-    private func presentGroupMemberManage() {
-        guard let reactor = self.reactor else { return }
+    private func presentGroupMemberManage() -> Observable<GroupManageRouteType> {
+        guard let reactor = self.reactor else { return .empty() }
         let controller = GroupMemberManageViewController(reactor: GroupMemberManageViewReactor(groupMembers: reactor.currentState.groupMembers))
         let menu = SideMenuNavigationController(rootViewController: controller)
         menu.settings = makeSettings()
@@ -162,6 +189,10 @@ final class GroupDetailViewController: BaseViewController, ReactorKit.View {
 //        SideMenuManager.default.addScreenEdgePanGesturesToPresent(toView: view)
 //        SideMenuManager.default.addPanGestureToPresent(toView: navigationController!.navigationBar)
         present(menu, animated: true, completion: nil)
+        return controller.routeObservable
     }
     
+    private func pushToGroupSetting() {
+        
+    }
 }

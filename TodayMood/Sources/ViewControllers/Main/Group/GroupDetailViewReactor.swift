@@ -13,11 +13,13 @@ class GroupDetailViewReactor: Reactor {
     
     enum Action {
         case firstLoad
+        case leaveGroup
     }
     
     enum Mutation {
         case setGroupMemberMoods([GroupMemberMood])
         case setLoading(Bool)
+        case setLeaveFinished(Bool?)
     }
     
     struct State {
@@ -37,6 +39,7 @@ class GroupDetailViewReactor: Reactor {
             }.map(GroupDetailMoodSectionItem.groupMood)
             return [.groupMood(sectionItems)]
         }
+        var isLeaveFinished: Bool? = nil
     }
     
     let initialState: State
@@ -56,6 +59,12 @@ class GroupDetailViewReactor: Reactor {
             let endLoading: Observable<Mutation> = Observable.just(.setLoading(false))
             let request = self.requestGroupDetail()
             return Observable.concat(startLoading, request, endLoading)
+        case .leaveGroup:
+            let startLoading: Observable<Mutation> = Observable.just(.setLoading(true))
+            let endLoading: Observable<Mutation> = Observable.just(.setLoading(false))
+            let groupID = self.currentState.groupInfo.id
+            let request = self.requestGroupLeave(groupID: groupID)
+            return Observable.concat(startLoading, request, endLoading)
         }
     }
     
@@ -67,6 +76,8 @@ class GroupDetailViewReactor: Reactor {
             state.isLoading = isLoading
         case .setGroupMemberMoods(let memberMoods):
             state.groupMemberMoods = memberMoods
+        case .setLeaveFinished(let isLeaveFinished):
+            state.isLeaveFinished = isLeaveFinished
         }
         return state
     }
@@ -78,6 +89,13 @@ class GroupDetailViewReactor: Reactor {
                     return mood.mood != nil
                 })
                 return .setGroupMemberMoods(filtered)
-        }.catchErrorJustReturn(.setGroupMemberMoods([]))
+            }.catchErrorJustReturn(.setGroupMemberMoods([]))
+    }
+    
+    private func requestGroupLeave(groupID: Int) -> Observable<Mutation> {
+        return self.groupService.leaveGroup(groupID: groupID)
+            .map { _ -> Mutation in
+                return .setLeaveFinished(true)
+            }.catchErrorJustReturn(.setLeaveFinished(nil))
     }
 }

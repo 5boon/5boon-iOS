@@ -16,6 +16,13 @@ import RxViewController
 import SnapKit
 import Then
 
+enum GroupManageRouteType: CaseIterable {
+    case leaveGroup
+    case groupSetting
+    case inviteMember
+}
+
+
 final class GroupMemberManageViewController: BaseViewController, ReactorKit.View {
     
     typealias Reactor = GroupMemberManageViewReactor
@@ -115,6 +122,11 @@ final class GroupMemberManageViewController: BaseViewController, ReactorKit.View
     // MARK: Properties
     var containerRightToSuperView: Constraint?
     var containerRightOffset: Constraint?
+    
+    private let groupManageRouteSubject = PublishSubject<GroupManageRouteType>()
+    var routeObservable: Observable<GroupManageRouteType> {
+        groupManageRouteSubject.asObservable()
+    }
     
     // MARK: - Initializing
     init(reactor: Reactor) {
@@ -233,12 +245,36 @@ final class GroupMemberManageViewController: BaseViewController, ReactorKit.View
                 guard let self = self else { return }
                 self.showAnimation()
             }).disposed(by: self.disposeBag)
-
+        
         self.dimView.rx.tapGesture()
             .when(.recognized)
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
                 self.hideAnimation()
+            }).disposed(by: self.disposeBag)
+        
+        settingButton.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                logger.debug("settingButton")
+                self.hideAnimation(route: .groupSetting)
+            }).disposed(by: self.disposeBag)
+        
+        leaveButton.rx.tap
+            .flatMap { [weak self] _ -> Observable<Void> in
+                guard let self = self else { return .empty() }
+                return self.showLeaveGroupConfirmAlert()
+        }.subscribe(onNext: { [weak self] _ in
+            guard let self = self else { return }
+            logger.debug("leaveButton")
+            self.hideAnimation(route: .leaveGroup)
+        }).disposed(by: self.disposeBag)
+        
+        inviteButton.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                logger.debug("inviteButton")
+                self.hideAnimation(route: .inviteMember)
             }).disposed(by: self.disposeBag)
         
         // State
@@ -280,7 +316,7 @@ final class GroupMemberManageViewController: BaseViewController, ReactorKit.View
         }, completion: nil)
     }
     
-    private func hideAnimation() {
+    private func hideAnimation(route: GroupManageRouteType? = nil) {
         guard self.containerView.constraints.isNotEmpty else { return }
         
         UIView.animate(withDuration: 0.5, animations: {
@@ -296,10 +332,34 @@ final class GroupMemberManageViewController: BaseViewController, ReactorKit.View
             self.containerRightOffset?.activate()
             self.view.layoutIfNeeded()
         }) { finished in
-             self.dismiss(animated: false, completion: nil)
+            self.dismiss(animated: false, completion: {
+                if let route = route {
+                    self.groupManageRouteSubject.onNext(route)
+                    self.groupManageRouteSubject.onCompleted()
+                }
+            })
         }
     }
     
+    private func showLeaveGroupConfirmAlert() -> Observable<Void> {
+        Observable.create { observer -> Disposable in
+            
+            let alert = UIAlertController(title: "그룹에서 나가시겠습니까?", message: "", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "예", style: .default, handler: { _ in
+                observer.onNext(Void())
+                observer.onCompleted()
+            }))
+            alert.addAction(UIAlertAction(title: "아니오", style: .cancel, handler: { _ in
+                observer.onCompleted()
+            }))
+            
+            self.present(alert, animated: true, completion: nil)
+            
+            return Disposables.create {
+                
+            }
+        }
+    }
     
     // MARK: - Route
 }
