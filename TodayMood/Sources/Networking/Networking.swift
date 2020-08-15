@@ -25,7 +25,7 @@ final class Networking<Target: TargetType>: MoyaProvider<Target> {
         
         let endpointClosure = { (target: Target) -> Endpoint in
             let defaultEndpoint = MoyaProvider.defaultEndpointMapping(for: target)
-            return defaultEndpoint.adding(newHTTPHeaderFields: ["User-Agent": "5boon ios"])
+            return defaultEndpoint.adding(newHTTPHeaderFields: ["User-Agent": Secrets.userAgent])
         }
         
         let session = MoyaProvider<Target>.defaultAlamofireSession()
