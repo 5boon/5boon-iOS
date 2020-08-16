@@ -235,7 +235,13 @@ final class GroupViewController: BaseViewController, View {
     }
     
     private func pushToGroupdetail(groupInfo: PublicGroup) {
+        guard let reactor = self.reactor else { return }
         let controller = self.pushGroupDetailFactory(groupInfo)
         self.navigationController?.pushViewController(controller, animated: true)
+        
+        controller.refreshObservable
+            .subscribe(onNext: { _ in
+                reactor.action.onNext(.refresh)
+            }).disposed(by: self.disposeBag)
     }
 }

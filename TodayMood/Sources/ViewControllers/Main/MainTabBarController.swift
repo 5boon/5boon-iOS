@@ -23,6 +23,7 @@ final class MainTabBarController: UITabBarController, ReactorKit.View {
     // MARK: Views
     let tab = MainTabBar().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.isUserInteractionEnabled = true
         $0.layer.masksToBounds = false
     }
     

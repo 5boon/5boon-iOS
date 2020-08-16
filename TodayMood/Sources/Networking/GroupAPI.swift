@@ -12,6 +12,7 @@ enum GroupAPI {
     case createGroup(title: String, summary: String)
     case joinGroup(groupCode: String)
     case groupDetail(groupID: Int, displayMine: Bool)
+    case leaveGroup(groupID: Int)
 }
 
 extension GroupAPI: TargetType {
@@ -29,6 +30,8 @@ extension GroupAPI: TargetType {
             return "/groups/invitation/"
         case .groupDetail(let groupID, _):
             return "/groups/mine/\(groupID)/"
+        case .leaveGroup(let groupID):
+            return "/groups/mine/\(groupID)/"
         }
     }
     
@@ -42,6 +45,8 @@ extension GroupAPI: TargetType {
             return .post
         case .groupDetail:
             return .get
+        case .leaveGroup:
+            return .delete
         }
     }
     
@@ -70,6 +75,8 @@ extension GroupAPI: TargetType {
                 params["display_mine"] = "true"
             }
             return .requestParameters(parameters: params, encoding: URLEncoding.default)
+        case .leaveGroup:
+            return .requestPlain
         }
     }
     
